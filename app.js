@@ -6,18 +6,36 @@ const ctxG = graphCanvas.getContext('2d');
 
 // Preload generated sketchy asset images
 const imgTitration = new Image();
-imgTitration.src = 'assets/titration.png';
+imgTitration.src = 'assets/titration.png?v=' + Date.now();
 
 const imgCombustion = new Image();
-imgCombustion.src = 'assets/combustion.png';
+imgCombustion.src = 'assets/combustion.png?v=' + Date.now();
 
 const imgHeating = new Image();
-imgHeating.src = 'assets/heating.png';
+imgHeating.src = 'assets/heating.png?v=' + Date.now();
 
 // State Variables
 let currentStep = 1;
 let animProgress = 0; // Current step animation progress [0, 1]
-const totalSteps = 7;
+const totalSteps = 8;
+
+// SOIL Color Config
+const COLOR_ORANGE = '#ff7a00';
+const COLOR_GRAY_LIGHT = '#cccccc';
+const COLOR_GRAY_MEDIUM = '#888888';
+const COLOR_GRAY_DARK = '#444444';
+
+// SOIL Takeaway Texts
+const takeawayTexts = [
+    "利用座標系可以直觀地分析兩種元素之間的質量定量關係。",
+    "酸鹼中和反應生成的水，其氧與氫的質量具有特定的比例。",
+    "不同反應生成的水，在質量座標圖上似乎遵循著相同的規律。",
+    "不論水量多寡，所有數據點在圖上呈現明顯的線性排列關係。",
+    "這三個不同化學反應產生的水，雖然質量多寡不同，但呈現相同的比例規律。",
+    "同一種化合物，不論其來源或製備方法為何，其組成元素的質量比（斜率）恆為定值。",
+    "定比定律：各組成元素間的質量比恆為定值。水的氧與氫質量比永遠是固定的 8 : 1。",
+    "微觀原理：化合物是由原子以固定的個數比例結合所造成（如每個 H₂O 恆為 2:1 的 H 與 O）。"
+];
 
 // Random Water Composition Values (Ratio is strictly 1 : 8)
 let wH1, wO1, wH2, wO2, wH3, wO3;
@@ -154,6 +172,10 @@ const stepTexts = [
     {
         title: "第七步：定比定律 (Law of Definite Proportions)",
         desc: "化合物中，各組成元素間的質量比恆為定值。這就是定比定律！以水為例，不論來源，氧與氫的質量比永遠是固定的 8 : 1。"
+    },
+    {
+        title: "第八步：定比定律的微觀解釋",
+        desc: "從微觀尺度來看，定比定律的原理是：每一種「化合物」都是由原子以固定的個數比例結合而成。例如每個水分子 (H₂O) 恆由 2 個氫原子與 1 個氧原子結合，這決定了它們在宏觀上的組成元素質量比恆為 8 : 1。"
     }
 ];
 
@@ -192,6 +214,12 @@ function updateUI() {
     document.getElementById('step-title').textContent = stepTexts[currentStep - 1].title;
     document.getElementById('step-desc').textContent = stepTexts[currentStep - 1].desc;
     
+    // Update SOIL page number
+    document.getElementById('soil-page-num').textContent = String(currentStep).padStart(2, '0');
+    
+    // Update takeaway text
+    document.getElementById('takeaway-text').textContent = takeawayTexts[currentStep - 1];
+    
     // Update Mass Board visibility
     const massBoard = document.getElementById('mass-board');
     massBoard.classList.toggle('hidden', currentStep < 2);
@@ -208,6 +236,11 @@ function updateUI() {
     document.getElementById('board-h1').parentElement.style.opacity = currentStep >= 2 ? 1 : 0.2;
     document.getElementById('board-h2').parentElement.style.opacity = currentStep >= 3 ? 1 : 0.2;
     document.getElementById('board-h3').parentElement.style.opacity = currentStep >= 4 ? 1 : 0.2;
+    
+    // Highlight active board item in orange
+    document.getElementById('board-h1').parentElement.classList.toggle('active', currentStep === 2);
+    document.getElementById('board-h2').parentElement.classList.toggle('active', currentStep === 3);
+    document.getElementById('board-h3').parentElement.classList.toggle('active', currentStep === 4);
     
     // Toggle active state of HTML legend items
     document.getElementById('legend-item-1').classList.toggle('visible', currentStep >= 2);
@@ -282,7 +315,7 @@ function renderFlaskPanel() {
             const dropX = startX + (endX - startX) * easeT;
             const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 40;
             
-            drawWaterDrop(ctxF, dropX, dropY, 12);
+            drawWaterDrop(ctxF, dropX, dropY, 12, COLOR_ORANGE);
         }
     } 
     else if (currentStep === 3) {
@@ -304,7 +337,7 @@ function renderFlaskPanel() {
             const dropX = startX + (endX - startX) * easeT;
             const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 50;
             
-            drawWaterDrop(ctxF, dropX, dropY, 14);
+            drawWaterDrop(ctxF, dropX, dropY, 14, COLOR_ORANGE);
         }
     } 
     else if (currentStep === 4) {
@@ -318,18 +351,18 @@ function renderFlaskPanel() {
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
             const easeT = easeInOutCubic(t);
-            const startX = imgX + imgSize * 0.72;
-            const startY = imgY + imgSize * 0.46;
+            const startX = imgX + imgSize * 0.3;
+            const startY = imgY + imgSize * 0.65;
             const endX = w - 15;
             const endY = h / 2;
             
             const dropX = startX + (endX - startX) * easeT;
             const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 30;
             
-            drawWaterDrop(ctxF, dropX, dropY, 10);
+            drawWaterDrop(ctxF, dropX, dropY, 10, COLOR_ORANGE);
         }
     } 
-    else if (currentStep >= 5) {
+    else if (currentStep >= 5 && currentStep <= 7) {
         // Step 5, 6, 7: Show three beakers of water side-by-side (Identical composition)
         const gap = w / 4;
         const cy = h / 2 + 20;
@@ -339,15 +372,36 @@ function renderFlaskPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('分析三種來源的水滴', w / 2, h / 2 - 90);
         
-        // Render 3 Beakers
-        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', '#e76f51', 110);
-        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '氫氣燃燒水', '#2a9d8f', 120);
-        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', '#b58900', 130);
+        // Render 3 Beakers in Gray Shades matching the Graph Points
+        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
+        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '氫氣燃燒水', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
+        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = 'italic 1.1rem "EB Garamond", serif';
         ctxF.fillText('實驗分析顯示：它們在化學性質上完全一樣，', w / 2, h / 2 + 95);
         ctxF.fillText('不論來源為何，皆為相同物質「水 (H₂O)」。', w / 2, h / 2 + 120);
+    }
+    else if (currentStep === 8) {
+        // Step 8: Show microscopic water molecules
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = 'bold 1.25rem sans-serif';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('微觀原理：原子以固定比例結合', w / 2, 45);
+        
+        // Draw 3 water molecules at different spots with slight rotation
+        drawWaterMolecule(ctxF, w / 2 - 85, h / 2 - 30, 22, 13, 104.5, -Math.PI / 6);
+        drawWaterMolecule(ctxF, w / 2 + 85, h / 2 - 10, 22, 13, 104.5, Math.PI / 4);
+        drawWaterMolecule(ctxF, w / 2, h / 2 + 75, 22, 13, 104.5, Math.PI + Math.PI / 8);
+        
+        // Explanatory text
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.font = 'bold 1.05rem sans-serif';
+        ctxF.fillText('每個水分子 (H₂O) 恆由 2 個 H 與 1 個 O 原子結合', w / 2, h - 80);
+        
+        ctxF.font = 'italic 1.15rem "EB Garamond", serif';
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.fillText('原子質量比 ── 氧 (16) : 氫 (1) × 2 = 8 : 1', w / 2, h - 50);
     }
     
     ctxF.restore();
@@ -366,41 +420,7 @@ function renderGraphPanel() {
     // Draw Axis System
     drawGraphAxes(w, h);
     
-    // Step 2: Plot Point 1
-    if (currentStep >= 2) {
-        let t = 1;
-        if (currentStep === 2) {
-            // Plot only after droplet reaches the edge (at progress 0.7)
-            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
-        }
-        const px = mapX(wH1, w);
-        const py = mapY(wO1, h);
-        drawPlotPoint(px, py, 7 * t, '#e76f51');
-    }
-    
-    // Step 3: Plot Point 2
-    if (currentStep >= 3) {
-        let t = 1;
-        if (currentStep === 3) {
-            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
-        }
-        const px = mapX(wH2, w);
-        const py = mapY(wO2, h);
-        drawPlotPoint(px, py, 7 * t, '#2a9d8f');
-    }
-    
-    // Step 4: Plot Point 3
-    if (currentStep >= 4) {
-        let t = 1;
-        if (currentStep === 4) {
-            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
-        }
-        const px = mapX(wH3, w);
-        const py = mapY(wO3, h);
-        drawPlotPoint(px, py, 7 * t, '#b58900');
-    }
-    
-    // Step 5: Draw Trendline
+    // Step 5: Draw Trendline (drawn under points, translucent)
     if (currentStep >= 5) {
         const t = (currentStep === 5) ? easeInOutCubic(animProgress) : 1;
         const startX = mapX(0, w);
@@ -411,7 +431,45 @@ function renderGraphPanel() {
         const currentX = startX + (endX - startX) * t;
         const currentY = startY + (endY - startY) * t;
         
-        drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(29, 53, 87, 0.45)', 4, 300);
+        // Use translucent orange for trendline
+        drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(255, 122, 0, 0.55)', 4, 300);
+    }
+    
+    // Step 2: Plot Point 1
+    if (currentStep >= 2) {
+        let t = 1;
+        if (currentStep === 2) {
+            // Plot only after droplet reaches the edge (at progress 0.7)
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
+        const px = mapX(wH1, w);
+        const py = mapY(wO1, h);
+        const color = currentStep === 2 ? COLOR_ORANGE : COLOR_GRAY_LIGHT;
+        drawPlotPoint(px, py, 7 * t, color);
+    }
+    
+    // Step 3: Plot Point 2
+    if (currentStep >= 3) {
+        let t = 1;
+        if (currentStep === 3) {
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
+        const px = mapX(wH2, w);
+        const py = mapY(wO2, h);
+        const color = currentStep === 3 ? COLOR_ORANGE : COLOR_GRAY_MEDIUM;
+        drawPlotPoint(px, py, 7 * t, color);
+    }
+    
+    // Step 4: Plot Point 3
+    if (currentStep >= 4) {
+        let t = 1;
+        if (currentStep === 4) {
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
+        const px = mapX(wH3, w);
+        const py = mapY(wO3, h);
+        const color = currentStep === 4 ? COLOR_ORANGE : COLOR_GRAY_DARK;
+        drawPlotPoint(px, py, 7 * t, color);
     }
     
     // Step 6 & 7: Draw Slope Triangle
@@ -429,9 +487,9 @@ function renderGraphPanel() {
         ctxG.globalAlpha = t;
         
         // Horizontal delta wH
-        drawWobblyLine(ctxG, cx, cy, rx, cy, '#5f5f5f', 1.5, 400);
+        drawWobblyLine(ctxG, cx, cy, rx, cy, '#888888', 1.5, 400);
         // Vertical delta wO
-        drawWobblyLine(ctxG, rx, cy, rx, ry, '#5f5f5f', 1.5, 500);
+        drawWobblyLine(ctxG, rx, cy, rx, ry, '#888888', 1.5, 500);
         
         ctxG.fillStyle = '#2b2b2b';
         ctxG.font = 'bold 0.9rem sans-serif';
@@ -439,11 +497,11 @@ function renderGraphPanel() {
         ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
         
-        // Slope calculation formula - placed in top-right clear area
+        // Slope calculation formula - placed in top-left clear area to avoid overlaps
         ctxG.font = 'bold 1.15rem "EB Garamond", serif';
-        ctxG.fillStyle = '#b58900';
-        ctxG.textAlign = 'right';
-        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', w - margin - 10, margin + 30);
+        ctxG.fillStyle = COLOR_ORANGE;
+        ctxG.textAlign = 'left';
+        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', margin + 20, margin + 35);
         
         ctxG.restore();
     }
@@ -506,38 +564,6 @@ function drawGraphAxes(w, h) {
     }
     
     ctxG.fillText('0', originX - 12, originY + 18);
-} = 'bold 0.9rem sans-serif';
-    
-    // 1. Acid-Base water item
-    drawWobblyCircle(ctxG, lx + 20, ly + 22, 5, '#e76f51', true, 1, 611);
-    ctxG.fillStyle = '#1f1f1f';
-    ctxG.fillText('🔴 酸鹼中和生成水', lx + 36, ly + 22);
-    
-    // 2. Combustion item (if unlocked)
-    if (currentStep >= 3) {
-        drawWobblyCircle(ctxG, lx + 20, ly + 47, 5, '#2a9d8f', true, 1, 612);
-        ctxG.fillStyle = '#1f1f1f';
-        ctxG.fillText('🟢 氫氣燃燒生成水', lx + 36, ly + 47);
-    }
-    
-    // 3. Baking soda heating item (if unlocked)
-    if (currentStep >= 4) {
-        drawWobblyCircle(ctxG, lx + 20, ly + 72, 5, '#b58900', true, 1, 613);
-        ctxG.fillStyle = '#1f1f1f';
-        ctxG.fillText('🟡 小蘇打分解水', lx + 36, ly + 72);
-    }
-    
-    // 4. Slope trendline item (if unlocked)
-    if (currentStep >= 5) {
-        ctxG.strokeStyle = 'rgba(29, 53, 87, 0.7)';
-        ctxG.lineWidth = 3;
-        ctxG.beginPath();
-        ctxG.moveTo(lx + 10, ly + 97);
-        ctxG.lineTo(lx + 30, ly + 97);
-        ctxG.stroke();
-        ctxG.fillStyle = 'var(--color-royal)';
-        ctxG.fillText('🔵 定比線 wO = 8 × wH', lx + 36, ly + 97);
-    }
 }
 
 function drawPlotPoint(x, y, radius, color) {
@@ -551,7 +577,7 @@ function drawPlotPoint(x, y, radius, color) {
 // High-Quality Static Chemical Apparatus Illustrations
 // -------------------------------------------------------------
 
-function drawStaticBeaker(ctx, cx, cy, r, height, label, color, seed) {
+function drawStaticBeaker(ctx, cx, cy, r, height, label, liquidColor, dropletColor, seed) {
     // Draw beaker lines
     ctx.beginPath();
     ctx.moveTo(cx - r, cy - height);
@@ -566,8 +592,8 @@ function drawStaticBeaker(ctx, cx, cy, r, height, label, color, seed) {
     drawWobblyLine(ctx, cx - r - 4, cy - height, cx - r, cy - height, '#2b2b2b', 2.5, seed + 1);
     drawWobblyLine(ctx, cx + r, cy - height, cx + r + 2, cy - height, '#2b2b2b', 2.5, seed + 2);
     
-    // Liquid inside beaker (flat steady render)
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+    // Liquid inside beaker (flat render)
+    ctx.fillStyle = liquidColor;
     ctx.fillRect(cx - r + 3, cy - height * 0.5, r * 2 - 6, height * 0.5 - 3);
     
     // Label text
@@ -577,14 +603,14 @@ function drawStaticBeaker(ctx, cx, cy, r, height, label, color, seed) {
     ctx.fillText(label, cx, cy + 20);
     
     // Floating water droplet
-    drawWaterDrop(ctx, cx, cy - height - 20, 10);
+    drawWaterDrop(ctx, cx, cy - height - 20, 10, dropletColor);
 }
 
-function drawWaterDrop(ctx, x, y, r) {
+function drawWaterDrop(ctx, x, y, r, color = '#ff7a00') {
     ctx.save();
-    ctx.fillStyle = '#38bdf8'; // water blue
+    ctx.fillStyle = color;
     ctx.shadowBlur = 8;
-    ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+    ctx.shadowColor = color === '#ff7a00' ? 'rgba(255, 122, 0, 0.4)' : 'rgba(0, 0, 0, 0.15)';
     
     // Path for water drop teardrop shape
     ctx.beginPath();
@@ -596,6 +622,42 @@ function drawWaterDrop(ctx, x, y, r) {
     ctx.fill();
     
     ctx.restore();
+}
+
+function drawWaterMolecule(ctx, cx, cy, rO = 22, rH = 13, angleDeg = 104.5, rotAngle = 0) {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    const dist = rO + rH + 4; // distance between centers
+    const h1x = cx + dist * Math.cos(rotAngle - angleRad / 2);
+    const h1y = cy + dist * Math.sin(rotAngle - angleRad / 2);
+    const h2x = cx + dist * Math.cos(rotAngle + angleRad / 2);
+    const h2y = cy + dist * Math.sin(rotAngle + angleRad / 2);
+    
+    // Draw wobbly bonds
+    drawWobblyLine(ctx, cx, cy, h1x, h1y, '#888888', 2.5, cx + cy);
+    drawWobblyLine(ctx, cx, cy, h2x, h2y, '#888888', 2.5, cx - cy);
+    
+    // Draw Oxygen atom (large wobbly circle)
+    drawWobblyCircle(ctx, cx, cy, rO, '#faf8f5', true, 2, cx); // match background color
+    drawWobblyCircle(ctx, cx, cy, rO, '#2b2b2b', false, 2, cx);
+    ctx.fillStyle = '#2b2b2b';
+    ctx.font = 'bold 1.1rem sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('O', cx, cy);
+    
+    // Draw Hydrogen 1 (small wobbly circle)
+    drawWobblyCircle(ctx, h1x, h1y, rH, '#faf8f5', true, 1.5, h1x);
+    drawWobblyCircle(ctx, h1x, h1y, rH, '#2b2b2b', false, 1.5, h1x);
+    ctx.fillStyle = '#2b2b2b';
+    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.fillText('H', h1x, h1y);
+    
+    // Draw Hydrogen 2 (small wobbly circle)
+    drawWobblyCircle(ctx, h2x, h2y, rH, '#faf8f5', true, 1.5, h2x);
+    drawWobblyCircle(ctx, h2x, h2y, rH, '#2b2b2b', false, 1.5, h2x);
+    ctx.fillStyle = '#2b2b2b';
+    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.fillText('H', h2x, h2y);
 }
 
 // -------------------------------------------------------------

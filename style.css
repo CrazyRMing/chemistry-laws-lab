@@ -6,10 +6,10 @@
     --text-primary: #1f1f1f;
     --text-secondary: #5f5f5f;
     
-    --color-coral: #e76f51;
-    --color-teal: #2a9d8f;
-    --color-gold: #b58900;
-    --color-royal: #1d3557;
+    --color-orange: #ff7a00;
+    --color-gray-light: #cccccc;
+    --color-gray-medium: #888888;
+    --color-gray-dark: #444444;
     
     --font-heading: 'Outfit', sans-serif;
     --font-math: 'EB Garamond', 'Noto Sans TC', serif;
@@ -93,9 +93,15 @@ body {
     background: #ffffff;
 }
 
-.text-coral { color: var(--color-coral); border-color: var(--color-coral); }
-.text-teal { color: var(--color-teal); border-color: var(--color-teal); }
-.text-gold { color: var(--color-gold); border-color: var(--color-gold); }
+.text-coral { color: var(--text-primary); border-color: var(--color-gray-light); }
+.text-teal { color: var(--text-primary); border-color: var(--color-gray-medium); }
+.text-gold { color: var(--text-primary); border-color: var(--color-gray-dark); }
+
+.mass-item.active {
+    color: var(--color-orange) !important;
+    border-color: var(--color-orange) !important;
+    box-shadow: 0px 0px 8px rgba(255, 122, 0, 0.25);
+}
 
 /* Animation panels layout */
 .animation-container {
@@ -229,14 +235,14 @@ canvas {
 }
 
 .btn-primary {
-    background: var(--color-royal);
+    background: var(--color-orange);
     color: #ffffff;
-    border-color: var(--color-royal);
+    border-color: var(--border-color);
     box-shadow: 3px 4px 0px var(--border-color);
 }
 
 .btn-primary:hover {
-    background: #2a4c7e;
+    background: #e06c00;
     box-shadow: 4px 6px 0px var(--border-color);
 }
 
@@ -251,4 +257,74 @@ canvas {
 .hidden {
     opacity: 0;
     pointer-events: none;
+}
+
+/* SOIL Layout Styles */
+.soil-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    align-self: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.soil-page-num {
+    background-color: var(--border-color);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.soil-section-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.soil-course-label {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.soil-orange-line {
+    width: 2.5rem;
+    height: 3px;
+    background-color: var(--color-orange);
+    border-radius: 2px;
+}
+
+.soil-takeaway-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border: 3px solid var(--border-color);
+    border-radius: 12px 6px 12px 6px/6px 12px 6px 12px;
+    padding: 1rem;
+    background: #ffffff;
+    font-family: var(--font-math);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    box-shadow: 4px 5px 0px rgba(43, 43, 43, 0.08);
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.takeaway-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.takeaway-text {
+    line-height: 1.4;
 }

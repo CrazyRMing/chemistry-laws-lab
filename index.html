@@ -12,6 +12,15 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- SOIL style page number and course header -->
+        <div class="soil-header">
+            <div class="soil-page-num" id="soil-page-num">01</div>
+            <div class="soil-section-info">
+                <span class="soil-course-label">基礎化學 (定比定律)</span>
+                <span class="soil-orange-line"></span>
+            </div>
+        </div>
+
         <!-- Explanatory Header Area -->
         <div class="info-card">
             <h1 id="step-title">定比定律探討</h1>
@@ -39,13 +48,37 @@
                 <div class="canvas-wrapper">
                     <canvas id="graphCanvas"></canvas>
                 </div>
+                <div class="graph-legend-html">
+                    <div class="legend-item" id="legend-item-1">
+                        <span class="legend-dot" style="background-color: #cccccc;"></span>
+                        <span>酸鹼中和水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                    </div>
+                    <div class="legend-item" id="legend-item-2">
+                        <span class="legend-dot" style="background-color: #888888;"></span>
+                        <span>氫氣燃燒水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                    </div>
+                    <div class="legend-item" id="legend-item-3">
+                        <span class="legend-dot" style="background-color: #444444;"></span>
+                        <span>小蘇打分解水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                    </div>
+                    <div class="legend-item" id="legend-item-4">
+                        <span class="legend-line" style="background-color: #ff7a00;"></span>
+                        <span>定比線 w<sub>O</sub> = 8 × w<sub>H</sub></span>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- SOIL takeaway box -->
+        <div class="soil-takeaway-box" id="soil-takeaway-box">
+            <span class="takeaway-icon">💡</span>
+            <span class="takeaway-text" id="takeaway-text">重點：利用座標系可以直觀地分析兩種元素之間的質量定量關係。</span>
         </div>
 
         <!-- Navigation controller -->
         <div class="nav-control-bar">
             <button class="nav-btn" id="btn-back" onclick="prevStep()">上一步</button>
-            <div class="step-indicator" id="step-indicator">步驟 1 / 7</div>
+            <div class="step-indicator" id="step-indicator">步驟 1 / 8</div>
             <button class="nav-btn btn-primary" id="btn-next" onclick="nextStep()">下一步</button>
         </div>
     </div>
