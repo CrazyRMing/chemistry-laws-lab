@@ -1,447 +1,652 @@
 // Canvas & UI Setup
-const canvas = document.getElementById('chemCanvas');
-const ctx = canvas.getContext('2d');
-const canvasOverlay = document.getElementById('canvasOverlay');
+const flaskCanvas = document.getElementById('flaskCanvas');
+const graphCanvas = document.getElementById('graphCanvas');
+const ctxF = flaskCanvas.getContext('2d');
+const ctxG = graphCanvas.getContext('2d');
 
-// UI States
-let currentTab = 'definite'; // 'definite' | 'multiple'
-let multipleMode = 'CO'; // 'CO' | 'CO2'
-let reactionState = 'idle'; // 'idle' | 'reacting' | 'completed'
-let atoms = [];
-let animationFrameId = null;
+// State Variables
+let currentStep = 1;
+let animProgress = 0; // Current step animation progress [0, 1]
+const totalSteps = 7;
 
-// Atom config
-const ATOM_STYLES = {
-    H: { radius: 8, color: '#38bdf8', glow: 'rgba(56, 189, 248, 0.8)', mass: 1, name: '氫 (H)' },
-    O: { radius: 14, color: '#f43f5e', glow: 'rgba(244, 63, 94, 0.8)', mass: 16, name: '氧 (O)' },
-    C: { radius: 16, color: '#a1a1aa', glow: 'rgba(161, 161, 170, 0.8)', mass: 12, name: '碳 (C)' }
-};
+// Random Water Composition Values (Ratio is strictly 1 : 8)
+let wH1, wO1, wH2, wO2, wH3, wO3;
 
-// Handle Canvas Resizing
-function resizeCanvas() {
-    const container = canvas.parentElement;
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-    if (reactionState === 'idle') {
-        initAtoms();
+function generateRandomValues() {
+    wH1 = (1.0 + Math.random() * 0.8).toFixed(2); // 1.0 ~ 1.8
+    wO1 = (wH1 * 8).toFixed(2);
+    
+    wH2 = (2.2 + Math.random() * 1.0).toFixed(2); // 2.2 ~ 3.2
+    wO2 = (wH2 * 8).toFixed(2);
+    
+    wH3 = (0.4 + Math.random() * 0.5).toFixed(2); // 0.4 ~ 0.9
+    wO3 = (wH3 * 8).toFixed(2);
+}
+
+// Math Easing Functions
+function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function easeOutElastic(t) {
+    const c4 = (2 * Math.PI) / 3;
+    return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+}
+
+// Custom Hand-Drawn Sketch Drawing Helpers
+function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2) {
+    const segments = Math.max(5, Math.floor(Math.hypot(x2 - x1, y2 - y1) / 8));
+    
+    for (let drawCount = 0; drawCount < 2; drawCount++) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        
+        for (let i = 1; i <= segments; i++) {
+            const t = i / segments;
+            let px = x1 + (x2 - x1) * t;
+            let py = y1 + (y2 - y1) * t;
+            
+            if (i < segments) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const len = Math.hypot(dx, dy);
+                const nx = -dy / len;
+                const ny = dx / len;
+                const jitter = (Math.random() - 0.5) * 0.8;
+                px += nx * jitter;
+                py += ny * jitter;
+            }
+            ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width + (Math.random() - 0.5) * 0.3;
+        ctx.stroke();
     }
 }
-window.addEventListener('resize', resizeCanvas);
 
-// Sliders and Displays
-const sliders = {
-    definite: {
-        h: { input: document.getElementById('range-h'), val: document.getElementById('val-h') },
-        o: { input: document.getElementById('range-o'), val: document.getElementById('val-o') }
+function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width = 2) {
+    const segments = 24;
+    
+    for (let drawCount = 0; drawCount < (fill ? 1 : 2); drawCount++) {
+        ctx.beginPath();
+        for (let i = 0; i <= segments; i++) {
+            const theta = (i / segments) * Math.PI * 2;
+            const jitter = (Math.random() - 0.5) * 0.6;
+            const rad = r + jitter;
+            const x = cx + Math.cos(theta) * rad;
+            const y = cy + Math.sin(theta) * rad;
+            
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        if (fill) {
+            ctx.fillStyle = color;
+            ctx.fill();
+        } else {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+    }
+}
+
+// Coordinate Helpers for Graph Canvas (x: 0 ~ 4.0, y: 0 ~ 32.0)
+const margin = 60;
+function mapX(xVal, width) {
+    return margin + (xVal / 4.0) * (width - 2 * margin);
+}
+function mapY(yVal, height) {
+    return height - margin - (yVal / 32.0) * (height - 2 * margin);
+}
+
+// Step descriptions
+const stepTexts = [
+    {
+        title: "第一步：建立質量關係坐標系",
+        desc: "以水 (H₂O) 為例。我們繪製一個坐標圖，以氧的質量 wO 為 Y 軸，以氫的質量 wH 為 X 軸，用來探討水分子的組成比例。"
     },
-    multiple: {
-        c: { input: document.getElementById('range-c'), val: document.getElementById('val-c') },
-        o: { input: document.getElementById('range-o-mult'), val: document.getElementById('val-o-mult') }
+    {
+        title: "第二步：酸鹼中和產生的水",
+        desc: "進行酸鹼中和實驗，取生成的純水分析其質量。在圖表上標記第 1 點。不論做幾次，我們得到的數據總會落在特定比例..."
+    },
+    {
+        title: "第三步：氫氣燃燒產生的水",
+        desc: "點燃氫氣與氧氣，收集燃燒產生的水滴。在圖表上標記第 2 點。由於氫氣燃燒較旺盛，這次反應生成的水量較多。"
+    },
+    {
+        title: "第四步：加熱小蘇打產生的水",
+        desc: "將小蘇打固體放入試管加熱，收集管口凝結出的水滴。在圖表上標記第 3 點。這次反應產生的水量雖然較少..."
+    },
+    {
+        title: "第五步：神奇的趨勢線",
+        desc: "引導觀察：注意看這三個來自完全不同化學反應的點，不論生成水量多寡，它們似乎都完美地位在同一條通過原點的直線上！"
+    },
+    {
+        title: "第六步：普魯斯特的重大發現",
+        desc: "法國化學家普魯斯特發現，同一種化合物，不論其來源與製法為何，其組成元素的質量比（即直線的斜率）恆為定值（斜率為 8.0）。"
+    },
+    {
+        title: "第七步：定比定律 (Law of Definite Proportions)",
+        desc: "化合物中，各組成元素間的質量比恆為定值。這就是定比定律！例如水分子中氧與氫的質量比永遠是固定的 8 : 1。"
     }
+];
+
+// Switch to Next/Previous steps
+function nextStep() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        animProgress = 0;
+        updateUI();
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        animProgress = 0;
+        updateUI();
+    }
+}
+
+function updateUI() {
+    // Enable/disable buttons
+    document.getElementById('btn-back').disabled = (currentStep === 1);
+    document.getElementById('btn-next').disabled = (currentStep === totalSteps);
+    
+    // Change next button to Finish style if last step
+    if (currentStep === totalSteps) {
+        document.getElementById('btn-next').textContent = "探索完成";
+    } else {
+        document.getElementById('btn-next').textContent = "下一步";
+    }
+    
+    // Step indicator text
+    document.getElementById('step-indicator').textContent = `步驟 ${currentStep} / ${totalSteps}`;
+    
+    // Update texts
+    document.getElementById('step-title').textContent = stepTexts[currentStep - 1].title;
+    document.getElementById('step-desc').textContent = stepTexts[currentStep - 1].desc;
+    
+    // Update Mass Board visibility
+    const massBoard = document.getElementById('mass-board');
+    massBoard.classList.toggle('hidden', currentStep < 2);
+    
+    // Set random values on step indicators
+    document.getElementById('board-h1').textContent = wH1;
+    document.getElementById('board-o1').textContent = wO1;
+    document.getElementById('board-h2').textContent = wH2;
+    document.getElementById('board-o2').textContent = wO2;
+    document.getElementById('board-h3').textContent = wH3;
+    document.getElementById('board-o3').textContent = wO3;
+    
+    // Apply styling matching the step
+    document.getElementById('board-h1').parentElement.style.opacity = currentStep >= 2 ? 1 : 0.2;
+    document.getElementById('board-h2').parentElement.style.opacity = currentStep >= 3 ? 1 : 0.2;
+    document.getElementById('board-h3').parentElement.style.opacity = currentStep >= 4 ? 1 : 0.2;
+}
+
+// Resize and Setup Canvases
+function resizeCanvases() {
+    const wrapperL = flaskCanvas.parentElement;
+    flaskCanvas.width = wrapperL.clientWidth;
+    flaskCanvas.height = wrapperL.clientHeight;
+
+    const wrapperR = graphCanvas.parentElement;
+    graphCanvas.width = wrapperR.clientWidth;
+    graphCanvas.height = wrapperR.clientHeight;
+}
+
+// -------------------------------------------------------------
+// Drawing loop
+// -------------------------------------------------------------
+function drawLoop() {
+    // Increment step animation progress
+    if (animProgress < 1.0) {
+        animProgress += 0.015;
+        if (animProgress > 1.0) animProgress = 1.0;
+    }
+    
+    // Render canvases
+    renderFlaskPanel();
+    renderGraphPanel();
+    
+    requestAnimationFrame(drawLoop);
+}
+
+// 1. LEFT PANEL: Chemical Reaction Sketches
+function renderFlaskPanel() {
+    const w = flaskCanvas.width;
+    const h = flaskCanvas.height;
+    ctxF.clearRect(0, 0, w, h);
+    
+    // Draw subtle paper/grid background on left
+    ctxF.fillStyle = '#faf8f5';
+    ctxF.fillRect(0, 0, w, h);
+    
+    ctxF.save();
+    
+    if (currentStep === 1) {
+        // Step 1: Draw clean beaker flask silhouette placeholder
+        ctxF.globalAlpha = 0.3;
+        drawFlaskFlask(w / 2, h / 2 + 20, 70, 110);
+        ctxF.globalAlpha = 1.0;
+        
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.font = 'italic 1.15rem "EB Garamond", serif';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('定比定律虛擬演練', w / 2, h / 2 - 40);
+        ctxF.fillText('將在此動態演示各實驗反應', w / 2, h / 2);
+    } 
+    else if (currentStep === 2) {
+        // Step 2: Acid-base Titration
+        const progress = animProgress;
+        
+        // Draw Burette (滴定管) on top
+        drawBurette(w / 2, 40, 120);
+        
+        // Draw Beaker (燒杯) on bottom
+        drawBeaker(w / 2, h - 90, 60, 80);
+        
+        // Draw acid drop animation
+        if (progress < 0.6) {
+            const dropY = 160 + (progress / 0.6) * (h - 250);
+            drawWobblyCircle(ctxF, w / 2, dropY, 4, '#e76f51', true);
+        } else {
+            // Liquid inside beaker fills slightly
+            ctxF.fillStyle = 'rgba(231, 111, 81, 0.15)';
+            ctxF.fillRect(w / 2 - 50, h - 130, 100, 40);
+            
+            // Generate a water droplet molecule floating to the right
+            const outProgress = (progress - 0.6) / 0.4;
+            const dropX = w / 2 + outProgress * (w / 2 - 60);
+            const dropY = h - 110 - outProgress * 60;
+            if (outProgress > 0) {
+                drawWaterMolecule(dropX, dropY, 14, '#e76f51');
+                ctxF.fillStyle = '#1f1f1f';
+                ctxF.font = 'bold 0.9rem sans-serif';
+                ctxF.fillText(`水滴 (酸鹼中和)`, dropX, dropY - 22);
+            }
+        }
+    } 
+    else if (currentStep === 3) {
+        // Step 3: Combustion
+        const progress = animProgress;
+        
+        // Draw Alcohol Burner (酒精燈) & Dish (燃燒皿)
+        drawBurner(w / 2 - 40, h - 90, progress);
+        
+        // Draw collecting funnel/condenser (冷凝漏斗)
+        drawCondenser(w / 2 + 20, 60, 100);
+        
+        // Draw water droplets condensing and traveling
+        if (progress > 0.4) {
+            const outProgress = (progress - 0.4) / 0.6;
+            const dropX = w / 2 + 20 + outProgress * (w / 2 - 80);
+            const dropY = 140 + outProgress * 50;
+            drawWaterMolecule(dropX, dropY, 16, '#2a9d8f');
+            ctxF.fillStyle = '#1f1f1f';
+            ctxF.font = 'bold 0.9rem sans-serif';
+            ctxF.fillText(`水滴 (燃燒反應)`, dropX, dropY - 22);
+        }
+    } 
+    else if (currentStep === 4) {
+        // Step 4: Heating baking soda
+        const progress = animProgress;
+        
+        // Draw Horizontal Test Tube (試管) being heated
+        drawHorizontalTube(w / 2 - 40, h / 2 - 20, 120, 24);
+        drawBurner(w / 2 - 60, h - 90, progress);
+        
+        // Water drop dripping out of test tube mouth
+        if (progress > 0.5) {
+            const outProgress = (progress - 0.5) / 0.5;
+            const dropX = w / 2 + 80 + outProgress * 60;
+            const dropY = h / 2 - 10 + outProgress * 80;
+            drawWaterMolecule(dropX, dropY, 12, '#b58900');
+            ctxF.fillStyle = '#1f1f1f';
+            ctxF.font = 'bold 0.9rem sans-serif';
+            ctxF.fillText(`水滴 (加熱小蘇打)`, dropX, dropY - 22);
+        }
+    } 
+    else if (currentStep >= 5) {
+        // Show Water molecule representation
+        const size = 35;
+        const cx = w / 2;
+        const cy = h / 2;
+        
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = 'bold 1.25rem sans-serif';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('水分子的組成結構', cx, cy - 80);
+        
+        // Draw bonds
+        ctxF.strokeStyle = '#2b2b2b';
+        ctxF.lineWidth = 6;
+        ctxF.beginPath();
+        ctxF.moveTo(cx, cy);
+        ctxF.lineTo(cx - 50, cy + 50);
+        ctxF.moveTo(cx, cy);
+        ctxF.lineTo(cx + 50, cy + 50);
+        ctxF.stroke();
+        
+        // Center Oxygen atom (Red)
+        drawWobblyCircle(ctxF, cx, cy, size, '#e76f51', true);
+        ctxF.fillStyle = '#ffffff';
+        ctxF.font = 'bold 1.5rem Outfit, sans-serif';
+        ctxF.fillText('O', cx, cy + 2);
+        
+        // Hydrogen atom 1 (Blue)
+        drawWobblyCircle(ctxF, cx - 50, cy + 50, size * 0.6, '#38bdf8', true);
+        ctxF.fillStyle = '#0f172a';
+        ctxF.font = 'bold 1.1rem Outfit, sans-serif';
+        ctxF.fillText('H', cx - 50, cy + 52);
+        
+        // Hydrogen atom 2 (Blue)
+        drawWobblyCircle(ctxF, cx + 50, cy + 50, size * 0.6, '#38bdf8', true);
+        ctxF.fillStyle = '#0f172a';
+        ctxF.font = 'bold 1.1rem Outfit, sans-serif';
+        ctxF.fillText('H', cx + 50, cy + 52);
+        
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.font = 'italic 1.1rem "EB Garamond", serif';
+        ctxF.fillText('H : O 原子個數比 = 2 : 1', cx, cy + 110);
+        ctxF.fillText('H : O 質量組成比 = 2g : 16g = 1 : 8', cx, cy + 135);
+    }
+    
+    ctxF.restore();
+}
+
+// 2. RIGHT PANEL: 3B1B Style Math Graph
+function renderGraphPanel() {
+    const w = graphCanvas.width;
+    const h = graphCanvas.height;
+    ctxG.clearRect(0, 0, w, h);
+    
+    // Paper background
+    ctxG.fillStyle = '#faf8f5';
+    ctxG.fillRect(0, 0, w, h);
+    
+    // Draw Axis System
+    drawGraphAxes(w, h);
+    
+    // Step 2: Plot Point 1 (Acid-base)
+    if (currentStep >= 2) {
+        const t = (currentStep === 2) ? easeOutElastic(animProgress) : 1;
+        const px = mapX(wH1, w);
+        const py = mapY(wO1, h);
+        drawPlotPoint(px, py, 7 * t, '#e76f51', `酸鹼中和 (${wH1}, ${wO1})`);
+    }
+    
+    // Step 3: Plot Point 2 (Combustion)
+    if (currentStep >= 3) {
+        const t = (currentStep === 3) ? easeOutElastic(animProgress) : 1;
+        const px = mapX(wH2, w);
+        const py = mapY(wO2, h);
+        drawPlotPoint(px, py, 7 * t, '#2a9d8f', `燃燒反應 (${wH2}, ${wO2})`);
+    }
+    
+    // Step 4: Plot Point 3 (Baking soda)
+    if (currentStep >= 4) {
+        const t = (currentStep === 4) ? easeOutElastic(animProgress) : 1;
+        const px = mapX(wH3, w);
+        const py = mapY(wO3, h);
+        drawPlotPoint(px, py, 7 * t, '#b58900', `加熱小蘇打 (${wH3}, ${wO3})`);
+    }
+    
+    // Step 5: Draw Trendline
+    if (currentStep >= 5) {
+        const t = (currentStep === 5) ? easeInOutCubic(animProgress) : 1;
+        const startX = mapX(0, w);
+        const startY = mapY(0, h);
+        const endX = mapX(3.8, w);
+        const endY = mapY(3.8 * 8.0, h);
+        
+        // Draw progressive trend line
+        const currentX = startX + (endX - startX) * t;
+        const currentY = startY + (endY - startY) * t;
+        
+        drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(29, 53, 87, 0.5)', 4);
+        
+        // Label the formula of the line
+        ctxG.fillStyle = 'var(--color-royal)';
+        ctxG.font = 'bold italic 1.1rem "EB Garamond", serif';
+        ctxG.fillText('wO = 8 × wH', endX - 50, endY - 15);
+    }
+    
+    // Step 6 & 7: Draw Slope Triangle
+    if (currentStep >= 6) {
+        const t = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
+        const xVal = 2.0;
+        const yVal = xVal * 8.0;
+        
+        const cx = mapX(xVal, w);
+        const cy = mapY(yVal, h);
+        const rx = mapX(xVal + 0.8, w);
+        const ry = mapY(yVal + 0.8 * 8.0, h);
+        
+        // Draw delta lines
+        ctxG.save();
+        ctxG.globalAlpha = t;
+        
+        // Horizontal delta wH
+        drawWobblyLine(ctxG, cx, cy, rx, cy, '#5f5f5f', 1.5);
+        // Vertical delta wO
+        drawWobblyLine(ctxG, rx, cy, rx, ry, '#5f5f5f', 1.5);
+        
+        // Label Slope (斜率 = 8)
+        ctxG.fillStyle = '#2b2b2b';
+        ctxG.font = 'bold 0.95rem sans-serif';
+        ctxG.textAlign = 'center';
+        ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
+        ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
+        
+        ctxG.font = 'bold 1.1rem "EB Garamond", serif';
+        ctxG.fillStyle = '#b58900';
+        ctxG.fillText('斜率 (Slope) = ΔwO / ΔwH = 8.0', cx + 70, cy - 25);
+        
+        ctxG.restore();
+    }
+}
+
+// -------------------------------------------------------------
+// Component Drawer Functions
+// -------------------------------------------------------------
+function drawGraphAxes(w, h) {
+    // Draw grid lines
+    ctxG.strokeStyle = 'rgba(43, 43, 43, 0.05)';
+    ctxG.lineWidth = 1;
+    for (let x = 0.5; x <= 4.0; x += 0.5) {
+        const px = mapX(x, w);
+        drawWobblyLine(ctxG, px, margin, px, h - margin, 'rgba(43, 43, 43, 0.05)', 1);
+    }
+    for (let y = 4; y <= 32; y += 4) {
+        const py = mapY(y, h);
+        drawWobblyLine(ctxG, margin, py, w - margin, py, 'rgba(43, 43, 43, 0.05)', 1);
+    }
+
+    // Draw main axes
+    const originX = mapX(0, w);
+    const originY = mapY(0, h);
+    
+    // wH axis (X-axis)
+    drawWobblyLine(ctxG, originX, originY, w - margin + 20, originY, '#2b2b2b', 2.5);
+    // wO axis (Y-axis)
+    drawWobblyLine(ctxG, originX, originY, originX, margin - 20, '#2b2b2b', 2.5);
+    
+    // Labels & Ticks
+    ctxG.fillStyle = '#2b2b2b';
+    ctxG.font = 'italic 1.1rem "EB Garamond", serif';
+    ctxG.textAlign = 'center';
+    
+    // X Axis Label
+    ctxG.fillText('氢的质量 wH (g)', w - margin, originY + 38);
+    // Y Axis Label
+    ctxG.fillText('氧的质量 wO (g)', originX - 10, margin - 35);
+    
+    // Tick marks wH
+    for (let x = 1.0; x <= 4.0; x += 1.0) {
+        const px = mapX(x, w);
+        drawWobblyLine(ctxG, px, originY - 4, px, originY + 4, '#2b2b2b', 1.5);
+        ctxG.fillText(x.toFixed(1), px, originY + 20);
+    }
+    
+    // Tick marks wO
+    ctxG.textAlign = 'right';
+    for (let y = 8; y <= 32; y += 8) {
+        const py = mapY(y, h);
+        drawWobblyLine(ctxG, originX - 4, py, originX + 4, '#2b2b2b', 1.5);
+        ctxG.fillText(y.toString(), originX - 12, py + 5);
+    }
+    
+    // Origin (0,0)
+    ctxG.fillText('0', originX - 10, originY + 18);
+}
+
+function drawPlotPoint(x, y, radius, color, labelText) {
+    if (radius <= 0) return;
+    drawWobblyCircle(ctxG, x, y, radius + 2, '#2b2b2b', false, 1.5);
+    drawWobblyCircle(ctxG, x, y, radius, color, true);
+    
+    // Fade in text label next to point
+    ctxG.fillStyle = '#1f1f1f';
+    ctxG.font = 'bold 0.85rem sans-serif';
+    ctxG.textAlign = 'left';
+    ctxG.fillText(labelText, x + 12, y + 4);
+}
+
+function drawWaterMolecule(x, y, r, glowColor) {
+    ctxF.shadowBlur = 10;
+    ctxF.shadowColor = glowColor;
+    drawWobblyCircle(ctxF, x, y, r, glowColor, true);
+    drawWobblyCircle(ctxF, x - r * 0.7, y + r * 0.5, r * 0.5, '#38bdf8', true);
+    drawWobblyCircle(ctxF, x + r * 0.7, y + r * 0.5, r * 0.5, '#38bdf8', true);
+    ctxF.shadowBlur = 0;
+}
+
+// -------------------------------------------------------------
+// Chemical apparatus drawings
+// -------------------------------------------------------------
+function drawFlaskFlask(cx, cy, baseR, height) {
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 15, cy - height / 2);
+    ctxF.lineTo(cx + 15, cy - height / 2);
+    ctxF.lineTo(cx + 15, cy - height / 4);
+    ctxF.lineTo(cx + baseR, cy + height / 2);
+    ctxF.lineTo(cx - baseR, cy + height / 2);
+    ctxF.lineTo(cx - 15, cy - height / 4);
+    ctxF.closePath();
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+}
+
+function drawBeaker(cx, cy, r, height) {
+    // Left rim, base, right rim
+    ctxF.beginPath();
+    ctxF.moveTo(cx - r, cy - height);
+    ctxF.lineTo(cx - r, cy);
+    ctxF.lineTo(cx + r, cy);
+    ctxF.lineTo(cx + r, cy - height);
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+    
+    // Draw lip
+    drawWobblyLine(ctxF, cx - r - 5, cy - height, cx - r, cy - height, '#2b2b2b', 2.5);
+    drawWobblyLine(ctxF, cx + r, cy - height, cx + r + 2, cy - height, '#2b2b2b', 2.5);
+}
+
+function drawBurette(cx, cy, length) {
+    // Vertical parallel tubes
+    drawWobblyLine(ctxF, cx - 6, cy, cx - 6, cy + length, '#2b2b2b', 2);
+    drawWobblyLine(ctxF, cx + 6, cy, cx + 6, cy + length, '#2b2b2b', 2);
+    
+    // Burette tip
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 6, cy + length);
+    ctxF.lineTo(cx - 2, cy + length + 20);
+    ctxF.lineTo(cx + 2, cy + length + 20);
+    ctxF.lineTo(cx + 6, cy + length);
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2;
+    ctxF.stroke();
+    
+    // Stopcock valve (閥門)
+    drawWobblyCircle(ctxF, cx, cy + length + 5, 5, '#5f5f5f', true);
+}
+
+function drawBurner(cx, cy, progress) {
+    // Burner base
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 25, cy);
+    ctxF.lineTo(cx - 15, cy - 25);
+    ctxF.lineTo(cx + 15, cy - 25);
+    ctxF.lineTo(cx + 25, cy);
+    ctxF.closePath();
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+    
+    // Wick & Flame
+    drawWobblyLine(ctxF, cx, cy - 25, cx, cy - 35, '#2b2b2b', 4);
+    
+    if (progress > 0.1) {
+        // Flickering fire
+        ctxF.save();
+        ctxF.shadowBlur = 15;
+        ctxF.shadowColor = 'rgba(231, 111, 81, 0.8)';
+        ctxF.fillStyle = '#e76f51';
+        ctxF.beginPath();
+        ctxF.moveTo(cx - 8, cy - 35);
+        ctxF.quadraticCurveTo(cx, cy - 60 - Math.random() * 8, cx + 8, cy - 35);
+        ctxF.closePath();
+        ctxF.fill();
+        ctxF.restore();
+    }
+}
+
+function drawCondenser(cx, cy, size) {
+    // Draw funnel opening at bottom
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 30, cy + size);
+    ctxF.lineTo(cx, cy + size - 20);
+    ctxF.lineTo(cx + 30, cy + size);
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2;
+    ctxF.stroke();
+    
+    // Condenser body tube
+    drawWobblyLine(ctxF, cx, cy + size - 20, cx, cy, '#2b2b2b', 2);
+}
+
+function drawHorizontalTube(cx, cy, length, height) {
+    ctxF.beginPath();
+    ctxF.moveTo(cx - length / 2, cy - height / 2);
+    ctxF.lineTo(cx + length / 2, cy - height / 2);
+    ctxF.arc(cx + length / 2, cy, height / 2, -Math.PI / 2, Math.PI / 2);
+    ctxF.lineTo(cx - length / 2, cy + height / 2);
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+    
+    // Substance inside (baking soda)
+    ctxF.fillStyle = '#e2e2e2';
+    ctxF.fillRect(cx - length / 2 + 10, cy - height / 2 + 4, length - 40, height - 8);
+}
+
+// -------------------------------------------------------------
+// Initialization
+// -------------------------------------------------------------
+window.onload = () => {
+    generateRandomValues();
+    resizeCanvases();
+    updateUI();
+    drawLoop();
 };
 
-// Attach events to sliders
-sliders.definite.h.input.addEventListener('input', (e) => {
-    sliders.definite.h.val.textContent = e.target.value;
-    if (reactionState === 'idle') initAtoms();
-});
-sliders.definite.o.input.addEventListener('input', (e) => {
-    sliders.definite.o.val.textContent = e.target.value;
-    if (reactionState === 'idle') initAtoms();
-});
-sliders.multiple.c.input.addEventListener('input', (e) => {
-    sliders.multiple.c.val.textContent = e.target.value;
-    if (reactionState === 'idle') initAtoms();
-});
-sliders.multiple.o.input.addEventListener('input', (e) => {
-    sliders.multiple.o.val.textContent = e.target.value;
-    if (reactionState === 'idle') initAtoms();
-});
-
-// Tab Switcher
-function switchTab(tab) {
-    if (reactionState === 'reacting') return;
-    
-    currentTab = tab;
-    document.getElementById('tab-definite').classList.toggle('active', tab === 'definite');
-    document.getElementById('tab-multiple').classList.toggle('active', tab === 'multiple');
-    
-    document.getElementById('controls-definite').classList.toggle('hidden', tab !== 'definite');
-    document.getElementById('controls-multiple').classList.toggle('hidden', tab !== 'multiple');
-    
-    document.getElementById('sim-title').textContent = tab === 'definite' 
-        ? '定比定律：氫氧合成水模擬' 
-        : `倍比定律：碳氧反應模擬 (${multipleMode === 'CO' ? '一氧化碳 CO' : '二氧化碳 CO2'})`;
-        
-    resetReaction();
-}
-
-// Mode Switcher for Multiple Proportions
-function setMultipleMode(mode) {
-    if (reactionState === 'reacting') return;
-    multipleMode = mode;
-    document.getElementById('btn-mode-co').classList.toggle('active', mode === 'CO');
-    document.getElementById('btn-mode-co2').classList.toggle('active', mode === 'CO2');
-    
-    document.getElementById('sim-title').textContent = `倍比定律：碳氧反應模擬 (${mode === 'CO' ? '一氧化碳 CO' : '二氧化碳 CO2'})`;
-    
-    resetReaction();
-}
-
-// Atom Class
-class Atom {
-    constructor(type, x, y) {
-        this.type = type;
-        this.radius = ATOM_STYLES[type].radius;
-        this.color = ATOM_STYLES[type].color;
-        this.glow = ATOM_STYLES[type].glow;
-        this.mass = ATOM_STYLES[type].mass;
-        
-        this.x = x || Math.random() * (canvas.width - this.radius * 4) + this.radius * 2;
-        this.y = y || Math.random() * (canvas.height - this.radius * 4) + this.radius * 2;
-        
-        // Random velocity
-        const speed = 1 + Math.random() * 1.5;
-        const angle = Math.random() * Math.PI * 2;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        
-        // Bonding state
-        this.isBound = false;
-        this.bondCenter = null; // Pointer to the central atom (O or C)
-        this.offsetX = 0;      // Offset relative to center atom when bound
-        this.offsetY = 0;
-        this.targetOffsetX = 0;
-        this.targetOffsetY = 0;
-    }
-
-    update() {
-        if (this.isBound && this.bondCenter) {
-            // Gradually glide into bond position
-            const ease = 0.08;
-            this.offsetX += (this.targetOffsetX - this.offsetX) * ease;
-            this.offsetY += (this.targetOffsetY - this.offsetY) * ease;
-            
-            this.x = this.bondCenter.x + this.offsetX;
-            this.y = this.bondCenter.y + this.offsetY;
-        } else {
-            // Free movement
-            this.x += this.vx;
-            this.y += this.vy;
-            
-            // Wall collisions
-            if (this.x - this.radius < 0) {
-                this.x = this.radius;
-                this.vx *= -1;
-            }
-            if (this.x + this.radius > canvas.width) {
-                this.x = canvas.width - this.radius;
-                this.vx *= -1;
-            }
-            if (this.y - this.radius < 0) {
-                this.y = this.radius;
-                this.vy *= -1;
-            }
-            if (this.y + this.radius > canvas.height) {
-                this.y = canvas.height - this.radius;
-                this.vy *= -1;
-            }
-        }
-    }
-
-    draw() {
-        // Outer glow
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = this.glow;
-        
-        // Circle base
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        
-        // Highlighting shine
-        ctx.shadowBlur = 0; // reset shadow
-        ctx.beginPath();
-        ctx.arc(this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.25, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.fill();
-
-        // Label text inside
-        ctx.fillStyle = this.type === 'H' ? '#0f172a' : '#ffffff';
-        ctx.font = `bold ${this.radius * 0.9}px Outfit, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.type, this.x, this.y + (this.radius * 0.05));
-    }
-}
-
-// Spawn initial atoms
-function initAtoms() {
-    atoms = [];
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-
-    if (currentTab === 'definite') {
-        const hCount = parseInt(sliders.definite.h.input.value);
-        const oCount = parseInt(sliders.definite.o.input.value);
-        
-        for (let i = 0; i < hCount; i++) atoms.push(new Atom('H'));
-        for (let i = 0; i < oCount; i++) atoms.push(new Atom('O'));
-    } else {
-        const cCount = parseInt(sliders.multiple.c.input.value);
-        const oCount = parseInt(sliders.multiple.o.input.value);
-        
-        for (let i = 0; i < cCount; i++) atoms.push(new Atom('C'));
-        for (let i = 0; i < oCount; i++) atoms.push(new Atom('O'));
-    }
-
-    updateAnalysisTable();
-    updateTheoryPanel();
-    drawFrame();
-}
-
-// Primary Animation Loop
-function drawFrame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw bond lines first so they are behind atoms
-    if (reactionState === 'reacting' || reactionState === 'completed') {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-        ctx.lineWidth = 4;
-        atoms.forEach(atom => {
-            if (atom.isBound && atom.bondCenter) {
-                ctx.beginPath();
-                ctx.moveTo(atom.x, atom.y);
-                ctx.lineTo(atom.bondCenter.x, atom.bondCenter.y);
-                ctx.stroke();
-            }
-        });
-    }
-
-    // Update and draw atoms
-    atoms.forEach(atom => {
-        if (reactionState === 'reacting') {
-            atom.update();
-        } else if (reactionState === 'completed') {
-            atom.update();
-        } else {
-            // Idle bounce state
-            atom.update();
-        }
-        atom.draw();
-    });
-
-    animationFrameId = requestAnimationFrame(drawFrame);
-}
-
-// Start Reaction Simulation
-function startReaction() {
-    if (reactionState !== 'idle') return;
-    
-    reactionState = 'reacting';
-    document.getElementById('reaction-status').textContent = '反應中';
-    document.getElementById('reaction-status').className = 'badge active';
-    document.getElementById('btn-start').disabled = true;
-    canvasOverlay.classList.add('hidden');
-
-    // Grouping / Bonding Algorithm
-    const hAtoms = atoms.filter(a => a.type === 'H');
-    const oAtoms = atoms.filter(a => a.type === 'O');
-    const cAtoms = atoms.filter(a => a.type === 'C');
-
-    if (currentTab === 'definite') {
-        // H2O Synthesis
-        const maxWater = Math.min(Math.floor(hAtoms.length / 2), oAtoms.length);
-        
-        for (let i = 0; i < maxWater; i++) {
-            const centerO = oAtoms[i];
-            const bondH1 = hAtoms[i * 2];
-            const bondH2 = hAtoms[i * 2 + 1];
-            
-            // Set binding targets
-            bondH1.isBound = true;
-            bondH1.bondCenter = centerO;
-            bondH1.targetOffsetX = -22;
-            bondH1.targetOffsetY = 16;
-            
-            bondH2.isBound = true;
-            bondH2.bondCenter = centerO;
-            bondH2.targetOffsetX = 22;
-            bondH2.targetOffsetY = 16;
-        }
-    } else {
-        // CO or CO2 Synthesis
-        if (multipleMode === 'CO') {
-            const maxCO = Math.min(cAtoms.length, oAtoms.length);
-            for (let i = 0; i < maxCO; i++) {
-                const centerC = cAtoms[i];
-                const bondO = oAtoms[i];
-                
-                bondO.isBound = true;
-                bondO.bondCenter = centerC;
-                bondO.targetOffsetX = 24;
-                bondO.targetOffsetY = 0;
-            }
-        } else {
-            // CO2
-            const maxCO2 = Math.min(cAtoms.length, Math.floor(oAtoms.length / 2));
-            for (let i = 0; i < maxCO2; i++) {
-                const centerC = cAtoms[i];
-                const bondO1 = oAtoms[i * 2];
-                const bondO2 = oAtoms[i * 2 + 1];
-                
-                bondO1.isBound = true;
-                bondO1.bondCenter = centerC;
-                bondO1.targetOffsetX = -26;
-                bondO1.targetOffsetY = 0;
-                
-                bondO2.isBound = true;
-                bondO2.bondCenter = centerC;
-                bondO2.targetOffsetX = 26;
-                bondO2.targetOffsetY = 0;
-            }
-        }
-    }
-
-    // Reaction Completes in 3 seconds
-    setTimeout(() => {
-        reactionState = 'completed';
-        document.getElementById('reaction-status').textContent = '已完成';
-        document.getElementById('reaction-status').className = 'badge completed';
-        updateAnalysisTable();
-    }, 2500);
-}
-
-// Reset Experiment
-function resetReaction() {
-    reactionState = 'idle';
-    document.getElementById('reaction-status').textContent = '待命';
-    document.getElementById('reaction-status').className = 'badge';
-    document.getElementById('btn-start').disabled = false;
-    canvasOverlay.classList.remove('hidden');
-    initAtoms();
-}
-
-// Calculate and render data analysis
-function updateAnalysisTable() {
-    const tbody = document.getElementById('analysis-tbody');
-    tbody.innerHTML = '';
-
-    const hAtoms = atoms.filter(a => a.type === 'H');
-    const oAtoms = atoms.filter(a => a.type === 'O');
-    const cAtoms = atoms.filter(a => a.type === 'C');
-
-    if (currentTab === 'definite') {
-        const maxWater = Math.min(Math.floor(hAtoms.length / 2), oAtoms.length);
-        const waterReactedH = maxWater * 2;
-        const waterReactedO = maxWater;
-        
-        const massBeforeH = hAtoms.length * 1;
-        const massBeforeO = oAtoms.length * 16;
-        const massAfterBoundH = waterReactedH * 1;
-        const massAfterBoundO = waterReactedO * 16;
-        
-        const freeH = hAtoms.length - waterReactedH;
-        const freeO = oAtoms.length - waterReactedO;
-        
-        tbody.innerHTML = `
-            <tr>
-                <td><span class="atom-dot dot-h"></span>氫原子 (H)</td>
-                <td>${hAtoms.length} 個 (${massBeforeH} g)</td>
-                <td>結合: ${waterReactedH} 個 / 游離: ${freeH} 個</td>
-                <td rowspan="2" class="highlight-val">H : O<br>= ${massAfterBoundH} : ${massAfterBoundO}<br>= 1 : 8</td>
-            </tr>
-            <tr>
-                <td><span class="atom-dot dot-o"></span>氧原子 (O)</td>
-                <td>${oAtoms.length} 個 (${massBeforeO} g)</td>
-                <td>結合: ${waterReactedO} 個 / 游離: ${freeO} 個</td>
-            </tr>
-            <tr>
-                <td><strong>生成水分子 (H₂O)</strong></td>
-                <td colspan="2"><span class="highlight-val">${maxWater}</span> 個分子 (質量: ${waterReactedH * 1 + waterReactedO * 16} g)</td>
-                <td><span class="highlight-sub">定比質量比符合 1:8</span></td>
-            </tr>
-        `;
-    } else {
-        const isCO = multipleMode === 'CO';
-        const maxMolecules = isCO 
-            ? Math.min(cAtoms.length, oAtoms.length)
-            : Math.min(cAtoms.length, Math.floor(oAtoms.length / 2));
-            
-        const reactedC = maxMolecules;
-        const reactedO = maxMolecules * (isCO ? 1 : 2);
-        
-        const massBeforeC = cAtoms.length * 12;
-        const massBeforeO = oAtoms.length * 16;
-        
-        const massAfterBoundC = reactedC * 12;
-        const massAfterBoundO = reactedO * 16;
-        
-        const freeC = cAtoms.length - reactedC;
-        const freeO = oAtoms.length - reactedO;
-        
-        const ratioText = isCO ? 'C : O = 12 : 16 = 3 : 4' : 'C : O = 12 : 32 = 3 : 8';
-        const finalRatioG = isCO ? '12 : 16' : '12 : 32';
-        
-        tbody.innerHTML = `
-            <tr>
-                <td><span class="atom-dot dot-c"></span>碳原子 (C)</td>
-                <td>${cAtoms.length} 個 (${massBeforeC} g)</td>
-                <td>結合: ${reactedC} 個 / 游離: ${freeC} 個</td>
-                <td rowspan="2" class="highlight-val">C : O<br>= ${massAfterBoundC} : ${massAfterBoundO}<br>= ${ratioText}</td>
-            </tr>
-            <tr>
-                <td><span class="atom-dot dot-o"></span>氧原子 (O)</td>
-                <td>${oAtoms.length} 個 (${massBeforeO} g)</td>
-                <td>結合: ${reactedO} 個 / 游離: ${freeO} 個</td>
-            </tr>
-            <tr>
-                <td><strong>生成 ${isCO ? 'CO' : 'CO₂'} 分子</strong></td>
-                <td colspan="2"><span class="highlight-val">${maxMolecules}</span> 個分子 (質量: ${massAfterBoundC + massAfterBoundO} g)</td>
-                <td><span class="highlight-sub">與固定碳 (12g) 結合的氧質量為 ${isCO ? '16g' : '32g'}</span></td>
-            </tr>
-        `;
-    }
-}
-
-// Render dynamic theory content
-function updateTheoryPanel() {
-    const title = document.getElementById('theory-title');
-    const content = document.getElementById('theory-text');
-    
-    if (currentTab === 'definite') {
-        title.innerHTML = '⚖️ 定比定律解析 (Law of Definite Proportions)';
-        content.innerHTML = `
-            <p><strong>普魯斯特 (Joseph Proust)</strong> 提出：一種化合物不論來源為何，其組成元素的質量比恆為定值。</p>
-            <div class="theory-math">
-                <span>反應式：2H₂ + O₂ ➔ 2H₂O</span>
-                <span>水分子由 <strong>2 個氫原子 (H)</strong> 與 <strong>1 個氧原子 (O)</strong> 組成。</span>
-                <span>質量比：H : O = (2 × 1) : (1 × 16) = <strong>2 : 16 = 1 : 8</strong></span>
-            </div>
-            <p><strong>實驗結果驗證：</strong></p>
-            <p>不論您調整滑桿配置多少氫氣與氧氣，成功合成水分子中，參與反應的氫與氧質量比必定嚴格遵守 <strong>1 : 8</strong> 的恆定關係。多餘的原子則保持游離，無法進行多餘的合成。</p>
-        `;
-    } else {
-        title.innerHTML = '🔄 倍比定律解析 (Law of Multiple Proportions)';
-        const isCO = multipleMode === 'CO';
-        content.innerHTML = `
-            <p><strong>道耳頓 (John Dalton)</strong> 提出：當兩元素可形成多種化合物時，若固定其中一元素的質量，則另一元素在各化合物中的質量呈簡單整數比。</p>
-            <div class="theory-math">
-                <span>一氧化碳 (CO)：C : O = 12 : <strong>16</strong> (個數比 1:1)</span>
-                <span>二氧化碳 (CO₂)：C : O = 12 : <strong>32</strong> (個數比 1:2)</span>
-                <span>在碳質量固定為 <strong>12g</strong> 時：</span>
-                <span>結合氧的質量比為 <strong>16 : 32 = 1 : 2</strong> (簡單整數比)</span>
-            </div>
-            <p><strong>倍比定律對照說明：</strong></p>
-            <p>目前設定在 <strong>${isCO ? '一氧化碳 CO' : '二氧化碳 CO₂'} 模式</strong>。此模式下，1 個碳原子會結合 <strong>${isCO ? '1' : '2'}</strong> 個氧原子。對比另一種產物，您可以清楚看出與相同碳（12g）結合的氧質量，恰好呈 <strong>1 : 2</strong> 的倍數關係，完美證實了倍比定律！</p>
-            <div class="theory-alert">
-                <p>💡 <strong>教學小技巧：</strong>您可以分別執行 CO 與 CO₂ 模式，記錄生成分子的氧原子數量，引導學生自行計算比值！</p>
-            </div>
-        `;
-    }
-}
-
-// Initial setup on window load
-window.onload = () => {
-    resizeCanvas();
+window.onresize = () => {
+    resizeCanvases();
 };
