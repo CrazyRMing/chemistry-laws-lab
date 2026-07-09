@@ -208,6 +208,12 @@ function updateUI() {
     document.getElementById('board-h1').parentElement.style.opacity = currentStep >= 2 ? 1 : 0.2;
     document.getElementById('board-h2').parentElement.style.opacity = currentStep >= 3 ? 1 : 0.2;
     document.getElementById('board-h3').parentElement.style.opacity = currentStep >= 4 ? 1 : 0.2;
+    
+    // Toggle active state of HTML legend items
+    document.getElementById('legend-item-1').classList.toggle('visible', currentStep >= 2);
+    document.getElementById('legend-item-2').classList.toggle('visible', currentStep >= 3);
+    document.getElementById('legend-item-3').classList.toggle('visible', currentStep >= 4);
+    document.getElementById('legend-item-4').classList.toggle('visible', currentStep >= 5);
 }
 
 // Resize and Setup Canvases
@@ -360,11 +366,6 @@ function renderGraphPanel() {
     // Draw Axis System
     drawGraphAxes(w, h);
     
-    // Draw Legend Box
-    if (currentStep >= 2) {
-        drawGraphLegend(w, h);
-    }
-    
     // Step 2: Plot Point 1
     if (currentStep >= 2) {
         let t = 1;
@@ -438,9 +439,11 @@ function renderGraphPanel() {
         ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
         
+        // Slope calculation formula - placed in top-right clear area
         ctxG.font = 'bold 1.15rem "EB Garamond", serif';
         ctxG.fillStyle = '#b58900';
-        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', cx + 70, cy - 25);
+        ctxG.textAlign = 'right';
+        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', w - margin - 10, margin + 30);
         
         ctxG.restore();
     }
@@ -478,13 +481,16 @@ function drawGraphAxes(w, h) {
 
     ctxG.fillStyle = '#2b2b2b';
     ctxG.font = 'bold italic 1.15rem "EB Garamond", serif';
-    ctxG.textAlign = 'center';
     
-    // Labels
-    ctxG.fillText('氫的質量 wH (g)', w - margin - 10, originY + 40);
-    ctxG.fillText('氧的質量 wO (g)', originX - 2, margin - 35);
+    // Labels - shift wO to the right to avoid cut-off at the left edge
+    ctxG.textAlign = 'center';
+    ctxG.fillText('氫的質量 wH (g)', w - margin - 50, originY + 40);
+    
+    ctxG.textAlign = 'left';
+    ctxG.fillText('氧的質量 wO (g)', originX + 15, margin - 20);
     
     // Ticks wH
+    ctxG.textAlign = 'center';
     for (let x = 1.0; x <= 4.0; x += 1.0) {
         const px = mapX(x, w);
         drawWobblyLine(ctxG, px, originY - 4, px, originY + 4, '#2b2b2b', 1.5, x * 77);
@@ -500,28 +506,7 @@ function drawGraphAxes(w, h) {
     }
     
     ctxG.fillText('0', originX - 12, originY + 18);
-}
-
-// Plot Legend Box in Graph Canvas (Top-Left)
-function drawGraphLegend(w, h) {
-    const lx = margin + 20;
-    const ly = margin + 20;
-    const lw = 210;
-    const lh = 120;
-    
-    // Draw wobbly outer box
-    drawWobblyLine(ctxG, lx, ly, lx + lw, ly, '#2b2b2b', 1.5, 601);
-    drawWobblyLine(ctxG, lx + lw, ly, lx + lw, ly + lh, '#2b2b2b', 1.5, 602);
-    drawWobblyLine(ctxG, lx + lw, ly + lh, lx, ly + lh, '#2b2b2b', 1.5, 603);
-    drawWobblyLine(ctxG, lx, ly + lh, lx, ly, '#2b2b2b', 1.5, 604);
-    
-    // Fill legend box slightly opaque white
-    ctxG.fillStyle = 'rgba(255, 255, 255, 0.85)';
-    ctxG.fillRect(lx + 2, ly + 2, lw - 4, lh - 4);
-    
-    ctxG.textAlign = 'left';
-    ctxG.textBaseline = 'middle';
-    ctxG.font = 'bold 0.9rem sans-serif';
+} = 'bold 0.9rem sans-serif';
     
     // 1. Acid-Base water item
     drawWobblyCircle(ctxG, lx + 20, ly + 22, 5, '#e76f51', true, 1, 611);
