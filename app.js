@@ -33,8 +33,20 @@ function easeOutElastic(t) {
     return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
 }
 
-// Custom Hand-Drawn Sketch Drawing Helpers
-function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2) {
+// -------------------------------------------------------------
+// Seeded Random for Steady (Non-jittering) Hand-Drawn Lines
+// -------------------------------------------------------------
+let rndSeed = 1;
+function setRndSeed(s) {
+    rndSeed = s;
+}
+function seededRandom() {
+    const x = Math.sin(rndSeed++) * 10000;
+    return x - Math.floor(x);
+}
+
+function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2, seed = 42) {
+    setRndSeed(seed);
     const segments = Math.max(5, Math.floor(Math.hypot(x2 - x1, y2 - y1) / 8));
     
     for (let drawCount = 0; drawCount < 2; drawCount++) {
@@ -52,26 +64,27 @@ function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2) {
                 const len = Math.hypot(dx, dy);
                 const nx = -dy / len;
                 const ny = dx / len;
-                const jitter = (Math.random() - 0.5) * 0.8;
+                const jitter = (seededRandom() - 0.5) * 0.8;
                 px += nx * jitter;
                 py += ny * jitter;
             }
             ctx.lineTo(px, py);
         }
         ctx.strokeStyle = color;
-        ctx.lineWidth = width + (Math.random() - 0.5) * 0.3;
+        ctx.lineWidth = width + (seededRandom() - 0.5) * 0.2;
         ctx.stroke();
     }
 }
 
-function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width = 2) {
+function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width = 2, seed = 100) {
+    setRndSeed(seed);
     const segments = 24;
     
     for (let drawCount = 0; drawCount < (fill ? 1 : 2); drawCount++) {
         ctx.beginPath();
         for (let i = 0; i <= segments; i++) {
             const theta = (i / segments) * Math.PI * 2;
-            const jitter = (Math.random() - 0.5) * 0.6;
+            const jitter = (seededRandom() - 0.5) * 0.6;
             const rad = r + jitter;
             const x = cx + Math.cos(theta) * rad;
             const y = cy + Math.sin(theta) * rad;
@@ -102,35 +115,35 @@ function mapY(yVal, height) {
     return height - margin - (yVal / 32.0) * (height - 2 * margin);
 }
 
-// Step descriptions
+// Step descriptions (Traditional Chinese)
 const stepTexts = [
     {
-        title: "第一步：建立質量關係坐標系",
-        desc: "以水 (H₂O) 為例。我們繪製一個坐標圖，以氧的質量 wO 為 Y 軸，以氫的質量 wH 為 X 軸，用來探討水分子的組成比例。"
+        title: "第一步：建立質量關係座標系",
+        desc: "以水 (H₂O) 為例。我們繪製一個座標圖，以氧的質量 wO 為 Y 軸，以氫的質量 wH 為 X 軸，用來探討水分子的組成比例。"
     },
     {
         title: "第二步：酸鹼中和產生的水",
-        desc: "進行酸鹼中和實驗，取生成的純水分析其質量。在圖表上標記第 1 點。不論做幾次，我們得到的數據總會落在特定比例..."
+        desc: "進行酸鹼中和實驗，收集生成的水滴進行分析，測得其氫氧質量。此時在座標圖上點下第 1 點。數據點的對應名稱請見圖例。"
     },
     {
         title: "第三步：氫氣燃燒產生的水",
-        desc: "點燃氫氣與氧氣，收集燃燒產生的水滴。在圖表上標記第 2 點。由於氫氣燃燒較旺盛，這次反應生成的水量較多。"
+        desc: "點燃氫氣與氧氣，收集燃燒產生的水滴進行分析。此時在座標圖上點下第 2 點。因燃燒反應較激烈，此次生成的水滴質量較多。"
     },
     {
         title: "第四步：加熱小蘇打產生的水",
-        desc: "將小蘇打固體放入試管加熱，收集管口凝結出的水滴。在圖表上標記第 3 點。這次反應產生的水量雖然較少..."
+        desc: "將小蘇打固體放入試管加熱，收集管口冷凝出來的水滴進行分析。此時在座標圖上點下第 3 點。此次收集到的水滴質量較少。"
     },
     {
-        title: "第五步：神奇的趨勢線",
-        desc: "引導觀察：注意看這三個來自完全不同化學反應的點，不論生成水量多寡，它們似乎都完美地位在同一條通過原點的直線上！"
+        title: "第五步：觀察不同的水源",
+        desc: "引導觀察：注意看這三個來自完全不同化學反應產生的水，雖然每次反應得到的質量多寡不同，但它們在圖上呈現什麼關係？"
     },
     {
         title: "第六步：普魯斯特的重大發現",
-        desc: "法國化學家普魯斯特發現，同一種化合物，不論其來源與製法為何，其組成元素的質量比（即直線的斜率）恆為定值（斜率為 8.0）。"
+        desc: "法國化學家普魯斯特發現，同一種化合物，不論其來源或製備方法為何，其組成元素的質量比（即座標圖上的斜率）恆為定值。"
     },
     {
         title: "第七步：定比定律 (Law of Definite Proportions)",
-        desc: "化合物中，各組成元素間的質量比恆為定值。這就是定比定律！例如水分子中氧與氫的質量比永遠是固定的 8 : 1。"
+        desc: "化合物中，各組成元素間的質量比恆為定值。這就是定比定律！以水為例，不論來源，氧與氫的質量比永遠是固定的 8 : 1。"
     }
 ];
 
@@ -156,7 +169,6 @@ function updateUI() {
     document.getElementById('btn-back').disabled = (currentStep === 1);
     document.getElementById('btn-next').disabled = (currentStep === totalSteps);
     
-    // Change next button to Finish style if last step
     if (currentStep === totalSteps) {
         document.getElementById('btn-next').textContent = "探索完成";
     } else {
@@ -174,7 +186,7 @@ function updateUI() {
     const massBoard = document.getElementById('mass-board');
     massBoard.classList.toggle('hidden', currentStep < 2);
     
-    // Set random values on step indicators
+    // Set values on indicators
     document.getElementById('board-h1').textContent = wH1;
     document.getElementById('board-o1').textContent = wO1;
     document.getElementById('board-h2').textContent = wH2;
@@ -182,7 +194,7 @@ function updateUI() {
     document.getElementById('board-h3').textContent = wH3;
     document.getElementById('board-o3').textContent = wO3;
     
-    // Apply styling matching the step
+    // Fade inactive board items
     document.getElementById('board-h1').parentElement.style.opacity = currentStep >= 2 ? 1 : 0.2;
     document.getElementById('board-h2').parentElement.style.opacity = currentStep >= 3 ? 1 : 0.2;
     document.getElementById('board-h3').parentElement.style.opacity = currentStep >= 4 ? 1 : 0.2;
@@ -199,201 +211,174 @@ function resizeCanvases() {
     graphCanvas.height = wrapperR.clientHeight;
 }
 
-// -------------------------------------------------------------
-// Drawing loop
-// -------------------------------------------------------------
+// Main Animation Loop
 function drawLoop() {
-    // Increment step animation progress
     if (animProgress < 1.0) {
-        animProgress += 0.015;
+        animProgress += 0.012; // Easing speed
         if (animProgress > 1.0) animProgress = 1.0;
     }
     
-    // Render canvases
     renderFlaskPanel();
     renderGraphPanel();
     
     requestAnimationFrame(drawLoop);
 }
 
-// 1. LEFT PANEL: Chemical Reaction Sketches
+// 1. LEFT PANEL: Static Apparatus Drawing + Smooth Droplet Emission
 function renderFlaskPanel() {
     const w = flaskCanvas.width;
     const h = flaskCanvas.height;
     ctxF.clearRect(0, 0, w, h);
     
-    // Draw subtle paper/grid background on left
+    // Background filling
     ctxF.fillStyle = '#faf8f5';
     ctxF.fillRect(0, 0, w, h);
     
     ctxF.save();
     
     if (currentStep === 1) {
-        // Step 1: Draw clean beaker flask silhouette placeholder
-        ctxF.globalAlpha = 0.3;
-        drawFlaskFlask(w / 2, h / 2 + 20, 70, 110);
-        ctxF.globalAlpha = 1.0;
-        
+        // Step 1: Blank canvas with introductory title
         ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = 'italic 1.15rem "EB Garamond", serif';
+        ctxF.font = 'italic 1.2rem "EB Garamond", serif';
         ctxF.textAlign = 'center';
-        ctxF.fillText('定比定律虛擬演練', w / 2, h / 2 - 40);
-        ctxF.fillText('將在此動態演示各實驗反應', w / 2, h / 2);
+        ctxF.fillText('定比定律實驗演示', w / 2, h / 2 - 20);
+        ctxF.fillText('在此收集並分析不同來源的水滴', w / 2, h / 2 + 15);
     } 
     else if (currentStep === 2) {
-        // Step 2: Acid-base Titration
-        const progress = animProgress;
+        // Step 2: Acid-base Titration (conical flask and burette)
+        // Clean static draw
+        drawBuretteSetup(w / 2 - 30, h / 2 - 40);
         
-        // Draw Burette (滴定管) on top
-        drawBurette(w / 2, 40, 120);
-        
-        // Draw Beaker (燒杯) on bottom
-        drawBeaker(w / 2, h - 90, 60, 80);
-        
-        // Draw acid drop animation
-        if (progress < 0.6) {
-            const dropY = 160 + (progress / 0.6) * (h - 250);
-            drawWobblyCircle(ctxF, w / 2, dropY, 4, '#e76f51', true);
-        } else {
-            // Liquid inside beaker fills slightly
-            ctxF.fillStyle = 'rgba(231, 111, 81, 0.15)';
-            ctxF.fillRect(w / 2 - 50, h - 130, 100, 40);
+        // Droplet flies out
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6; // normalized droplet time
+            const easeT = easeInOutCubic(t);
+            // Droplet trajectory: from conical flask mouth to right edge
+            const startX = w / 2 - 30;
+            const startY = h / 2 + 80;
+            const endX = w - 15;
+            const endY = h / 2;
             
-            // Generate a water droplet molecule floating to the right
-            const outProgress = (progress - 0.6) / 0.4;
-            const dropX = w / 2 + outProgress * (w / 2 - 60);
-            const dropY = h - 110 - outProgress * 60;
-            if (outProgress > 0) {
-                drawWaterMolecule(dropX, dropY, 14, '#e76f51');
-                ctxF.fillStyle = '#1f1f1f';
-                ctxF.font = 'bold 0.9rem sans-serif';
-                ctxF.fillText(`水滴 (酸鹼中和)`, dropX, dropY - 22);
-            }
+            // Quadratic Bezier path for water drop fly-out
+            const dropX = startX + (endX - startX) * easeT;
+            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 40;
+            
+            drawWaterDrop(ctxF, dropX, dropY, 12);
         }
     } 
     else if (currentStep === 3) {
-        // Step 3: Combustion
-        const progress = animProgress;
+        // Step 3: Combustion Setup
+        drawCombustionSetup(w / 2 - 30, h / 2 - 40);
         
-        // Draw Alcohol Burner (酒精燈) & Dish (燃燒皿)
-        drawBurner(w / 2 - 40, h - 90, progress);
-        
-        // Draw collecting funnel/condenser (冷凝漏斗)
-        drawCondenser(w / 2 + 20, 60, 100);
-        
-        // Draw water droplets condensing and traveling
-        if (progress > 0.4) {
-            const outProgress = (progress - 0.4) / 0.6;
-            const dropX = w / 2 + 20 + outProgress * (w / 2 - 80);
-            const dropY = 140 + outProgress * 50;
-            drawWaterMolecule(dropX, dropY, 16, '#2a9d8f');
-            ctxF.fillStyle = '#1f1f1f';
-            ctxF.font = 'bold 0.9rem sans-serif';
-            ctxF.fillText(`水滴 (燃燒反應)`, dropX, dropY - 22);
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6;
+            const easeT = easeInOutCubic(t);
+            const startX = w / 2 - 10;
+            const startY = h / 2 - 30;
+            const endX = w - 15;
+            const endY = h / 2;
+            
+            const dropX = startX + (endX - startX) * easeT;
+            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 50;
+            
+            drawWaterDrop(ctxF, dropX, dropY, 14);
         }
     } 
     else if (currentStep === 4) {
-        // Step 4: Heating baking soda
-        const progress = animProgress;
+        // Step 4: Baking Soda Heating Setup
+        drawHeatingSetup(w / 2 - 30, h / 2 - 40);
         
-        // Draw Horizontal Test Tube (試管) being heated
-        drawHorizontalTube(w / 2 - 40, h / 2 - 20, 120, 24);
-        drawBurner(w / 2 - 60, h - 90, progress);
-        
-        // Water drop dripping out of test tube mouth
-        if (progress > 0.5) {
-            const outProgress = (progress - 0.5) / 0.5;
-            const dropX = w / 2 + 80 + outProgress * 60;
-            const dropY = h / 2 - 10 + outProgress * 80;
-            drawWaterMolecule(dropX, dropY, 12, '#b58900');
-            ctxF.fillStyle = '#1f1f1f';
-            ctxF.font = 'bold 0.9rem sans-serif';
-            ctxF.fillText(`水滴 (加熱小蘇打)`, dropX, dropY - 22);
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6;
+            const easeT = easeInOutCubic(t);
+            const startX = w / 2 + 50;
+            const startY = h / 2 - 10;
+            const endX = w - 15;
+            const endY = h / 2;
+            
+            const dropX = startX + (endX - startX) * easeT;
+            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 30;
+            
+            drawWaterDrop(ctxF, dropX, dropY, 10);
         }
     } 
     else if (currentStep >= 5) {
-        // Show Water molecule representation
-        const size = 35;
-        const cx = w / 2;
-        const cy = h / 2;
+        // Step 5, 6, 7: Show three beakers of water side-by-side (Identical composition)
+        const gap = w / 4;
+        const cy = h / 2 + 20;
         
         ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = 'bold 1.25rem sans-serif';
+        ctxF.font = 'bold 1.2rem sans-serif';
         ctxF.textAlign = 'center';
-        ctxF.fillText('水分子的組成結構', cx, cy - 80);
+        ctxF.fillText('分析三種來源的水滴', w / 2, h / 2 - 90);
         
-        // Draw bonds
-        ctxF.strokeStyle = '#2b2b2b';
-        ctxF.lineWidth = 6;
-        ctxF.beginPath();
-        ctxF.moveTo(cx, cy);
-        ctxF.lineTo(cx - 50, cy + 50);
-        ctxF.moveTo(cx, cy);
-        ctxF.lineTo(cx + 50, cy + 50);
-        ctxF.stroke();
-        
-        // Center Oxygen atom (Red)
-        drawWobblyCircle(ctxF, cx, cy, size, '#e76f51', true);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.font = 'bold 1.5rem Outfit, sans-serif';
-        ctxF.fillText('O', cx, cy + 2);
-        
-        // Hydrogen atom 1 (Blue)
-        drawWobblyCircle(ctxF, cx - 50, cy + 50, size * 0.6, '#38bdf8', true);
-        ctxF.fillStyle = '#0f172a';
-        ctxF.font = 'bold 1.1rem Outfit, sans-serif';
-        ctxF.fillText('H', cx - 50, cy + 52);
-        
-        // Hydrogen atom 2 (Blue)
-        drawWobblyCircle(ctxF, cx + 50, cy + 50, size * 0.6, '#38bdf8', true);
-        ctxF.fillStyle = '#0f172a';
-        ctxF.font = 'bold 1.1rem Outfit, sans-serif';
-        ctxF.fillText('H', cx + 50, cy + 52);
+        // Render 3 Beakers
+        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', '#e76f51', 110);
+        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '氫氣燃燒水', '#2a9d8f', 120);
+        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', '#b58900', 130);
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = 'italic 1.1rem "EB Garamond", serif';
-        ctxF.fillText('H : O 原子個數比 = 2 : 1', cx, cy + 110);
-        ctxF.fillText('H : O 質量組成比 = 2g : 16g = 1 : 8', cx, cy + 135);
+        ctxF.fillText('實驗分析顯示：它們在化學性質上完全一樣，', w / 2, h / 2 + 95);
+        ctxF.fillText('不論來源為何，皆為相同物質「水 (H₂O)」。', w / 2, h / 2 + 120);
     }
     
     ctxF.restore();
 }
 
-// 2. RIGHT PANEL: 3B1B Style Math Graph
+// 2. RIGHT PANEL: 3B1B Style Math Graph (Traditional Chinese)
 function renderGraphPanel() {
     const w = graphCanvas.width;
     const h = graphCanvas.height;
     ctxG.clearRect(0, 0, w, h);
     
-    // Paper background
+    // Paper bg
     ctxG.fillStyle = '#faf8f5';
     ctxG.fillRect(0, 0, w, h);
     
     // Draw Axis System
     drawGraphAxes(w, h);
     
-    // Step 2: Plot Point 1 (Acid-base)
+    // Draw Legend Box
     if (currentStep >= 2) {
-        const t = (currentStep === 2) ? easeOutElastic(animProgress) : 1;
+        drawGraphLegend(w, h);
+    }
+    
+    // Step 2: Plot Point 1
+    if (currentStep >= 2) {
+        let t = 1;
+        if (currentStep === 2) {
+            // Plot only after droplet reaches the edge (at progress 0.7)
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
         const px = mapX(wH1, w);
         const py = mapY(wO1, h);
-        drawPlotPoint(px, py, 7 * t, '#e76f51', `酸鹼中和 (${wH1}, ${wO1})`);
+        drawPlotPoint(px, py, 7 * t, '#e76f51');
     }
     
-    // Step 3: Plot Point 2 (Combustion)
+    // Step 3: Plot Point 2
     if (currentStep >= 3) {
-        const t = (currentStep === 3) ? easeOutElastic(animProgress) : 1;
+        let t = 1;
+        if (currentStep === 3) {
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
         const px = mapX(wH2, w);
         const py = mapY(wO2, h);
-        drawPlotPoint(px, py, 7 * t, '#2a9d8f', `燃燒反應 (${wH2}, ${wO2})`);
+        drawPlotPoint(px, py, 7 * t, '#2a9d8f');
     }
     
-    // Step 4: Plot Point 3 (Baking soda)
+    // Step 4: Plot Point 3
     if (currentStep >= 4) {
-        const t = (currentStep === 4) ? easeOutElastic(animProgress) : 1;
+        let t = 1;
+        if (currentStep === 4) {
+            t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
+        }
         const px = mapX(wH3, w);
         const py = mapY(wO3, h);
-        drawPlotPoint(px, py, 7 * t, '#b58900', `加熱小蘇打 (${wH3}, ${wO3})`);
+        drawPlotPoint(px, py, 7 * t, '#b58900');
     }
     
     // Step 5: Draw Trendline
@@ -404,16 +389,10 @@ function renderGraphPanel() {
         const endX = mapX(3.8, w);
         const endY = mapY(3.8 * 8.0, h);
         
-        // Draw progressive trend line
         const currentX = startX + (endX - startX) * t;
         const currentY = startY + (endY - startY) * t;
         
-        drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(29, 53, 87, 0.5)', 4);
-        
-        // Label the formula of the line
-        ctxG.fillStyle = 'var(--color-royal)';
-        ctxG.font = 'bold italic 1.1rem "EB Garamond", serif';
-        ctxG.fillText('wO = 8 × wH', endX - 50, endY - 15);
+        drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(29, 53, 87, 0.45)', 4, 300);
     }
     
     // Step 6 & 7: Draw Slope Triangle
@@ -427,214 +406,343 @@ function renderGraphPanel() {
         const rx = mapX(xVal + 0.8, w);
         const ry = mapY(yVal + 0.8 * 8.0, h);
         
-        // Draw delta lines
         ctxG.save();
         ctxG.globalAlpha = t;
         
         // Horizontal delta wH
-        drawWobblyLine(ctxG, cx, cy, rx, cy, '#5f5f5f', 1.5);
+        drawWobblyLine(ctxG, cx, cy, rx, cy, '#5f5f5f', 1.5, 400);
         // Vertical delta wO
-        drawWobblyLine(ctxG, rx, cy, rx, ry, '#5f5f5f', 1.5);
+        drawWobblyLine(ctxG, rx, cy, rx, ry, '#5f5f5f', 1.5, 500);
         
-        // Label Slope (斜率 = 8)
         ctxG.fillStyle = '#2b2b2b';
-        ctxG.font = 'bold 0.95rem sans-serif';
+        ctxG.font = 'bold 0.9rem sans-serif';
         ctxG.textAlign = 'center';
         ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
         
-        ctxG.font = 'bold 1.1rem "EB Garamond", serif';
+        ctxG.font = 'bold 1.15rem "EB Garamond", serif';
         ctxG.fillStyle = '#b58900';
-        ctxG.fillText('斜率 (Slope) = ΔwO / ΔwH = 8.0', cx + 70, cy - 25);
+        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', cx + 70, cy - 25);
         
         ctxG.restore();
     }
 }
 
 // -------------------------------------------------------------
-// Component Drawer Functions
+// UI Drawer Components
 // -------------------------------------------------------------
 function drawGraphAxes(w, h) {
-    // Draw grid lines
-    ctxG.strokeStyle = 'rgba(43, 43, 43, 0.05)';
-    ctxG.lineWidth = 1;
+    // Draw wobbly coordinates grid (clean and steady)
     for (let x = 0.5; x <= 4.0; x += 0.5) {
         const px = mapX(x, w);
-        drawWobblyLine(ctxG, px, margin, px, h - margin, 'rgba(43, 43, 43, 0.05)', 1);
+        drawWobblyLine(ctxG, px, margin, px, h - margin, 'rgba(43, 43, 43, 0.04)', 1, x * 100);
     }
     for (let y = 4; y <= 32; y += 4) {
         const py = mapY(y, h);
-        drawWobblyLine(ctxG, margin, py, w - margin, py, 'rgba(43, 43, 43, 0.05)', 1);
+        drawWobblyLine(ctxG, margin, py, w - margin, py, 'rgba(43, 43, 43, 0.04)', 1, y * 200);
     }
 
-    // Draw main axes
     const originX = mapX(0, w);
     const originY = mapY(0, h);
     
-    // wH axis (X-axis)
-    drawWobblyLine(ctxG, originX, originY, w - margin + 20, originY, '#2b2b2b', 2.5);
-    // wO axis (Y-axis)
-    drawWobblyLine(ctxG, originX, originY, originX, margin - 20, '#2b2b2b', 2.5);
+    // wH axis
+    drawWobblyLine(ctxG, originX, originY, w - margin + 20, originY, '#2b2b2b', 2.5, 10);
+    // wO axis
+    drawWobblyLine(ctxG, originX, originY, originX, margin - 20, '#2b2b2b', 2.5, 20);
     
-    // Labels & Ticks
+    // Arrow for X axis
+    drawWobblyLine(ctxG, w - margin + 20, originY, w - margin + 12, originY - 6, '#2b2b2b', 2, 11);
+    drawWobblyLine(ctxG, w - margin + 20, originY, w - margin + 12, originY + 6, '#2b2b2b', 2, 12);
+    
+    // Arrow for Y axis
+    drawWobblyLine(ctxG, originX, margin - 20, originX - 6, margin - 12, '#2b2b2b', 2, 21);
+    drawWobblyLine(ctxG, originX, margin - 20, originX + 6, margin - 12, '#2b2b2b', 2, 22);
+
     ctxG.fillStyle = '#2b2b2b';
-    ctxG.font = 'italic 1.1rem "EB Garamond", serif';
+    ctxG.font = 'bold italic 1.15rem "EB Garamond", serif';
     ctxG.textAlign = 'center';
     
-    // X Axis Label
-    ctxG.fillText('氢的质量 wH (g)', w - margin, originY + 38);
-    // Y Axis Label
-    ctxG.fillText('氧的质量 wO (g)', originX - 10, margin - 35);
+    // Labels
+    ctxG.fillText('氫的質量 wH (g)', w - margin - 10, originY + 40);
+    ctxG.fillText('氧的質量 wO (g)', originX - 2, margin - 35);
     
-    // Tick marks wH
+    // Ticks wH
     for (let x = 1.0; x <= 4.0; x += 1.0) {
         const px = mapX(x, w);
-        drawWobblyLine(ctxG, px, originY - 4, px, originY + 4, '#2b2b2b', 1.5);
-        ctxG.fillText(x.toFixed(1), px, originY + 20);
+        drawWobblyLine(ctxG, px, originY - 4, px, originY + 4, '#2b2b2b', 1.5, x * 77);
+        ctxG.fillText(x.toFixed(1), px, originY + 22);
     }
     
-    // Tick marks wO
+    // Ticks wO
     ctxG.textAlign = 'right';
     for (let y = 8; y <= 32; y += 8) {
         const py = mapY(y, h);
-        drawWobblyLine(ctxG, originX - 4, py, originX + 4, '#2b2b2b', 1.5);
+        drawWobblyLine(ctxG, originX - 4, py, originX + 4, '#2b2b2b', 1.5, y * 88);
         ctxG.fillText(y.toString(), originX - 12, py + 5);
     }
     
-    // Origin (0,0)
-    ctxG.fillText('0', originX - 10, originY + 18);
+    ctxG.fillText('0', originX - 12, originY + 18);
 }
 
-function drawPlotPoint(x, y, radius, color, labelText) {
-    if (radius <= 0) return;
-    drawWobblyCircle(ctxG, x, y, radius + 2, '#2b2b2b', false, 1.5);
-    drawWobblyCircle(ctxG, x, y, radius, color, true);
+// Plot Legend Box in Graph Canvas (Top-Left)
+function drawGraphLegend(w, h) {
+    const lx = margin + 20;
+    const ly = margin + 20;
+    const lw = 210;
+    const lh = 120;
     
-    // Fade in text label next to point
-    ctxG.fillStyle = '#1f1f1f';
-    ctxG.font = 'bold 0.85rem sans-serif';
+    // Draw wobbly outer box
+    drawWobblyLine(ctxG, lx, ly, lx + lw, ly, '#2b2b2b', 1.5, 601);
+    drawWobblyLine(ctxG, lx + lw, ly, lx + lw, ly + lh, '#2b2b2b', 1.5, 602);
+    drawWobblyLine(ctxG, lx + lw, ly + lh, lx, ly + lh, '#2b2b2b', 1.5, 603);
+    drawWobblyLine(ctxG, lx, ly + lh, lx, ly, '#2b2b2b', 1.5, 604);
+    
+    // Fill legend box slightly opaque white
+    ctxG.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctxG.fillRect(lx + 2, ly + 2, lw - 4, lh - 4);
+    
     ctxG.textAlign = 'left';
-    ctxG.fillText(labelText, x + 12, y + 4);
-}
-
-function drawWaterMolecule(x, y, r, glowColor) {
-    ctxF.shadowBlur = 10;
-    ctxF.shadowColor = glowColor;
-    drawWobblyCircle(ctxF, x, y, r, glowColor, true);
-    drawWobblyCircle(ctxF, x - r * 0.7, y + r * 0.5, r * 0.5, '#38bdf8', true);
-    drawWobblyCircle(ctxF, x + r * 0.7, y + r * 0.5, r * 0.5, '#38bdf8', true);
-    ctxF.shadowBlur = 0;
-}
-
-// -------------------------------------------------------------
-// Chemical apparatus drawings
-// -------------------------------------------------------------
-function drawFlaskFlask(cx, cy, baseR, height) {
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 15, cy - height / 2);
-    ctxF.lineTo(cx + 15, cy - height / 2);
-    ctxF.lineTo(cx + 15, cy - height / 4);
-    ctxF.lineTo(cx + baseR, cy + height / 2);
-    ctxF.lineTo(cx - baseR, cy + height / 2);
-    ctxF.lineTo(cx - 15, cy - height / 4);
-    ctxF.closePath();
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
-}
-
-function drawBeaker(cx, cy, r, height) {
-    // Left rim, base, right rim
-    ctxF.beginPath();
-    ctxF.moveTo(cx - r, cy - height);
-    ctxF.lineTo(cx - r, cy);
-    ctxF.lineTo(cx + r, cy);
-    ctxF.lineTo(cx + r, cy - height);
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
+    ctxG.textBaseline = 'middle';
+    ctxG.font = 'bold 0.9rem sans-serif';
     
-    // Draw lip
-    drawWobblyLine(ctxF, cx - r - 5, cy - height, cx - r, cy - height, '#2b2b2b', 2.5);
-    drawWobblyLine(ctxF, cx + r, cy - height, cx + r + 2, cy - height, '#2b2b2b', 2.5);
-}
-
-function drawBurette(cx, cy, length) {
-    // Vertical parallel tubes
-    drawWobblyLine(ctxF, cx - 6, cy, cx - 6, cy + length, '#2b2b2b', 2);
-    drawWobblyLine(ctxF, cx + 6, cy, cx + 6, cy + length, '#2b2b2b', 2);
+    // 1. Acid-Base water item
+    drawWobblyCircle(ctxG, lx + 20, ly + 22, 5, '#e76f51', true, 1, 611);
+    ctxG.fillStyle = '#1f1f1f';
+    ctxG.fillText('🔴 酸鹼中和生成水', lx + 36, ly + 22);
     
-    // Burette tip
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 6, cy + length);
-    ctxF.lineTo(cx - 2, cy + length + 20);
-    ctxF.lineTo(cx + 2, cy + length + 20);
-    ctxF.lineTo(cx + 6, cy + length);
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2;
-    ctxF.stroke();
+    // 2. Combustion item (if unlocked)
+    if (currentStep >= 3) {
+        drawWobblyCircle(ctxG, lx + 20, ly + 47, 5, '#2a9d8f', true, 1, 612);
+        ctxG.fillStyle = '#1f1f1f';
+        ctxG.fillText('🟢 氫氣燃燒生成水', lx + 36, ly + 47);
+    }
     
-    // Stopcock valve (閥門)
-    drawWobblyCircle(ctxF, cx, cy + length + 5, 5, '#5f5f5f', true);
-}
-
-function drawBurner(cx, cy, progress) {
-    // Burner base
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 25, cy);
-    ctxF.lineTo(cx - 15, cy - 25);
-    ctxF.lineTo(cx + 15, cy - 25);
-    ctxF.lineTo(cx + 25, cy);
-    ctxF.closePath();
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
+    // 3. Baking soda heating item (if unlocked)
+    if (currentStep >= 4) {
+        drawWobblyCircle(ctxG, lx + 20, ly + 72, 5, '#b58900', true, 1, 613);
+        ctxG.fillStyle = '#1f1f1f';
+        ctxG.fillText('🟡 小蘇打分解水', lx + 36, ly + 72);
+    }
     
-    // Wick & Flame
-    drawWobblyLine(ctxF, cx, cy - 25, cx, cy - 35, '#2b2b2b', 4);
-    
-    if (progress > 0.1) {
-        // Flickering fire
-        ctxF.save();
-        ctxF.shadowBlur = 15;
-        ctxF.shadowColor = 'rgba(231, 111, 81, 0.8)';
-        ctxF.fillStyle = '#e76f51';
-        ctxF.beginPath();
-        ctxF.moveTo(cx - 8, cy - 35);
-        ctxF.quadraticCurveTo(cx, cy - 60 - Math.random() * 8, cx + 8, cy - 35);
-        ctxF.closePath();
-        ctxF.fill();
-        ctxF.restore();
+    // 4. Slope trendline item (if unlocked)
+    if (currentStep >= 5) {
+        ctxG.strokeStyle = 'rgba(29, 53, 87, 0.7)';
+        ctxG.lineWidth = 3;
+        ctxG.beginPath();
+        ctxG.moveTo(lx + 10, ly + 97);
+        ctxG.lineTo(lx + 30, ly + 97);
+        ctxG.stroke();
+        ctxG.fillStyle = 'var(--color-royal)';
+        ctxG.fillText('🔵 定比線 wO = 8 × wH', lx + 36, ly + 97);
     }
 }
 
-function drawCondenser(cx, cy, size) {
-    // Draw funnel opening at bottom
+function drawPlotPoint(x, y, radius, color) {
+    if (radius <= 0) return;
+    // Draw point circle cleanly
+    drawWobblyCircle(ctxG, x, y, radius + 2, '#2b2b2b', false, 1.5, x + y);
+    drawWobblyCircle(ctxG, x, y, radius, color, true, 1, x - y);
+}
+
+// -------------------------------------------------------------
+// High-Quality Static Chemical Apparatus Illustrations
+// -------------------------------------------------------------
+function drawBuretteSetup(cx, cy) {
+    // Retort Stand (鐵架台支架)
+    drawWobblyLine(ctxF, cx - 60, cy + 180, cx + 40, cy + 180, '#2b2b2b', 3, 1001); // base
+    drawWobblyLine(ctxF, cx - 40, cy + 180, cx - 40, cy - 60, '#2b2b2b', 2.5, 1002); // vertical rod
+    
+    // Burette Clamp (滴定管夾)
+    drawWobblyLine(ctxF, cx - 40, cy + 20, cx, cy + 20, '#2b2b2b', 2, 1003);
+    drawWobblyCircle(ctxF, cx - 40, cy + 20, 4, '#5f5f5f', true, 1, 1004);
+    
+    // Conical Flask (錐形瓶) at bottom
+    const fx = cx;
+    const fy = cy + 140;
     ctxF.beginPath();
-    ctxF.moveTo(cx - 30, cy + size);
-    ctxF.lineTo(cx, cy + size - 20);
-    ctxF.lineTo(cx + 30, cy + size);
+    ctxF.moveTo(fx - 10, fy);
+    ctxF.lineTo(fx + 10, fy);
+    ctxF.lineTo(fx + 10, fy + 15);
+    ctxF.lineTo(fx + 35, fy + 70);
+    ctxF.lineTo(fx - 35, fy + 70);
+    ctxF.lineTo(fx - 10, fy + 15);
+    ctxF.closePath();
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+    
+    // Liquid level inside flask
+    ctxF.fillStyle = 'rgba(43, 43, 43, 0.05)';
+    ctxF.beginPath();
+    ctxF.moveTo(fx - 28, fy + 55);
+    ctxF.lineTo(fx + 28, fy + 55);
+    ctxF.lineTo(fx + 33, fy + 68);
+    ctxF.lineTo(fx - 33, fy + 68);
+    ctxF.closePath();
+    ctxF.fill();
+
+    // Burette Tube (滴定管) on top
+    drawWobblyLine(ctxF, cx - 5, cy - 60, cx - 5, cy + 80, '#2b2b2b', 2, 1005);
+    drawWobblyLine(ctxF, cx + 5, cy - 60, cx + 5, cy + 80, '#2b2b2b', 2, 1006);
+    
+    // Liquid markings inside burette
+    for (let hY = cy - 40; hY < cy + 60; hY += 15) {
+        drawWobblyLine(ctxF, cx - 5, hY, cx - 1, hY, '#5f5f5f', 1, hY);
+    }
+    
+    // Valve nozzle
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 5, cy + 80);
+    ctxF.lineTo(cx, cy + 100);
+    ctxF.lineTo(cx + 5, cy + 80);
     ctxF.strokeStyle = '#2b2b2b';
     ctxF.lineWidth = 2;
     ctxF.stroke();
     
-    // Condenser body tube
-    drawWobblyLine(ctxF, cx, cy + size - 20, cx, cy, '#2b2b2b', 2);
+    // Valve knob (閥門旋鈕)
+    drawWobblyCircle(ctxF, cx, cy + 82, 5, '#5f5f5f', true, 1, 1007);
 }
 
-function drawHorizontalTube(cx, cy, length, height) {
+function drawCombustionSetup(cx, cy) {
+    // Retort stand
+    drawWobblyLine(ctxF, cx - 50, cy + 180, cx + 50, cy + 180, '#2b2b2b', 3, 2001);
+    drawWobblyLine(ctxF, cx - 30, cy + 180, cx - 30, cy - 40, '#2b2b2b', 2.5, 2002);
+    
+    // Clamp holding the nozzle
+    drawWobblyLine(ctxF, cx - 30, cy + 60, cx, cy + 60, '#2b2b2b', 2, 2003);
+    
+    // Combustion Nozzle (燃燒噴嘴)
+    drawWobblyLine(ctxF, cx - 4, cy + 140, cx - 4, cy + 60, '#2b2b2b', 2, 2004);
+    drawWobblyLine(ctxF, cx + 4, cy + 140, cx + 4, cy + 60, '#2b2b2b', 2, 2005);
+    
+    // Nozzle tip flame
+    ctxF.save();
+    ctxF.shadowBlur = 10;
+    ctxF.shadowColor = 'rgba(231, 111, 81, 0.7)';
+    ctxF.fillStyle = '#e76f51';
     ctxF.beginPath();
-    ctxF.moveTo(cx - length / 2, cy - height / 2);
-    ctxF.lineTo(cx + length / 2, cy - height / 2);
-    ctxF.arc(cx + length / 2, cy, height / 2, -Math.PI / 2, Math.PI / 2);
-    ctxF.lineTo(cx - length / 2, cy + height / 2);
+    ctxF.moveTo(cx - 6, cy + 60);
+    ctxF.quadraticCurveTo(cx, cy + 30, cx + 6, cy + 60);
+    ctxF.closePath();
+    ctxF.fill();
+    ctxF.restore();
+    
+    // Condenser funnel collector above flame
+    ctxF.beginPath();
+    ctxF.moveTo(cx - 25, cy + 15);
+    ctxF.lineTo(cx, cy - 5);
+    ctxF.lineTo(cx + 25, cy + 15);
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2.5;
+    ctxF.stroke();
+    
+    // Delivery tube from collector
+    drawWobblyLine(ctxF, cx, cy - 5, cx + 30, cy - 30, '#2b2b2b', 2, 2006);
+    drawWobblyLine(ctxF, cx + 30, cy - 30, cx + 30, cy + 10, '#2b2b2b', 2, 2007);
+}
+
+function drawHeatingSetup(cx, cy) {
+    // Retort stand clamp
+    drawWobblyLine(ctxF, cx - 60, cy + 180, cx + 60, cy + 180, '#2b2b2b', 3, 3001);
+    drawWobblyLine(ctxF, cx - 40, cy + 180, cx - 40, cy - 40, '#2b2b2b', 2.5, 3002);
+    
+    drawWobblyLine(ctxF, cx - 40, cy + 20, cx, cy + 20, '#2b2b2b', 2, 3003);
+    
+    // Horizontal Test Tube (微傾斜試管)
+    const tx = cx + 20;
+    const ty = cy + 20;
+    ctxF.save();
+    ctxF.translate(tx, ty);
+    ctxF.rotate(0.08); // Slight downward slope
+    
+    ctxF.beginPath();
+    ctxF.moveTo(-60, -10);
+    ctxF.lineTo(60, -10);
+    ctxF.arc(60, 0, 10, -Math.PI / 2, Math.PI / 2);
+    ctxF.lineTo(-60, 10);
     ctxF.strokeStyle = '#2b2b2b';
     ctxF.lineWidth = 2.5;
     ctxF.stroke();
     
     // Substance inside (baking soda)
     ctxF.fillStyle = '#e2e2e2';
-    ctxF.fillRect(cx - length / 2 + 10, cy - height / 2 + 4, length - 40, height - 8);
+    ctxF.fillRect(10, -8, 40, 16);
+    
+    ctxF.restore();
+    
+    // Alcohol Burner underneath
+    const bx = cx - 10;
+    const by = cy + 110;
+    
+    // Burner glass body
+    ctxF.beginPath();
+    ctxF.moveTo(bx - 20, by);
+    ctxF.lineTo(bx - 12, by - 20);
+    ctxF.lineTo(bx + 12, by - 20);
+    ctxF.lineTo(bx + 20, by);
+    ctxF.closePath();
+    ctxF.strokeStyle = '#2b2b2b';
+    ctxF.lineWidth = 2, 3004;
+    ctxF.stroke();
+    
+    // Flame
+    ctxF.save();
+    ctxF.shadowBlur = 10;
+    ctxF.shadowColor = 'rgba(231, 111, 81, 0.7)';
+    ctxF.fillStyle = '#e76f51';
+    ctxF.beginPath();
+    ctxF.moveTo(bx - 6, by - 20);
+    ctxF.quadraticCurveTo(bx, by - 40, bx + 6, by - 20);
+    ctxF.closePath();
+    ctxF.fill();
+    ctxF.restore();
+}
+
+function drawStaticBeaker(ctx, cx, cy, r, height, label, color, seed) {
+    // Draw beaker lines
+    ctx.beginPath();
+    ctx.moveTo(cx - r, cy - height);
+    ctx.lineTo(cx - r, cy);
+    ctx.lineTo(cx + r, cy);
+    ctx.lineTo(cx + r, cy - height);
+    ctx.strokeStyle = '#2b2b2b';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    
+    // Beaker lips
+    drawWobblyLine(ctx, cx - r - 4, cy - height, cx - r, cy - height, '#2b2b2b', 2.5, seed + 1);
+    drawWobblyLine(ctx, cx + r, cy - height, cx + r + 2, cy - height, '#2b2b2b', 2.5, seed + 2);
+    
+    // Liquid inside beaker (flat steady render)
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+    ctx.fillRect(cx - r + 3, cy - height * 0.5, r * 2 - 6, height * 0.5 - 3);
+    
+    // Label text
+    ctx.fillStyle = '#1f1f1f';
+    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx, cy + 20);
+    
+    // Floating water droplet
+    drawWaterDrop(ctx, cx, cy - height - 20, 10);
+}
+
+function drawWaterDrop(ctx, x, y, r) {
+    ctx.save();
+    ctx.fillStyle = '#38bdf8'; // water blue
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+    
+    // Path for water drop teardrop shape
+    ctx.beginPath();
+    ctx.moveTo(x, y - r * 1.2);
+    ctx.quadraticCurveTo(x + r * 0.8, y - r * 0.2, x + r * 0.8, y + r * 0.3);
+    ctx.arc(x, y + r * 0.3, r * 0.8, 0, Math.PI);
+    ctx.quadraticCurveTo(x - r * 0.8, y - r * 0.2, x, y - r * 1.2);
+    ctx.closePath();
+    ctx.fill();
+    
+    ctx.restore();
 }
 
 // -------------------------------------------------------------

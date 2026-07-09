@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專案報告與開發文件 - 3B1B 風格動畫</title>
+    <title>專案報告與開發文件 - 3B1B 風格優化</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,7 +188,7 @@
     <div class="container">
         <header>
             <h1>化學基本定律虛擬實驗室</h1>
-            <p>專案報告與整合開發文件 (3B1B 風格分支)</p>
+            <p>專案報告與整合開發文件 (3B1B 風格優化版)</p>
         </header>
 
         <nav class="nav-tabs">
@@ -202,17 +202,14 @@
             <article class="doc-content active" id="doc-readme">
                 <h1>化學基本定律虛擬實驗室 - 3B1B 步驟動畫</h1>
                 <p>本分支實作了定比定律（Law of Definite Proportions）的步驟引導式動畫，重現 3Blue1Brown 的數學幾何美學與不完美的手繪風格。</p>
-                <h2>專案特色</h2>
+                <h2>本次優化特色</h2>
                 <ul>
-                    <li><strong>3B1B 緩動引擎</strong>：動畫使用三次 Ease-in-out 與 Elastic Out Elastic 回彈算法，讓線條延伸與點的彈跳充滿物理流暢感。</li>
-                    <li><strong>手繪粗糙線條</strong>：格線、座標軸與儀器外框利用 Perpendicular Per-segment Jitter（垂直隨機分段擾動）進行二次重疊繪製，完美模擬鉛筆手描感。</li>
-                    <li><strong>共線隨機數值</strong>：每次載入都會隨機產生三個不同反應產生的水滴質量，但其氧氫質量比（wO/wH）恆為完美的 8.0，保證其在座標軸上精準共線。</li>
+                    <li><strong>正體中文與座標標籤</strong>：完全使用台灣正體中文習慣（「座標圖」、「質量」），且座標軸使用 <code>&lt;sub&gt;</code> 標籤完美渲染下標。</li>
+                    <li><strong>圖面整潔與圖例化</strong>：散點不再疊加座標文字，改在圖表左上角顯示精美的手繪圖例（Legend）。</li>
+                    <li><strong>穩定的手繪線條 (Seeded Jitter)</strong>：使用種子隨機算法，使手繪線條在播放動畫時不會晃動，保持插畫質感。</li>
+                    <li><strong>宏觀定比定律</strong>：配合普魯斯特時代背景，步驟五展示不同來源宏觀水的化學性質一致，而非現代的水分子球棍模型。</li>
+                    <li><strong>水滴浮現飛出</strong>：左側為精緻靜態實驗儀器圖，水滴平滑浮現飛出，到達右側邊界後才觸發右側座標軸的散點彈出。</li>
                 </ul>
-                <h2>運行方式</h2>
-                <ol>
-                    <li>在瀏覽器中雙擊打開 <code>index.html</code>。</li>
-                    <li>點擊底部的「下一步」與「上一步」按鈕進行 1 ~ 7 步驟導覽演練。</li>
-                </ol>
             </article>
 
             <!-- PROJECT_NOTES.md Content -->
@@ -220,21 +217,14 @@
                 <h1>專案開發筆記 (PROJECT_NOTES)</h1>
                 <h2>開發背景與目標</h2>
                 <p>配合化學教學，建立一個直觀、好懂且具有 3B1B (Manim) 動畫質感的引導式手繪動畫網頁，說明<strong>定比定律</strong>。</p>
-                <h2>開發完成事項 (`3b1b-style` 分支)</h2>
+                <h2>開發完成事項 (`3b1b-style` 分支優化)</h2>
                 <ul>
-                    <li>[x] 新增 <code>3b1b-style</code> 分支，與原先的虛擬實驗室區分開來。</li>
-                    <li>[x] 更新 <code>index.html</code> 結構為單頁 7 步驟的「上一步 / 下一步」雙畫布引導式版面。</li>
-                    <li>[x] 更新 <code>style.css</code> 為明亮紙張質感，使用 EB Garamond 字體呈現數學公式，並加入手繪感的非對稱圓角與外邊線。</li>
-                    <li>[x] 實作 <code>app.js</code> 原生手繪 wobbly 抖動畫線與圓形算法，藉由多次筆觸疊加與微小 random 擾動實現真實鉛筆感。</li>
-                    <li>[x] 實作 3B1B 動態緩動（Cubic Ease-In-Out）線條描邊，以及標示點的彈性回彈（Elastic Out）縮放物理動畫。</li>
-                    <li>[x] 實作左側三種反應模擬（酸鹼滴定、燃燒漏斗、試管加熱）手繪風格 Canvas 動畫。</li>
-                    <li>[x] 驗證三個點的質量比例在隨機數值下恆為完美的 8.0。</li>
+                    <li>[x] 更新 <code>index.html</code> 與 <code>app.js</code> 內的中文文字為純正體中文，並使用 <code>&lt;sub&gt;</code> 修正下標顯示。</li>
+                    <li>[x] 座標圖上的點取消名稱標註，移至新增的左上角手繪圖例框內，維持圖面整潔。</li>
+                    <li>[x] 原生 Canvas 手繪線條算法引入種子隨機，使儀器裝置線條穩固、不再閃爍，大幅提升插畫質感。</li>
+                    <li>[x] 左側重構為三種化學反應靜態精美儀器圖案，並實作單顆水藍色水滴平滑飛入座標軸的連動動畫。</li>
+                    <li>[x] 修正歷史視角：步驟五移除水分子微觀結構模型，改為三杯不同來源的宏觀水對比。</li>
                 </ul>
-                <h2>技術實現亮點</h2>
-                <blockquote>
-                    <p>💡 <strong>手繪線條渲染：</strong><br>
-                    <code>drawWobblyLine</code> 會將直線分割成若干段，在法向量方向上隨機加入擾動，並重複繪製 2 次。這模擬了鉛筆手繪時不穩定但重疊的雙重筆畫，創造出極佳的手繪手稿感。</p>
-                </blockquote>
             </article>
 
             <!-- ANTIGRAVITY.md Content -->
@@ -246,21 +236,6 @@
                     <li><strong>樣式</strong>：Vanilla CSS (明亮淺奶油白紙張底色，石墨深灰線條與外框)</li>
                     <li><strong>動畫技術</strong>：HTML5 Canvas 粒子與數學緩動引擎</li>
                 </ul>
-                <h2>協作規則</h2>
-                <ol>
-                    <li><strong>極簡與效率 (Ponytail 模式)</strong>：
-                        <ul>
-                            <li>儘可能避免引入外部大型 JS/CSS 庫。</li>
-                            <li>保留程式碼的簡單與純粹性，無須編譯即可透過瀏覽器直接開啟。</li>
-                        </ul>
-                    </li>
-                    <li><strong>視覺效果與美學 (3B1B style)</strong>：
-                        <ul>
-                            <li>精準的緩動與彈性動畫。</li>
-                            <li>手繪抖動線條（wobbly paths）。</li>
-                        </ul>
-                    </li>
-                </ol>
             </article>
         </main>
 
