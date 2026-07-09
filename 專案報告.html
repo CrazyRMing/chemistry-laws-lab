@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專案報告與開發文件 - 化學基本定律虛擬實驗室</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 25, 40, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --primary-color: #7c3aed;
+            --secondary-color: #0d9488;
+            --font-heading: 'Outfit', 'Inter', 'Noto Sans TC', sans-serif;
+            --font-body: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            position: relative;
+        }
+
+        .background-decorations {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+        }
+
+        .circle-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-color);
+            top: -50px;
+            left: -50px;
+        }
+
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--secondary-color);
+            bottom: -100px;
+            right: -50px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 40%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            min-height: 400px;
+        }
+
+        .doc-content {
+            display: none;
+            line-height: 1.7;
+            color: #d1d5db;
+        }
+
+        .doc-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Markdown styling inside */
+        .doc-content h1, .doc-content h2, .doc-content h3 {
+            font-family: var(--font-heading);
+            color: #ffffff;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-content h1 { font-size: 1.8rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem; }
+        .doc-content h2 { font-size: 1.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.3rem; }
+        .doc-content h3 { font-size: 1.15rem; }
+
+        .doc-content p {
+            margin-bottom: 1rem;
+        }
+
+        .doc-content ul, .doc-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-content li {
+            margin-bottom: 0.4rem;
+        }
+
+        .doc-content code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #f43f5e;
+        }
+
+        .doc-content pre {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .doc-content pre code {
+            background: none;
+            padding: 0;
+            color: #e5e7eb;
+        }
+
+        .doc-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            background: rgba(124, 58, 237, 0.05);
+            padding: 0.75rem 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-decorations">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>化學基本定律虛擬實驗室</h1>
+            <p>專案報告與整合開發文件</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="switchDocTab('readme')">README.md</button>
+            <button class="tab-btn" onclick="switchDocTab('notes')">PROJECT_NOTES.md</button>
+            <button class="tab-btn" onclick="switchDocTab('antigravity')">ANTIGRAVITY.md</button>
+        </nav>
+
+        <main class="card">
+            <!-- README.md Content -->
+            <article class="doc-content active" id="doc-readme">
+                <h1>化學基本定律虛擬實驗室 (Chemical Laws Virtual Lab)</h1>
+                <p>一個基於 HTML5 Canvas 與 Vanilla JS 實作的互動網頁，旨在幫助學生視覺化理解兩個化學基本定律：</p>
+                <ol>
+                    <li><strong>定比定律 (Law of Definite Proportions)</strong></li>
+                    <li><strong>倍比定律 (Law of Multiple Proportions)</strong></li>
+                </ol>
+                <h2>專案特色</h2>
+                <ul>
+                    <li><strong>零外部依賴</strong>：完全採用純原生 HTML5、CSS3 與 ES6+ JavaScript，下載後按兩下即可直接在任何瀏覽器中離線開啟。</li>
+                    <li><strong>現代視覺美學</strong>：採用高對比度的深色模式與半透明毛玻璃（Glassmorphism）卡片，搭配精緻的按鈕動畫與流暢的物理碰撞模擬。</li>
+                    <li><strong>即時數據回饋</strong>：反應前後的原子數量、分子個數、游離原子、以及質量的比例變化皆會即時計算並呈現在漂亮的表格中。</li>
+                </ul>
+                <h2>運行方式</h2>
+                <ol>
+                    <li>將本專案下載/複製到您的電腦中。</li>
+                    <li>連按兩下開啟 <code>index.html</code> 即可在瀏覽器中運行。</li>
+                </ol>
+                <h2>實驗說明</h2>
+                <h3>1. 定比定律（氫氧合成水）</h3>
+                <ul>
+                    <li><strong>反應方程式</strong>：2H₂ + O₂ ➔ 2H₂O</li>
+                    <li><strong>質量關係</strong>：氫原子量為 1，氧原子量為 16。水分子中，氫與氧的質量比恆為 2 : 16 = 1 : 8。</li>
+                    <li><strong>實驗方式</strong>：拖曳滑桿設定初始的氫原子（H）與氧原子（O）個數，點擊「開始反應」。你將看到原子隨機運動碰撞並結合成水分子，多餘的原子則保持游離狀態。數據面板會即時計算生成的質量比是否符合 1 : 8。</li>
+                </ul>
+                <h3>2. 倍比定律（碳氧反應）</h3>
+                <ul>
+                    <li><strong>反應方程式</strong>：
+                        <ul>
+                            <li>一氧化碳：C + O ➔ CO</li>
+                            <li>二氧化碳：C + 2O ➔ CO₂</li>
+                        </ul>
+                    </li>
+                    <li><strong>質量關係</strong>：碳原子量為 12，氧原子量為 16。
+                        <ul>
+                            <li>在 CO 中，12 克碳與 16 克氧結合。</li>
+                            <li>在 CO₂ 中，12 克碳與 32 克氧結合。</li>
+                            <li>相同質量的碳所結合的氧質量比為 16 : 32 = 1 : 2（簡單整數比）。</li>
+                        </ul>
+                    </li>
+                    <li><strong>實驗方式</strong>：點擊「一氧化碳模式」或「二氧化碳模式」，設定原子個數並開始反應。數據面板會對比兩種模式下，與相同碳原子結合的氧原子的倍數關係。</li>
+                </ul>
+            </article>
+
+            <!-- PROJECT_NOTES.md Content -->
+            <article class="doc-content" id="doc-notes">
+                <h1>專案開發筆記 (PROJECT_NOTES)</h1>
+                <h2>開發背景與目標</h2>
+                <p>為了配合化學教學，建立一個直觀、好懂且視覺效果精美的互動網頁。</p>
+                <ul>
+                    <li><strong>定比定律實驗室</strong>：以「氫（H）與氧（O）合成水（H₂O）」為例。不論使用者輸入多少原子，合成的水分子中，氫與氧的個數比恆為 2:1，質量比恆為 1:8。多餘的原子將會以游離狀態殘留。</li>
+                    <li><strong>倍比定律實驗室</strong>：以「碳（C）與氧（O）的反應」為例。
+                        <ul>
+                            <li>當氧氣不足時合成一氧化碳（CO，個數比 1:1）。</li>
+                            <li>當氧氣充足時合成二氧化碳（CO₂，個數比 1:2）。</li>
+                            <li>進而驗證「與固定質量碳結合的氧，其質量呈簡單整數比 1:2」。</li>
+                        </ul>
+                    </li>
+                </ul>
+                <h2>開發完成事項</h2>
+                <ul>
+                    <li>[x] 初始化本地 Git 儲存庫與 <code>.gitignore</code> 配置</li>
+                    <li>[x] 使用 GitHub CLI 建立 <code>chemistry-laws-lab</code> 私有儲存庫並成功推送</li>
+                    <li>[x] 建立專案基礎文件 (<code>ANTIGRAVITY.md</code>, <code>PROJECT_NOTES.md</code>, <code>README.md</code>)</li>
+                    <li>[x] 撰寫 HTML5 佈局結構 (<code>index.html</code>)</li>
+                    <li>[x] 撰寫深色毛玻璃視覺樣式 (<code>style.css</code>)</li>
+                    <li>[x] 實作 Canvas 粒子引擎、原子隨機彈跳、碰撞結合水分子與碳氧分子動畫 (<code>app.js</code>)</li>
+                    <li>[x] 通過瀏覽器自動化腳本功能測試與質量比例驗證</li>
+                </ul>
+                <h2>踩坑與心得</h2>
+                <blockquote>
+                    <p>💡 <strong>Windows 虛擬環境路徑字元集問題：</strong><br>
+                    在 Windows 中如果專案路徑包含中文（如「教育相關/因材網製作/數據圖表繪製」），使用 Python 3.12 建立 venv 安裝 <code>manimgl</code> 時，因為 <code>setuptools >= 82.0.0</code> 移除了 <code>pkg_resources</code> 容易導致載入失敗。解決方法是手動將 setuptools 降級至 81.0.0 以下（如 80.10.2），便能成功解決 ModuleNotFoundError。</p>
+                </blockquote>
+            </article>
+
+            <!-- ANTIGRAVITY.md Content -->
+            <article class="doc-content" id="doc-antigravity">
+                <h1>AntiGravity 專案協同開發指南</h1>
+                <p>本專案是用於說明<strong>定比定律 (Law of Definite Proportions)</strong> 與 **倍比定律 (Law of Multiple Proportions)** 的互動網頁動畫實驗室。</p>
+                <h2>開發技術棧</h2>
+                <ul>
+                    <li><strong>核心</strong>：HTML5 + Vanilla JavaScript (ES6+)</li>
+                    <li><strong>樣式</strong>：Vanilla CSS (深色模式配色的玻璃擬物化 Glassmorphism 設計，配合 Outfit/Inter 字型)</li>
+                    <li><strong>動畫技術</strong>：HTML5 Canvas 粒子引擎</li>
+                </ul>
+                <h2>協作規則</h2>
+                <ol>
+                    <li><strong>極簡與效率 (Ponytail 模式)</strong>：
+                        <ul>
+                            <li>儘可能避免引入外部大型 JS/CSS 庫。</li>
+                            <li>保留程式碼的簡單與純粹性，無須編譯即可透過瀏覽器直接開啟（方便於因材網系統、外掛中離線使用）。</li>
+                        </ul>
+                    </li>
+                    <li><strong>視覺效果與美學 (Aesthetics)</strong>：
+                        <ul>
+                            <li>使用精美的高對比度漸層與毛玻璃卡片。</li>
+                            <li>粒子碰撞結合必須有流暢的動態過渡動畫與反彈效果。</li>
+                        </ul>
+                    </li>
+                    <li><strong>專案筆記更新</strong>：
+                        <ul>
+                            <li>每當階段性功能完成或有新發現，必須隨時更新 <code>PROJECT_NOTES.md</code>，並在收工前編譯/同步至 <code>專案報告.html</code>。</li>
+                        </ul>
+                    </li>
+                </ol>
+            </article>
+        </main>
+
+        <footer>
+            <p>© 2026 化學基本定律虛擬實驗室. 離線報告儀表板.</p>
+        </footer>
+    </div>
+
+    <script>
+        function switchDocTab(tabName) {
+            // Remove active classes
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.doc-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.currentTarget.classList.add('active');
+            document.getElementById('doc-' + tabName).classList.add('active');
+        }
+    </script>
+</body>
+</html>

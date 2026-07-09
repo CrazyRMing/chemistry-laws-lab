@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>化學基本定律虛擬實驗室 - 定比定律與倍比定律</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-decorations">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">🧪</span>
+                <h1>化學基本定律<span>虛擬實驗室</span></h1>
+            </div>
+            <p class="subtitle">互動式粒子合成模擬與質量關係驗證</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" id="tab-definite" onclick="switchTab('definite')">
+                <span class="tab-icon">⚖️</span>
+                <span class="tab-title">定比定律</span>
+                <span class="tab-desc">氫氧合成水實驗</span>
+            </button>
+            <button class="tab-btn" id="tab-multiple" onclick="switchTab('multiple')">
+                <span class="tab-icon">🔄</span>
+                <span class="tab-title">倍比定律</span>
+                <span class="tab-desc">碳氧反應模擬</span>
+            </button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Left Side: Simulator Canvas -->
+            <section class="simulator-section card animate-fade-in">
+                <div class="card-header">
+                    <h2 id="sim-title">定比定律：氫氧合成水模擬</h2>
+                    <div class="badge" id="reaction-status">待命</div>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas id="chemCanvas"></canvas>
+                    <div class="canvas-overlay" id="canvasOverlay">
+                        <p class="overlay-text">點擊下方「開始反應」觀察原子結合動畫</p>
+                    </div>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="controls-container">
+                    <!-- Definite Proportions Control Panels -->
+                    <div class="control-panel" id="controls-definite">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="range-h"><span class="atom-dot dot-h"></span> 氫原子 (H) 數量: <span id="val-h" class="num-display">16</span> 個</label>
+                            </div>
+                            <input type="range" id="range-h" min="2" max="30" step="2" value="16" class="custom-slider">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="range-o"><span class="atom-dot dot-o"></span> 氧原子 (O) 數量: <span id="val-o" class="num-display">8</span> 個</label>
+                            </div>
+                            <input type="range" id="range-o" min="1" max="15" step="1" value="8" class="custom-slider">
+                        </div>
+                    </div>
+
+                    <!-- Multiple Proportions Control Panels -->
+                    <div class="control-panel hidden" id="controls-multiple">
+                        <div class="mode-selector-wrapper">
+                            <span class="control-label-text">反應產物模式:</span>
+                            <div class="mode-buttons">
+                                <button class="mode-btn active" id="btn-mode-co" onclick="setMultipleMode('CO')">一氧化碳 (CO) 模式</button>
+                                <button class="mode-btn" id="btn-mode-co2" onclick="setMultipleMode('CO2')">二氧化碳 (CO2) 模式</button>
+                            </div>
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="range-c"><span class="atom-dot dot-c"></span> 碳原子 (C) 數量: <span id="val-c" class="num-display">8</span> 個</label>
+                            </div>
+                            <input type="range" id="range-c" min="1" max="15" step="1" value="8" class="custom-slider">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label for="range-o-mult"><span class="atom-dot dot-o"></span> 氧原子 (O) 數量: <span id="val-o-mult" class="num-display">8</span> 個</label>
+                            </div>
+                            <input type="range" id="range-o-mult" min="1" max="30" step="1" value="8" class="custom-slider">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="btn-start" onclick="startReaction()">
+                            <span class="btn-icon">⚡</span> 開始反應
+                        </button>
+                        <button class="btn btn-secondary" id="btn-reset" onclick="resetReaction()">
+                            <span class="btn-icon">🔄</span> 重設實驗
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Stats, Analysis, and Theories -->
+            <section class="analysis-section animate-fade-in-delayed">
+                <!-- Live Data Panel -->
+                <div class="data-panel card">
+                    <div class="card-header">
+                        <h2>即時質量與數量分析</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>項目</th>
+                                    <th>反應前</th>
+                                    <th>反應後 (分子/游離)</th>
+                                    <th>總質量比 (反應後分子中)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analysis-tbody">
+                                <!-- Will be dynamically generated by Javascript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Theory Explanation Panel -->
+                <div class="theory-panel card">
+                    <div class="card-header">
+                        <h2 id="theory-title">定律解析說明</h2>
+                    </div>
+                    <div class="theory-content" id="theory-text">
+                        <!-- Will be dynamically populated by Javascript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>© 2026 化學基本定律虛擬實驗室. Designed for Yin Cai Wang Integration.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
