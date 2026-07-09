@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>專案報告與開發文件 - 3B1B 風格優化</title>
+    <title>專案報告與開發文件 - 3B1B 風格生圖優化</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,7 +188,7 @@
     <div class="container">
         <header>
             <h1>化學基本定律虛擬實驗室</h1>
-            <p>專案報告與整合開發文件 (3B1B 風格優化版)</p>
+            <p>專案報告與整合開發文件 (生圖資產優化版)</p>
         </header>
 
         <nav class="nav-tabs">
@@ -204,11 +204,10 @@
                 <p>本分支實作了定比定律（Law of Definite Proportions）的步驟引導式動畫，重現 3Blue1Brown 的數學幾何美學與不完美的手繪風格。</p>
                 <h2>本次優化特色</h2>
                 <ul>
-                    <li><strong>正體中文與座標標籤</strong>：完全使用台灣正體中文習慣（「座標圖」、「質量」），且座標軸使用 <code>&lt;sub&gt;</code> 標籤完美渲染下標。</li>
-                    <li><strong>圖面整潔與圖例化</strong>：散點不再疊加座標文字，改在圖表左上角顯示精美的手繪圖例（Legend）。</li>
-                    <li><strong>穩定的手繪線條 (Seeded Jitter)</strong>：使用種子隨機算法，使手繪線條在播放動畫時不會晃動，保持插畫質感。</li>
-                    <li><strong>宏觀定比定律</strong>：配合普魯斯特時代背景，步驟五展示不同來源宏觀水的化學性質一致，而非現代的水分子球棍模型。</li>
-                    <li><strong>水滴浮現飛出</strong>：左側為精緻靜態實驗儀器圖，水滴平滑浮現飛出，到達右側邊界後才觸發右側座標軸的散點彈出。</li>
+                    <li><strong>生圖模型手繪插圖</strong>：左側改為加載極具質感的生成式手繪裝置圖片，且清除背景填色為純白色，與插圖背景無縫融合，徹底解決代碼畫圖的簡陋感。</li>
+                    <li><strong>水滴與點彈出動畫連動</strong>：水滴自裝置的出水點平滑滑出，在抵達右界時，右側座標散點以 Elastic 動效彈出。</li>
+                    <li><strong>正體中文與座標標籤</strong>：完全使用台灣正體中文習慣，且座標軸使用 <code>&lt;sub&gt;</code> 標籤完美渲染下標。</li>
+                    <li><strong>圖面整潔與圖例化</strong>：散點不再疊加座標文字，改在圖表左上角顯示精美的手繪圖例。</li>
                 </ul>
             </article>
 
@@ -219,11 +218,12 @@
                 <p>配合化學教學，建立一個直觀、好懂且具有 3B1B (Manim) 動畫質感的引導式手繪動畫網頁，說明<strong>定比定律</strong>。</p>
                 <h2>開發完成事項 (`3b1b-style` 分支優化)</h2>
                 <ul>
-                    <li>[x] 更新 <code>index.html</code> 與 <code>app.js</code> 內的中文文字為純正體中文，並使用 <code>&lt;sub&gt;</code> 修正下標顯示。</li>
-                    <li>[x] 座標圖上的點取消名稱標註，移至新增的左上角手繪圖例框內，維持圖面整潔。</li>
-                    <li>[x] 原生 Canvas 手繪線條算法引入種子隨機，使儀器裝置線條穩固、不再閃爍，大幅提升插畫質感。</li>
-                    <li>[x] 左側重構為三種化學反應靜態精美儀器圖案，並實作單顆水藍色水滴平滑飛入座標軸的連動動畫。</li>
-                    <li>[x] 修正歷史視角：步驟五移除水分子微觀結構模型，改為三杯不同來源的宏觀水對比。</li>
+                    <li>[x] 使用生圖模型生成 titration、combustion、heating 三張高質感手繪插畫圖片置於 <code>assets/</code>。</li>
+                    <li>[x] 預載入圖片，並在 `renderFlaskPanel` 內以 <code>drawImage</code> 置中渲染。</li>
+                    <li>[x] 調整水滴拋物線滑出起點，使其與載入的靜態圖片噴口完美重合。</li>
+                    <li>[x] 將左側 Canvas 背景清除填色設為純白色（<code>#ffffff</code>）以融合圖片白底。</li>
+                    <li>[x] 更新 <code>index.html</code> 與 <code>app.js</code> 內的中文文字為正體中文，座標軸使用 <code>&lt;sub&gt;</code> 標籤。</li>
+                    <li>[x] 圖上點不顯座標，改置於左上角手繪圖例框內，維持圖面整潔。</li>
                 </ul>
             </article>
 
@@ -234,7 +234,7 @@
                 <ul>
                     <li><strong>核心</strong>：HTML5 + Vanilla JavaScript (ES6+)</li>
                     <li><strong>樣式</strong>：Vanilla CSS (明亮淺奶油白紙張底色，石墨深灰線條與外框)</li>
-                    <li><strong>動畫技術</strong>：HTML5 Canvas 粒子與數學緩動引擎</li>
+                    <li><strong>動畫技術</strong>：HTML5 Canvas 影像與數學緩動引擎</li>
                 </ul>
             </article>
         </main>
