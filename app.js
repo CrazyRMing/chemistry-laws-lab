@@ -4,6 +4,16 @@ const graphCanvas = document.getElementById('graphCanvas');
 const ctxF = flaskCanvas.getContext('2d');
 const ctxG = graphCanvas.getContext('2d');
 
+// Preload generated sketchy asset images
+const imgTitration = new Image();
+imgTitration.src = 'assets/titration.png';
+
+const imgCombustion = new Image();
+imgCombustion.src = 'assets/combustion.png';
+
+const imgHeating = new Image();
+imgHeating.src = 'assets/heating.png';
+
 // State Variables
 let currentStep = 1;
 let animProgress = 0; // Current step animation progress [0, 1]
@@ -230,8 +240,8 @@ function renderFlaskPanel() {
     const h = flaskCanvas.height;
     ctxF.clearRect(0, 0, w, h);
     
-    // Background filling
-    ctxF.fillStyle = '#faf8f5';
+    // Background filling - solid white to blend with sketchy images
+    ctxF.fillStyle = '#ffffff';
     ctxF.fillRect(0, 0, w, h);
     
     ctxF.save();
@@ -245,9 +255,11 @@ function renderFlaskPanel() {
         ctxF.fillText('在此收集並分析不同來源的水滴', w / 2, h / 2 + 15);
     } 
     else if (currentStep === 2) {
-        // Step 2: Acid-base Titration (conical flask and burette)
-        // Clean static draw
-        drawBuretteSetup(w / 2 - 30, h / 2 - 40);
+        // Step 2: Acid-base Titration
+        const imgSize = Math.min(w, h) * 0.85;
+        const imgX = (w - imgSize) / 2;
+        const imgY = (h - imgSize) / 2;
+        ctxF.drawImage(imgTitration, imgX, imgY, imgSize, imgSize);
         
         // Droplet flies out
         const p = animProgress;
@@ -255,8 +267,8 @@ function renderFlaskPanel() {
             const t = (p - 0.1) / 0.6; // normalized droplet time
             const easeT = easeInOutCubic(t);
             // Droplet trajectory: from conical flask mouth to right edge
-            const startX = w / 2 - 30;
-            const startY = h / 2 + 80;
+            const startX = imgX + imgSize * 0.48;
+            const startY = imgY + imgSize * 0.72;
             const endX = w - 15;
             const endY = h / 2;
             
@@ -269,14 +281,17 @@ function renderFlaskPanel() {
     } 
     else if (currentStep === 3) {
         // Step 3: Combustion Setup
-        drawCombustionSetup(w / 2 - 30, h / 2 - 40);
+        const imgSize = Math.min(w, h) * 0.85;
+        const imgX = (w - imgSize) / 2;
+        const imgY = (h - imgSize) / 2;
+        ctxF.drawImage(imgCombustion, imgX, imgY, imgSize, imgSize);
         
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
             const easeT = easeInOutCubic(t);
-            const startX = w / 2 - 10;
-            const startY = h / 2 - 30;
+            const startX = imgX + imgSize * 0.52;
+            const startY = imgY + imgSize * 0.44;
             const endX = w - 15;
             const endY = h / 2;
             
@@ -288,14 +303,17 @@ function renderFlaskPanel() {
     } 
     else if (currentStep === 4) {
         // Step 4: Baking Soda Heating Setup
-        drawHeatingSetup(w / 2 - 30, h / 2 - 40);
+        const imgSize = Math.min(w, h) * 0.85;
+        const imgX = (w - imgSize) / 2;
+        const imgY = (h - imgSize) / 2;
+        ctxF.drawImage(imgHeating, imgX, imgY, imgSize, imgSize);
         
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
             const easeT = easeInOutCubic(t);
-            const startX = w / 2 + 50;
-            const startY = h / 2 - 10;
+            const startX = imgX + imgSize * 0.72;
+            const startY = imgY + imgSize * 0.46;
             const endX = w - 15;
             const endY = h / 2;
             
@@ -547,156 +565,6 @@ function drawPlotPoint(x, y, radius, color) {
 // -------------------------------------------------------------
 // High-Quality Static Chemical Apparatus Illustrations
 // -------------------------------------------------------------
-function drawBuretteSetup(cx, cy) {
-    // Retort Stand (鐵架台支架)
-    drawWobblyLine(ctxF, cx - 60, cy + 180, cx + 40, cy + 180, '#2b2b2b', 3, 1001); // base
-    drawWobblyLine(ctxF, cx - 40, cy + 180, cx - 40, cy - 60, '#2b2b2b', 2.5, 1002); // vertical rod
-    
-    // Burette Clamp (滴定管夾)
-    drawWobblyLine(ctxF, cx - 40, cy + 20, cx, cy + 20, '#2b2b2b', 2, 1003);
-    drawWobblyCircle(ctxF, cx - 40, cy + 20, 4, '#5f5f5f', true, 1, 1004);
-    
-    // Conical Flask (錐形瓶) at bottom
-    const fx = cx;
-    const fy = cy + 140;
-    ctxF.beginPath();
-    ctxF.moveTo(fx - 10, fy);
-    ctxF.lineTo(fx + 10, fy);
-    ctxF.lineTo(fx + 10, fy + 15);
-    ctxF.lineTo(fx + 35, fy + 70);
-    ctxF.lineTo(fx - 35, fy + 70);
-    ctxF.lineTo(fx - 10, fy + 15);
-    ctxF.closePath();
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
-    
-    // Liquid level inside flask
-    ctxF.fillStyle = 'rgba(43, 43, 43, 0.05)';
-    ctxF.beginPath();
-    ctxF.moveTo(fx - 28, fy + 55);
-    ctxF.lineTo(fx + 28, fy + 55);
-    ctxF.lineTo(fx + 33, fy + 68);
-    ctxF.lineTo(fx - 33, fy + 68);
-    ctxF.closePath();
-    ctxF.fill();
-
-    // Burette Tube (滴定管) on top
-    drawWobblyLine(ctxF, cx - 5, cy - 60, cx - 5, cy + 80, '#2b2b2b', 2, 1005);
-    drawWobblyLine(ctxF, cx + 5, cy - 60, cx + 5, cy + 80, '#2b2b2b', 2, 1006);
-    
-    // Liquid markings inside burette
-    for (let hY = cy - 40; hY < cy + 60; hY += 15) {
-        drawWobblyLine(ctxF, cx - 5, hY, cx - 1, hY, '#5f5f5f', 1, hY);
-    }
-    
-    // Valve nozzle
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 5, cy + 80);
-    ctxF.lineTo(cx, cy + 100);
-    ctxF.lineTo(cx + 5, cy + 80);
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2;
-    ctxF.stroke();
-    
-    // Valve knob (閥門旋鈕)
-    drawWobblyCircle(ctxF, cx, cy + 82, 5, '#5f5f5f', true, 1, 1007);
-}
-
-function drawCombustionSetup(cx, cy) {
-    // Retort stand
-    drawWobblyLine(ctxF, cx - 50, cy + 180, cx + 50, cy + 180, '#2b2b2b', 3, 2001);
-    drawWobblyLine(ctxF, cx - 30, cy + 180, cx - 30, cy - 40, '#2b2b2b', 2.5, 2002);
-    
-    // Clamp holding the nozzle
-    drawWobblyLine(ctxF, cx - 30, cy + 60, cx, cy + 60, '#2b2b2b', 2, 2003);
-    
-    // Combustion Nozzle (燃燒噴嘴)
-    drawWobblyLine(ctxF, cx - 4, cy + 140, cx - 4, cy + 60, '#2b2b2b', 2, 2004);
-    drawWobblyLine(ctxF, cx + 4, cy + 140, cx + 4, cy + 60, '#2b2b2b', 2, 2005);
-    
-    // Nozzle tip flame
-    ctxF.save();
-    ctxF.shadowBlur = 10;
-    ctxF.shadowColor = 'rgba(231, 111, 81, 0.7)';
-    ctxF.fillStyle = '#e76f51';
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 6, cy + 60);
-    ctxF.quadraticCurveTo(cx, cy + 30, cx + 6, cy + 60);
-    ctxF.closePath();
-    ctxF.fill();
-    ctxF.restore();
-    
-    // Condenser funnel collector above flame
-    ctxF.beginPath();
-    ctxF.moveTo(cx - 25, cy + 15);
-    ctxF.lineTo(cx, cy - 5);
-    ctxF.lineTo(cx + 25, cy + 15);
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
-    
-    // Delivery tube from collector
-    drawWobblyLine(ctxF, cx, cy - 5, cx + 30, cy - 30, '#2b2b2b', 2, 2006);
-    drawWobblyLine(ctxF, cx + 30, cy - 30, cx + 30, cy + 10, '#2b2b2b', 2, 2007);
-}
-
-function drawHeatingSetup(cx, cy) {
-    // Retort stand clamp
-    drawWobblyLine(ctxF, cx - 60, cy + 180, cx + 60, cy + 180, '#2b2b2b', 3, 3001);
-    drawWobblyLine(ctxF, cx - 40, cy + 180, cx - 40, cy - 40, '#2b2b2b', 2.5, 3002);
-    
-    drawWobblyLine(ctxF, cx - 40, cy + 20, cx, cy + 20, '#2b2b2b', 2, 3003);
-    
-    // Horizontal Test Tube (微傾斜試管)
-    const tx = cx + 20;
-    const ty = cy + 20;
-    ctxF.save();
-    ctxF.translate(tx, ty);
-    ctxF.rotate(0.08); // Slight downward slope
-    
-    ctxF.beginPath();
-    ctxF.moveTo(-60, -10);
-    ctxF.lineTo(60, -10);
-    ctxF.arc(60, 0, 10, -Math.PI / 2, Math.PI / 2);
-    ctxF.lineTo(-60, 10);
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2.5;
-    ctxF.stroke();
-    
-    // Substance inside (baking soda)
-    ctxF.fillStyle = '#e2e2e2';
-    ctxF.fillRect(10, -8, 40, 16);
-    
-    ctxF.restore();
-    
-    // Alcohol Burner underneath
-    const bx = cx - 10;
-    const by = cy + 110;
-    
-    // Burner glass body
-    ctxF.beginPath();
-    ctxF.moveTo(bx - 20, by);
-    ctxF.lineTo(bx - 12, by - 20);
-    ctxF.lineTo(bx + 12, by - 20);
-    ctxF.lineTo(bx + 20, by);
-    ctxF.closePath();
-    ctxF.strokeStyle = '#2b2b2b';
-    ctxF.lineWidth = 2, 3004;
-    ctxF.stroke();
-    
-    // Flame
-    ctxF.save();
-    ctxF.shadowBlur = 10;
-    ctxF.shadowColor = 'rgba(231, 111, 81, 0.7)';
-    ctxF.fillStyle = '#e76f51';
-    ctxF.beginPath();
-    ctxF.moveTo(bx - 6, by - 20);
-    ctxF.quadraticCurveTo(bx, by - 40, bx + 6, by - 20);
-    ctxF.closePath();
-    ctxF.fill();
-    ctxF.restore();
-}
 
 function drawStaticBeaker(ctx, cx, cy, r, height, label, color, seed) {
     // Draw beaker lines
