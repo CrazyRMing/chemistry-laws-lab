@@ -5,10 +5,10 @@ const ctxF = flaskCanvas.getContext('2d');
 const ctxG = graphCanvas.getContext('2d');
 
 // Font Configuration
-const FONT_UI = 'bold 1.15rem "AwkwardBlack 拙黑體", sans-serif';
-const FONT_TITLE = 'bold 1.35rem "AwkwardBlack 拙黑體", sans-serif';
-const FONT_SMALL = '0.95rem "AwkwardBlack 拙黑體", sans-serif';
-const FONT_MATH = 'bold italic 1.15rem "EB Garamond", "AwkwardBlack 拙黑體", serif';
+const FONT_UI = 'bold 1.15rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
+const FONT_TITLE = 'bold 1.35rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
+const FONT_SMALL = '0.95rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
+const FONT_MATH = 'bold italic 1.15rem "EB Garamond", "AwkwardBlack 拙黑體", "AwkwardBlack", serif';
 
 // Preload generated sketchy asset images
 const imgTitration = new Image();
