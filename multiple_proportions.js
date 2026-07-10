@@ -103,6 +103,46 @@ function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width
     }
 }
 
+// Helper to draw vertical brackets
+function drawVerticalBracket(ctx, x, y1, y2, color, alignLeft = true) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    const ym = (y1 + y2) / 2;
+    const dir = alignLeft ? -1 : 1;
+    // Draw top half arc
+    ctx.moveTo(x, y1);
+    ctx.quadraticCurveTo(x + dir * 6, y1 + (ym - y1) * 0.1, x + dir * 6, y1 + (ym - y1) * 0.5);
+    ctx.quadraticCurveTo(x + dir * 6, ym - 2, x + dir * 12, ym);
+    // Draw bottom half arc
+    ctx.moveTo(x, y2);
+    ctx.quadraticCurveTo(x + dir * 6, y2 - (y2 - ym) * 0.1, x + dir * 6, y2 - (y2 - ym) * 0.5);
+    ctx.quadraticCurveTo(x + dir * 6, ym + 2, x + dir * 12, ym);
+    ctx.stroke();
+    ctx.restore();
+}
+
+// Helper to draw horizontal brackets
+function drawHorizontalBracket(ctx, x1, x2, y, color, alignTop = false) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    const xm = (x1 + x2) / 2;
+    const dir = alignTop ? -1 : 1;
+    // Left half
+    ctx.moveTo(x1, y);
+    ctx.quadraticCurveTo(x1 + (xm - x1) * 0.1, y + dir * 6, x1 + (xm - x1) * 0.5, y + dir * 6);
+    ctx.quadraticCurveTo(xm - 2, y + dir * 6, xm, y + dir * 12);
+    // Right half
+    ctx.moveTo(x2, y);
+    ctx.quadraticCurveTo(x2 - (x2 - xm) * 0.1, y + dir * 6, x2 - (x2 - xm) * 0.5, y + dir * 6);
+    ctx.quadraticCurveTo(xm + 2, y + dir * 6, xm, y + dir * 12);
+    ctx.stroke();
+    ctx.restore();
+}
+
 // Coordinate Helpers for Graph Canvas (x: 0 ~ 4.0, y: 0 ~ 32.0)
 const margin = 60;
 function mapX(xVal, width) {
@@ -338,8 +378,8 @@ function drawLeftPanel() {
         // Right Column: Mass Details (prevent occlusion)
         const tx = w * 2 / 3 - 30;
         ctxF.fillStyle = '#1f1f1f';
+        ctxG.textAlign = 'left';
         ctxF.font = FONT_UI;
-        ctxF.textAlign = 'left';
         ctxF.fillText('組成分數據：', tx, by + 20);
         ctxF.fillText('H = 2.5 g', tx, by + 45);
         ctxF.fillText('O = 20.0 g', tx, by + 70);
@@ -694,15 +734,29 @@ function drawRightPanel() {
     
     // X Axis ticks & labels
     ctxG.font = FONT_SMALL;
-    ctxG.fillStyle = '#2b2b2b';
     ctxG.textAlign = 'center';
     for (let xVal = 1.0; xVal <= 4.0; xVal += 1.0) {
         const tx = mapX(xVal, w);
         const ty = mapY(0, h);
         drawWobblyLine(ctxG, tx, ty, tx, ty + 5, '#2b2b2b', 1.5, 203 + xVal);
-        ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
+        
+        if ((currentStep === 6 || currentStep === 7) && xVal === 1.0) {
+            // Highlight x=1.0 with blue circle background per request
+            ctxG.save();
+            ctxG.fillStyle = 'rgba(37, 99, 235, 0.15)'; // light blue bg
+            drawWobblyCircle(ctxG, tx, ty + 14, 13, '#2563eb', true, 1.5, 300);
+            ctxG.fillStyle = '#2563eb'; // blue text
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
+            ctxG.restore();
+        } else {
+            ctxG.fillStyle = '#2b2b2b';
+            ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
+        }
     }
     ctxG.font = FONT_UI;
+    ctxG.fillStyle = '#2b2b2b';
     ctxG.fillText('氫的質量 wH (g)', w - 100, mapY(0, h) + 40);
     
     // Y Axis ticks & labels (prevent text alignment pollution)
@@ -712,7 +766,21 @@ function drawRightPanel() {
         const tx = mapX(0, w);
         const ty = mapY(yVal, h);
         drawWobblyLine(ctxG, tx, ty, tx - 5, ty, '#2b2b2b', 1.5, 210 + yVal);
-        ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
+        
+        if ((currentStep === 8 || currentStep === 9) && yVal === 16) {
+            // Highlight y=16 with green circle background per request
+            ctxG.save();
+            ctxG.fillStyle = 'rgba(5, 150, 105, 0.15)'; // light green bg
+            drawWobblyCircle(ctxG, tx - 16, ty + 1, 13, '#059669', true, 1.5, 301);
+            ctxG.fillStyle = '#059669'; // green text
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText(yVal.toString(), tx - 16, ty + 5);
+            ctxG.restore();
+        } else {
+            ctxG.fillStyle = '#2b2b2b';
+            ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
+        }
     }
     
     // Y-Axis Label with RESET textAlign to avoid clipping
@@ -724,12 +792,10 @@ function drawRightPanel() {
     
     // 3. Draw Compound I representative point and line
     if (currentStep >= 2) {
-        // Draw Compound I point at (2.5, 20.0) without text coordinates per request
         drawWobblyCircle(ctxG, mapX(2.5, w), mapY(20.0, h), 6, '#ff7a00', true, 2, 220);
     }
     
     if (currentStep >= 3) {
-        // Draw Compound I line: slope 8.0 (y = 8x)
         ctxG.save();
         ctxG.globalAlpha = 0.65;
         drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), mapX(3.5, w), mapY(28.0, h), '#ff7a00', 3, 225);
@@ -738,12 +804,10 @@ function drawRightPanel() {
     
     // 4. Draw Compound II representative point and line
     if (currentStep >= 4) {
-        // Draw Compound II point at (1.5, 24.0) without text coordinates per request
         drawWobblyCircle(ctxG, mapX(1.5, w), mapY(24.0, h), 6, '#7c3aed', true, 2, 230);
     }
     
     if (currentStep >= 5) {
-        // Draw Compound II line: slope 16.0 (y = 16x)
         ctxG.save();
         ctxG.globalAlpha = 0.65;
         drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), mapX(1.8, w), mapY(28.8, h), '#7c3aed', 3, 235);
@@ -761,38 +825,32 @@ function drawRightPanel() {
         ctxG.lineWidth = 2;
         ctxG.beginPath();
         ctxG.moveTo(xPos, mapY(0, h));
-        // Vertical comparison line ends at Y=20.0, avoiding the Compound II data point (1.5, 24.0)
         ctxG.lineTo(xPos, mapY(20.0, h));
         ctxG.stroke();
         ctxG.restore();
         
-        // Draw intersection dots (on the relation lines, NOT the data points)
-        // Intersection 1 with Compound I (y = 8x => O = 8.0)
+        // Draw intersection dots
         drawWobblyCircle(ctxG, xPos, mapY(8.0, h), 5, '#2563eb', true, 2, 240);
         ctxG.fillStyle = '#ff7a00';
         ctxG.font = 'bold 0.95rem sans-serif';
         ctxG.textAlign = 'left';
-        ctxG.fillText('8.0', xPos + 8, mapY(8.0, h) + 4); // Only show numeric value, no "O = "
+        ctxG.fillText('8.0', xPos + 8, mapY(8.0, h) + 4);
         
-        // Intersection 2 with Compound II (y = 16x => O = 16.0)
         drawWobblyCircle(ctxG, xPos, mapY(16.0, h), 5, '#2563eb', true, 2, 241);
         ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4); // Only show numeric value, no "O = "
+        ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4);
         
+        // Step 7 Vertical/Horizontal Bracket Marks in Red and Green per sketch
         if (currentStep === 7) {
-            // Vertical bracket/indicator line
-            drawWobblyLine(ctxG, xPos - 15, mapY(8.0, h), xPos - 15, mapY(16.0, h), '#2563eb', 2, 242);
-            ctxG.fillStyle = '#2563eb';
-            ctxG.font = FONT_SMALL;
-            ctxG.textAlign = 'right';
-            ctxG.fillText('2 : 1', xPos - 22, mapY(12.0, h) + 5); // Only show ratio, no "比值 ="
+            // Draw red horizontal bracket at bottom (0 to 1.0)
+            drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), mapY(0, h) + 26, '#ef4444', false);
+            
+            // Draw red vertical bracket (0 to 8.0)
+            drawVerticalBracket(ctxG, xPos - 8, mapY(0, h), mapY(8.0, h), '#ef4444', true);
+            
+            // Draw green vertical bracket (8.0 to 16.0)
+            drawVerticalBracket(ctxG, xPos - 8, mapY(8.0, h), mapY(16.0, h), '#10b981', true);
         }
-        
-        // Show fixed H label (only show numeric value at the bottom tick)
-        ctxG.fillStyle = '#2563eb';
-        ctxG.font = 'bold 0.85rem sans-serif';
-        ctxG.textAlign = 'center';
-        ctxG.fillText('1.0', xPos, mapY(0, h) - 10);
     }
     
     // 6. Draw horizontal comparison line (Step 8 & 9)
@@ -806,39 +864,33 @@ function drawRightPanel() {
         ctxG.lineWidth = 2;
         ctxG.beginPath();
         ctxG.moveTo(mapX(0, w), yPos);
-        // Horizontal line ends at X=2.5, avoiding the data points (2.5, 20.0) and (1.5, 24.0)
         ctxG.lineTo(mapX(2.5, w), yPos);
         ctxG.stroke();
         ctxG.restore();
         
-        // Draw intersection dots (on the relation lines, NOT the data points)
-        // Intersection 1 with Compound I (y = 8x => x = 2.0)
+        // Draw intersection dots
         const xPos1 = mapX(2.0, w);
         drawWobblyCircle(ctxG, xPos1, yPos, 5, '#059669', true, 2, 250);
         ctxG.fillStyle = '#ff7a00';
         ctxG.font = 'bold 0.95rem sans-serif';
         ctxG.textAlign = 'center';
-        ctxG.fillText('2.0', xPos1, yPos - 10); // Only show numeric value, no "H = "
+        ctxG.fillText('2.0', xPos1, yPos - 10);
         
-        // Intersection 2 with Compound II (y = 16x => x = 1.0)
         const xPos2 = mapX(1.0, w);
         drawWobblyCircle(ctxG, xPos2, yPos, 5, '#059669', true, 2, 251);
         ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('1.0', xPos2, yPos - 10); // Only show numeric value, no "H = "
+        ctxG.fillText('1.0', xPos2, yPos - 10);
         
+        // Step 9 Horizontal/Vertical Bracket Marks in Red and Green (Symmetrical to Step 7)
         if (currentStep === 9) {
-            // Horizontal bracket/indicator line
-            drawWobblyLine(ctxG, xPos2, yPos + 15, xPos1, yPos + 15, '#059669', 2, 252);
-            ctxG.fillStyle = '#059669';
-            ctxG.font = FONT_SMALL;
-            ctxG.textAlign = 'center';
-            ctxG.fillText('2 : 1', mapX(1.5, w), yPos + 32); // Only show ratio, no "比值 ="
+            // Draw red vertical bracket on left axis (0 to 16.0)
+            drawVerticalBracket(ctxG, mapX(0, w) - 26, mapY(0, h), mapY(16.0, h), '#ef4444', true);
+            
+            // Draw red horizontal bracket (0 to 1.0)
+            drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), yPos + 12, '#ef4444', false);
+            
+            // Draw green horizontal bracket (1.0 to 2.0)
+            drawHorizontalBracket(ctxG, mapX(1.0, w), mapX(2.0, w), yPos + 12, '#10b981', false);
         }
-        
-        // Show fixed O label (only show numeric value at the left tick)
-        ctxG.fillStyle = '#059669';
-        ctxG.font = 'bold 0.85rem sans-serif';
-        ctxG.textAlign = 'left';
-        ctxG.fillText('16.0', mapX(0, w) + 10, yPos - 10);
     }
 }
