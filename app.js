@@ -175,7 +175,7 @@ const stepTexts = [
         desc: "點燃酒精，收集燃燒產生的水滴進行分析。此時在座標圖上點下第 2 點。此次收集到的水滴質量較多。"
     },
     {
-        title: "第四步：加熱小蘇打產生的水",
+        title: "第四步：小蘇打分解產生的水",
         desc: "將小蘇打固體放入試管加熱，收集管口冷凝出來的水滴進行分析。此時在座標圖上點下第 3 點。此次收集到的水滴質量較少。"
     },
     {
@@ -385,7 +385,7 @@ function renderFlaskPanel() {
         // Render 3 Beakers in Gray Shades matching the Graph Points
         drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', '', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
         drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', '', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
-        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '加熱小蘇打水', '', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
+        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', '', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
@@ -436,16 +436,16 @@ function renderFlaskPanel() {
 
         // Headers
         ctxF.fillText('水源種類', cx1, y0 + 28);
-        ctxF.fillText('氫質量 wH', cx2, y0 + 28);
-        ctxF.fillText('氧質量 wO', cx3, y0 + 28);
+        ctxF.fillText('氫質量 wH (g)', cx2, y0 + 28);
+        ctxF.fillText('氧質量 wO (g)', cx3, y0 + 28);
         ctxF.fillText('比值 wO/wH', cx4, y0 + 28);
 
         // Row 1: 酸鹼中和
         ctxF.font = FONT_SMALL;
         ctxF.fillText('酸鹼中和水', cx1, y1 + 28);
-        ctxF.font = FONT_MATH;
-        ctxF.fillText(`${wH1} g`, cx2, y1 + 28);
-        ctxF.fillText(`${wO1} g`, cx3, y1 + 28);
+        ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
+        ctxF.fillText(`${wH1}`, cx2, y1 + 28);
+        ctxF.fillText(`${wO1}`, cx3, y1 + 28);
         ctxF.fillStyle = COLOR_ORANGE;
         ctxF.fillText(`${wO1}/${wH1} = 8.0`, cx4, y1 + 28);
 
@@ -453,9 +453,9 @@ function renderFlaskPanel() {
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_SMALL;
         ctxF.fillText('酒精燃燒水', cx1, y2 + 28);
-        ctxF.font = FONT_MATH;
-        ctxF.fillText(`${wH2} g`, cx2, y2 + 28);
-        ctxF.fillText(`${wO2} g`, cx3, y2 + 28);
+        ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
+        ctxF.fillText(`${wH2}`, cx2, y2 + 28);
+        ctxF.fillText(`${wO2}`, cx3, y2 + 28);
         ctxF.fillStyle = COLOR_ORANGE;
         ctxF.fillText(`${wO2}/${wH2} = 8.0`, cx4, y2 + 28);
 
@@ -463,9 +463,9 @@ function renderFlaskPanel() {
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_SMALL;
         ctxF.fillText('小蘇打分解水', cx1, y3 + 28);
-        ctxF.font = FONT_MATH;
-        ctxF.fillText(`${wH3} g`, cx2, y3 + 28);
-        ctxF.fillText(`${wO3} g`, cx3, y3 + 28);
+        ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
+        ctxF.fillText(`${wH3}`, cx2, y3 + 28);
+        ctxF.fillText(`${wO3}`, cx3, y3 + 28);
         ctxF.fillStyle = COLOR_ORANGE;
         ctxF.fillText(`${wO3}/${wH3} = 8.0`, cx4, y3 + 28);
 
