@@ -13,6 +13,11 @@ const FONT_MATH = 'bold italic 1.15rem "EB Garamond", serif';
 // Navigation State
 let currentStep = 1;
 const totalSteps = 14;
+let animProgress = 0; // 0 → 1 per step
+
+function easeInOutCubic(t) {
+    return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+}
 
 // Seeded Random for Hand-drawn wobbly effect
 let rndSeed = 42;
@@ -166,8 +171,8 @@ const stepTexts = [
     },
     {
         title: "第三步：繪製化合物 I 質量關係線",
-        desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本 the 氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
-        takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點 the 直線。"
+        desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本的氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
+        takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點的直線。"
     },
     {
         title: "第四步：標記化合物 II 數據點",
@@ -311,21 +316,36 @@ function updateUI() {
 function nextStep() {
     if (currentStep < totalSteps) {
         currentStep++;
+        animProgress = 0;
         updateUI();
-        drawLoop();
+        startAnimLoop();
     }
 }
 
-// Draw Loop calling both canvases
 function prevStep() {
     if (currentStep > 1) {
         currentStep--;
+        animProgress = 0;
         updateUI();
-        drawLoop();
+        startAnimLoop();
     }
 }
 
-// Draw Loop calling both canvases
+let _animLoopId = null;
+function startAnimLoop() {
+    if (_animLoopId) cancelAnimationFrame(_animLoopId);
+    function loop() {
+        if (animProgress < 1.0) {
+            animProgress = Math.min(1.0, animProgress + 0.018);
+            drawLoop();
+            _animLoopId = requestAnimationFrame(loop);
+        } else {
+            drawLoop(); // final frame
+        }
+    }
+    _animLoopId = requestAnimationFrame(loop);
+}
+
 function drawLoop() {
     drawLeftPanel();
     drawRightPanel();
@@ -355,54 +375,57 @@ function drawLeftPanel() {
         ctxF.restore();
     }
     else if (currentStep === 2 || currentStep === 3) {
-        // Step 2-3: Show Compound I container
+        // Step 2: beaker centered; Step 3: beaker slides to left quarter
         ctxF.save();
         drawWobblyRect(ctxF, 40, 40, w - 80, h - 80, '#2b2b2b', true, '#ffffff', 2, 35);
-        
-        // Center Beaker
-        const bx = w / 2 - 40;
-        const by = h / 2 - 50;
-        drawWobblyLine(ctxF, bx, by, bx, by + 80, '#2b2b2b', 3, 40);
-        drawWobblyLine(ctxF, bx, by + 80, bx + 80, by + 80, '#2b2b2b', 3, 41);
-        drawWobblyLine(ctxF, bx + 80, by + 80, bx + 80, by, '#2b2b2b', 3, 42);
-        
-        // Liquid in beaker
+
+        // Beaker geometry — same size as Steps 4-5 (50x60)
+        const bW = 50, bH = 60;
+        // Target x for step 2 (centered) vs step 3 (left quarter)
+        const targetCX = (currentStep === 2) ? w / 2 : w / 4;
+        const by = h / 2 - 40;
+        const bx = targetCX - bW / 2;
+
+        drawWobblyLine(ctxF, bx, by, bx, by + bH, '#2b2b2b', 2.5, 40);
+        drawWobblyLine(ctxF, bx, by + bH, bx + bW, by + bH, '#2b2b2b', 2.5, 41);
+        drawWobblyLine(ctxF, bx + bW, by + bH, bx + bW, by, '#2b2b2b', 2.5, 42);
         ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
-        ctxF.fillRect(bx + 4, by + 30, 72, 48);
-        drawWobblyLine(ctxF, bx + 2, by + 30, bx + 78, by + 30, '#ff7a00', 2, 43);
-        
-        // Two-column data block, centered under the compound name
+        ctxF.fillRect(bx + 3, by + 20, bW - 6, 38);
+        drawWobblyLine(ctxF, bx + 1, by + 20, bx + bW - 1, by + 20, '#ff7a00', 1.5, 43);
+
+        // Text below beaker (pivoted two-column layout)
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
-        const labelColW23 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
-        const valColW23   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
-        const pivot23 = w / 2 - valColW23 / 2 + labelColW23 / 2;
+        const lW = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
+        const vW = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
+        const piv = targetCX - vW / 2 + lW / 2;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', w / 2, by + 105);
+        ctxF.fillText('化合物 I（水）', targetCX, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot23, by + 128);
+        ctxF.fillText('H', piv, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', pivot23, by + 128);
+        ctxF.fillText(' = 2.5 g', piv, by + bH + 48);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot23, by + 151);
+        ctxF.fillText('O', piv, by + bH + 71);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', pivot23, by + 151);
-        
+        ctxF.fillText(' = 20.0 g', piv, by + bH + 71);
+
         ctxF.restore();
     }
     else if (currentStep === 4 || currentStep === 5) {
-        // Step 4-5: Show Compound I & Compound II containers side-by-side
+        // Step 4-5: Compound I (left) + Compound II (right) — same-size beakers
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 50);
-        
+
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'left';
         ctxF.fillStyle = '#1f1f1f';
         ctxF.fillText('多種化合物的組成比', 50, 75);
-        
+
+        const bW = 50, bH = 60;
         const by = h / 2 - 40;
-        
-        // Draw Compound I (Left side) — beaker centered at w/4
+
+        // Compound I — beaker centered at w/4
         const cx1 = w / 4;
         let bx = cx1 - 25;
         drawWobblyLine(ctxF, bx, by, bx, by + 60, '#2b2b2b', 2.5, 60);
@@ -459,132 +482,128 @@ function drawLeftPanel() {
         // Step 6 & 7: Equal hydrogen comparison
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 80);
-        ctxF.font = FONT_TITLE;
-        ctxF.fillText('等質量 氫 (wH 相同) 時：', 50, 75);
-        
+
         const cx1 = w / 4 + 10;
         const cx2 = (w * 3) / 4 - 10;
-        const cy = h / 2 + 10;
-        
-        // Compound I
+        const cy = h / 2 + 15;
+        const atomR_H = 15, atomR_O = 20;
+
+        // Description text at TOP
         ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 I', cx1 - 35, cy - 60);
-        // H atom
-        drawWobblyCircle(ctxF, cx1, cy - 20, 15, '#ff7a00', true, 2, 81);
+        ctxF.fillStyle = '#ff7a00';
+        ctxF.textAlign = 'center';
+        if (currentStep === 6) {
+            ctxF.fillText('H 原子數量相同', w / 2, 75);
+        } else {
+            ctxF.fillText('O 原子數量比 = 1 : 2', w / 2, 75);
+        }
+
+        // Compound I — H atom
+        drawWobblyCircle(ctxF, cx1, cy - 20, atomR_H, '#ff7a00', true, 2, 81);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx1, cy - 16);
-        
         if (currentStep === 7) {
-            // O atom (only shown in Step 7)
-            drawWobblyCircle(ctxF, cx1, cy + 25, 20, '#444444', true, 2, 82);
+            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#444444', true, 2, 82);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
-            ctxF.fillText('O', cx1, cy + 30);
+            ctxF.fillText('O', cx1, cy + 33);
         }
-        
-        // Compound II
+        // Compound I label BELOW atoms
         ctxF.fillStyle = '#1f1f1f';
-        ctxF.textAlign = 'left';
         ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 II', cx2 - 35, cy - 60);
-        // H atom
-        drawWobblyCircle(ctxF, cx2, cy - 20, 15, '#ff7a00', true, 2, 83);
+        ctxF.textAlign = 'center';
+        const labelY6_I = (currentStep === 7) ? cy + 28 + atomR_O + 22 : cy - 20 + atomR_H + 22;
+        ctxF.fillText('化合物 I', cx1, labelY6_I);
+
+        // Compound II — H atom
+        drawWobblyCircle(ctxF, cx2, cy - 20, atomR_H, '#ff7a00', true, 2, 83);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx2, cy - 16);
-        
         if (currentStep === 7) {
-            // O atoms (2 pieces - only shown in Step 7)
-            drawWobblyCircle(ctxF, cx2 - 22, cy + 25, 20, '#444444', true, 2, 84);
+            drawWobblyCircle(ctxF, cx2 - 22, cy + 28, atomR_O, '#444444', true, 2, 84);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
-            ctxF.fillText('O', cx2 - 22, cy + 30);
-            
-            drawWobblyCircle(ctxF, cx2 + 22, cy + 25, 20, '#444444', true, 2, 85);
+            ctxF.fillText('O', cx2 - 22, cy + 33);
+            drawWobblyCircle(ctxF, cx2 + 22, cy + 28, atomR_O, '#444444', true, 2, 85);
             ctxF.fillStyle = '#ffffff';
-            ctxF.fillText('O', cx2 + 22, cy + 30);
+            ctxF.fillText('O', cx2 + 22, cy + 33);
         }
-        
-        // Label at bottom
-        ctxF.fillStyle = '#ff7a00';
-        ctxF.font = FONT_TITLE;
+        // Compound II label BELOW atoms
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        if (currentStep === 6) {
-            ctxF.fillText('H 相同', w / 2, h - 60);
-        } else {
-            ctxF.fillText('O 數量比 = 1 : 2', w / 2, h - 60);
-        }
-        
+        const labelY6_II = (currentStep === 7) ? cy + 28 + atomR_O + 22 : cy - 20 + atomR_H + 22;
+        ctxF.fillText('化合物 II', cx2, labelY6_II);
+
         ctxF.restore();
     }
     else if (currentStep === 8 || currentStep === 9) {
         // Step 8 & 9: Equal oxygen comparison
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 90);
-        ctxF.font = FONT_TITLE;
-        ctxF.fillText('等質量 氧 (wO 相同) 時：', 50, 75);
-        
+
         const cx1 = w / 4 + 10;
         const cx2 = (w * 3) / 4 - 10;
-        const cy = h / 2 + 10;
-        
-        // Compound I
+        const cy = h / 2 + 15;
+        const atomR_H = 15, atomR_O = 20;
+
+        // Description text at TOP
         ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 I', cx1 - 35, cy - 60);
-        
+        ctxF.fillStyle = '#7c3aed';
+        ctxF.textAlign = 'center';
+        if (currentStep === 8) {
+            ctxF.fillText('O 原子數量相同', w / 2, 75);
+        } else {
+            ctxF.fillText('H 原子數量比 = 2 : 1', w / 2, 75);
+        }
+
+        // Compound I
         if (currentStep === 9) {
-            // H atoms (2 pieces - only shown in Step 9)
-            drawWobblyCircle(ctxF, cx1 - 18, cy - 20, 15, '#ff7a00', true, 2, 91);
+            drawWobblyCircle(ctxF, cx1 - 18, cy - 20, atomR_H, '#ff7a00', true, 2, 91);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 0.95rem sans-serif';
             ctxF.textAlign = 'center';
             ctxF.fillText('H', cx1 - 18, cy - 16);
-            
-            drawWobblyCircle(ctxF, cx1 + 18, cy - 20, 15, '#ff7a00', true, 2, 92);
+            drawWobblyCircle(ctxF, cx1 + 18, cy - 20, atomR_H, '#ff7a00', true, 2, 92);
             ctxF.fillStyle = '#ffffff';
             ctxF.fillText('H', cx1 + 18, cy - 16);
         }
-        // O atom
-        drawWobblyCircle(ctxF, cx1, cy + 25, 20, '#444444', true, 2, 93);
+        drawWobblyCircle(ctxF, cx1, cy + 25, atomR_O, '#444444', true, 2, 93);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 1.15rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('O', cx1, cy + 30);
-        
-        // Compound II
+        // Compound I label BELOW atoms
         ctxF.fillStyle = '#1f1f1f';
-        ctxF.textAlign = 'left';
         ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 II', cx2 - 35, cy - 60);
-        
+        ctxF.textAlign = 'center';
+        const labelY8_I = cy + 25 + atomR_O + 22;
+        ctxF.fillText('化合物 I', cx1, labelY8_I);
+
+        // Compound II
         if (currentStep === 9) {
-            // H atom (1 piece - only shown in Step 9)
-            drawWobblyCircle(ctxF, cx2, cy - 20, 15, '#ff7a00', true, 2, 94);
+            drawWobblyCircle(ctxF, cx2, cy - 20, atomR_H, '#ff7a00', true, 2, 94);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 0.95rem sans-serif';
             ctxF.textAlign = 'center';
             ctxF.fillText('H', cx2, cy - 16);
         }
-        // O atom
-        drawWobblyCircle(ctxF, cx2, cy + 25, 20, '#444444', true, 2, 95);
+        drawWobblyCircle(ctxF, cx2, cy + 25, atomR_O, '#444444', true, 2, 95);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 1.15rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('O', cx2, cy + 30);
-        
-        // Label at bottom
-        ctxF.fillStyle = '#7c3aed';
-        ctxF.font = FONT_TITLE;
+        // Compound II label BELOW atoms
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        if (currentStep === 8) {
-            ctxF.fillText('O 相同', w / 2, h - 60);
-        } else {
-            ctxF.fillText('H 數量比 = 2 : 1', w / 2, h - 60);
-        }
-        
+        const labelY8_II = cy + 25 + atomR_O + 22;
+        ctxF.fillText('化合物 II', cx2, labelY8_II);
+
         ctxF.restore();
     }
     else if (currentStep === 10) {
@@ -818,7 +837,11 @@ function drawRightPanel() {
     if (currentStep >= 3) {
         ctxG.save();
         ctxG.globalAlpha = 0.65;
-        drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), mapX(3.5, w), mapY(28.0, h), '#ff7a00', 3, 225);
+        // Animate drawing on step 3, show full on later steps
+        const t3 = (currentStep === 3) ? easeInOutCubic(animProgress) : 1;
+        const endX3 = mapX(0, w) + (mapX(3.5, w) - mapX(0, w)) * t3;
+        const endY3 = mapY(0, h) + (mapY(28.0, h) - mapY(0, h)) * t3;
+        drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), endX3, endY3, '#ff7a00', 3, 225);
         ctxG.restore();
     }
     
@@ -830,7 +853,11 @@ function drawRightPanel() {
     if (currentStep >= 5) {
         ctxG.save();
         ctxG.globalAlpha = 0.65;
-        drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), mapX(1.8, w), mapY(28.8, h), '#7c3aed', 3, 235);
+        // Animate drawing on step 5, show full on later steps
+        const t5 = (currentStep === 5) ? easeInOutCubic(animProgress) : 1;
+        const endX5 = mapX(0, w) + (mapX(1.8, w) - mapX(0, w)) * t5;
+        const endY5 = mapY(0, h) + (mapY(28.8, h) - mapY(0, h)) * t5;
+        drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), endX5, endY5, '#7c3aed', 3, 235);
         ctxG.restore();
     }
     
