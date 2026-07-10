@@ -413,7 +413,7 @@ function renderFlaskPanel() {
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
-        ctxF.fillText('實驗分析顯示：它們在化學性質上完全一樣，', w / 2, h / 2 + 95);
+        ctxF.fillText('實驗分析顯示：它們的組成元素重量比完全一樣，', w / 2, h / 2 + 95);
         ctxF.fillText('不論來源為何，皆為相同物質「水 (H₂O)」。', w / 2, h / 2 + 120);
     }
     else if (currentStep === 6) {
