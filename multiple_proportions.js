@@ -1,4 +1,4 @@
-﻿// Canvas & UI Setup
+// Canvas & UI Setup
 const flaskCanvas = document.getElementById('flaskCanvas');
 const graphCanvas = document.getElementById('graphCanvas');
 const ctxF = flaskCanvas.getContext('2d');
@@ -895,7 +895,35 @@ function drawLeftPanel() {
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
         ctxF.fillText('「 當甲、乙兩元素結合，', w / 2, cy - 50);
-        ctxF.fillText('生成兩種以上的化合物時，', w / 2, cy - 10);
+        // Line 2: 生成[兩種](purple)以上的[化合物](orange)時，
+        const text2_1 = '生成';
+        const text2_2 = '兩種';
+        const text2_3 = '以上的';
+        const text2_4 = '化合物';
+        const text2_5 = '時，';
+        const w2_1 = ctxF.measureText(text2_1).width;
+        const w2_2 = ctxF.measureText(text2_2).width;
+        const w2_3 = ctxF.measureText(text2_3).width;
+        const w2_4 = ctxF.measureText(text2_4).width;
+        const w2_5 = ctxF.measureText(text2_5).width;
+        const totalW2 = w2_1 + w2_2 + w2_3 + w2_4 + w2_5;
+
+        let currentX2 = w / 2 - totalW2 / 2;
+        ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text2_1, currentX2, cy - 10);
+        currentX2 += w2_1;
+        ctxF.fillStyle = '#7c3aed'; // Purple
+        ctxF.fillText(text2_2, currentX2, cy - 10);
+        currentX2 += w2_2;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text2_3, currentX2, cy - 10);
+        currentX2 += w2_3;
+        ctxF.fillStyle = '#ff7a00'; // Orange
+        ctxF.fillText(text2_4, currentX2, cy - 10);
+        currentX2 += w2_4;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text2_5, currentX2, cy - 10);
         // Render colored sub-strings for Dalton's statement
         ctxF.font = FONT_TITLE;
         
