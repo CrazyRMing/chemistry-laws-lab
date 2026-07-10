@@ -370,19 +370,6 @@ function drawLeftPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', targetCX, by - 15);
-        ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
-        const lW = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
-        const vW = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
-        const piv = targetCX - vW / 2 + lW / 2;
-        ctxF.textAlign = 'right';
-        ctxF.fillText('H', piv, by + bH + 25);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', piv, by + bH + 25);
-        ctxF.textAlign = 'right';
-        ctxF.fillText('O', piv, by + bH + 48);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', piv, by + bH + 48);
-
         ctxF.restore();
     }
     else if (currentStep === 4 || currentStep === 5) {
@@ -418,20 +405,6 @@ function drawLeftPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, by - 15);
         ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
-        
-        // Two-column data block, centered under Compound I beaker
-        const labelColW1 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
-        const valColW1   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
-        const pivot1 = cx1 - valColW1 / 2 + labelColW1 / 2;
-        ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot1, by + bH + 25);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', pivot1, by + bH + 25);
-        ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot1, by + bH + 48);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', pivot1, by + bH + 48);
-
         // Draw Compound II (Right side) — beaker centered at 3w/4, fades in on Step 4
         const cx2 = (w * 3) / 4;
         const alpha4 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
@@ -449,20 +422,6 @@ function drawLeftPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 II（雙氧水）', cx2, by - 15);
-        ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
-        
-        // Two-column data block, centered under Compound II beaker
-        const labelColW2 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
-        const valColW2   = Math.max(ctxF.measureText(' = 1.5 g').width, ctxF.measureText(' = 24.0 g').width);
-        const pivot2 = cx2 - valColW2 / 2 + labelColW2 / 2;
-        ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot2, by + bH + 25);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 1.5 g', pivot2, by + bH + 25);
-        ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot2, by + bH + 48);
-        ctxF.textAlign = 'left';
-        ctxF.fillText(' = 24.0 g', pivot2, by + bH + 48);
         ctxF.globalAlpha = 1;
 
         ctxF.restore();
