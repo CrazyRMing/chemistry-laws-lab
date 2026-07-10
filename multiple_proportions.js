@@ -362,11 +362,12 @@ function drawLeftPanel() {
         // Title
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#1f1f1f';
         ctxF.fillText('化合物 I (水 H₂O)', 60, 80);
         
-        // Left Column: Beaker
-        const bx = w / 3 - 40;
-        const by = h / 2 - 30;
+        // Center Beaker
+        const bx = w / 2 - 40;
+        const by = h / 2 - 40;
         drawWobblyLine(ctxF, bx, by, bx, by + 80, '#2b2b2b', 3, 40);
         drawWobblyLine(ctxF, bx, by + 80, bx + 80, by + 80, '#2b2b2b', 3, 41);
         drawWobblyLine(ctxF, bx + 80, by + 80, bx + 80, by, '#2b2b2b', 3, 42);
@@ -376,14 +377,11 @@ function drawLeftPanel() {
         ctxF.fillRect(bx + 4, by + 30, 72, 48);
         drawWobblyLine(ctxF, bx + 2, by + 30, bx + 78, by + 30, '#ff7a00', 2, 43);
         
-        // Right Column: Mass Details (prevent occlusion)
-        const tx = w * 2 / 3 - 30;
+        // Text below image (consistent with Step 4-5 text styles)
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
-        ctxF.textAlign = 'left';
-        ctxF.fillText('組成分數據：', tx, by + 20);
-        ctxF.fillText('H = 2.5 g', tx, by + 45);
-        ctxF.fillText('O = 20.0 g', tx, by + 70);
+        ctxF.textAlign = 'center';
+        ctxF.fillText('H = 2.5 g, O = 20.0 g', w / 2, by + 115);
         
         ctxF.restore();
     }
@@ -742,12 +740,8 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx, ty + 5, '#2b2b2b', 1.5, 203 + xVal);
         
         if ((currentStep === 6 || currentStep === 7) && xVal === 1.0) {
-            ctxG.fillStyle = '#2b2b2b';
+            ctxG.fillStyle = '#2563eb'; // Blue text label
             ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
-            // Draw a blue circle below 1.0
-            ctxG.save();
-            drawWobblyCircle(ctxG, tx, ty + 30, 6, '#2563eb', true, 1.5, 300);
-            ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
             ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
@@ -766,12 +760,8 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx - 5, ty, '#2b2b2b', 1.5, 210 + yVal);
         
         if ((currentStep === 8 || currentStep === 9) && yVal === 16) {
-            ctxG.fillStyle = '#2b2b2b';
+            ctxG.fillStyle = '#2563eb'; // Blue text label
             ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
-            // Draw a green circle to the left of 16
-            ctxG.save();
-            drawWobblyCircle(ctxG, tx - 24, ty + 2, 6, '#059669', true, 1.5, 301);
-            ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
             ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
@@ -862,7 +852,7 @@ function drawRightPanel() {
         
         ctxG.save();
         ctxG.setLineDash([5, 5]);
-        ctxG.strokeStyle = '#059669';
+        ctxG.strokeStyle = '#2563eb'; // Blue horizontal comparison line per request
         ctxG.lineWidth = 2;
         ctxG.beginPath();
         ctxG.moveTo(mapX(0, w), yPos);
@@ -872,14 +862,14 @@ function drawRightPanel() {
         
         // Draw intersection dots
         const xPos1 = mapX(2.0, w);
-        drawWobblyCircle(ctxG, xPos1, yPos, 5, '#059669', true, 2, 250);
+        drawWobblyCircle(ctxG, xPos1, yPos, 5, '#2563eb', true, 2, 250); // Blue dot
         ctxG.fillStyle = '#ff7a00';
         ctxG.font = 'bold 0.95rem sans-serif';
         ctxG.textAlign = 'center';
         ctxG.fillText('2.0', xPos1, yPos - 10);
         
         const xPos2 = mapX(1.0, w);
-        drawWobblyCircle(ctxG, xPos2, yPos, 5, '#059669', true, 2, 251);
+        drawWobblyCircle(ctxG, xPos2, yPos, 5, '#2563eb', true, 2, 251); // Blue dot
         ctxG.fillStyle = '#7c3aed';
         ctxG.fillText('1.0', xPos2, yPos - 10);
         
