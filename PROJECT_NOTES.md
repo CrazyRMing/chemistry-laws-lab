@@ -36,10 +36,13 @@
 - [x] **防快取機制**：圖片 src 加上 `?v=Date.now()` 防快取時間戳。
 - [x] **安裝全域技能**：`soil-teaching-slides` 技能包安裝至 `C:\Users\user\.gemini\config\skills\`。
 - [x] **A 版本簡報生成**：為 8 個步驟分別生圖（手繪 SOIL 16:9 格式），以 `pack_images_to_pptx.py` 封裝輸出 `定比定律教學簡報(A版本).pptx`（3 MB，8 slides，8 媒體圖）。
+- [x] **圖例欄位對齊**：利用 CSS Grid 將圖例版面重構為雙欄網格，確保兩列點標記垂直對齊。
+- [x] **字體風格優化**：應使用者要求，將拙黑體還原為原本清晰精緻的原生黑體字型系統（與 EB Garamond 襯線字體），兼顧畫面整潔與教學易讀性。
+- [x] **打包與瘦身**：自專案資產中清理 15 MB 的 font 檔以保持 Git 庫輕量化。
 
 ### 踩坑筆記
 - `heating.png` 傾斜方向 AI 生圖容易搞錯；最終使用者直接提供參考圖，複製覆蓋最可靠。
-- Canvas 圖例框畫在 canvas 內容易切字，移到 HTML 是根本解法。
+- Canvas 圖例框畫在 canvas 內容易切字，移到 HTML 是根本解法；使用 Flex 換行對齊時會因為各字串寬度不等導致圖例點參差不齊，改用 CSS Grid 網格是解決垂直對齊最簡單、最穩固的方案。
 - `pack_images_to_pptx.py` 為純 stdlib，不依賴 python-pptx，可直接執行。
 
 ### 下一步 (待議)
