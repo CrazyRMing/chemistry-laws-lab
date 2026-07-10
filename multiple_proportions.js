@@ -375,14 +375,13 @@ function drawLeftPanel() {
         ctxF.restore();
     }
     else if (currentStep === 2 || currentStep === 3) {
-        // Step 2: beaker centered; Step 3: beaker slides to left quarter
+        // Step 2-3: Show Compound I container centered (Step 3 is identical to Step 2)
         ctxF.save();
         drawWobblyRect(ctxF, 40, 40, w - 80, h - 80, '#2b2b2b', true, '#ffffff', 2, 35);
 
         // Beaker geometry — same size as Steps 4-5 (50x60)
         const bW = 50, bH = 60;
-        // Target x for step 2 (centered) vs step 3 (left quarter)
-        const targetCX = (currentStep === 2) ? w / 2 : w / 4;
+        const targetCX = w / 2;
         const by = h / 2 - 40;
         const bx = targetCX - bW / 2;
 
@@ -413,7 +412,7 @@ function drawLeftPanel() {
         ctxF.restore();
     }
     else if (currentStep === 4 || currentStep === 5) {
-        // Step 4-5: Compound I (left) + Compound II (right) — same-size beakers
+        // Step 4-5: Compound I slides from w/2 to w/4, Compound II (right) fades in
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 50);
 
@@ -425,57 +424,64 @@ function drawLeftPanel() {
         const bW = 50, bH = 60;
         const by = h / 2 - 40;
 
-        // Compound I — beaker centered at w/4
-        const cx1 = w / 4;
-        let bx = cx1 - 25;
-        drawWobblyLine(ctxF, bx, by, bx, by + 60, '#2b2b2b', 2.5, 60);
-        drawWobblyLine(ctxF, bx, by + 60, bx + 50, by + 60, '#2b2b2b', 2.5, 61);
-        drawWobblyLine(ctxF, bx + 50, by + 60, bx + 50, by, '#2b2b2b', 2.5, 62);
+        // Compound I — slides from w/2 to w/4 during Step 4 transition
+        const startCX = w / 2;
+        const endCX = w / 4;
+        const t1 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
+        const cx1 = startCX + (endCX - startCX) * t1;
+
+        let bx1 = cx1 - bW / 2;
+        drawWobblyLine(ctxF, bx1, by, bx1, by + bH, '#2b2b2b', 2.5, 60);
+        drawWobblyLine(ctxF, bx1, by + bH, bx1 + bW, by + bH, '#2b2b2b', 2.5, 61);
+        drawWobblyLine(ctxF, bx1 + bW, by + bH, bx1 + bW, by, '#2b2b2b', 2.5, 62);
         ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
-        ctxF.fillRect(bx + 3, by + 20, 44, 38);
-        drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#ff7a00', 1.5, 63);
-        // Two-column data block, centered under Compound I
+        ctxF.fillRect(bx1 + 3, by + 20, bW - 6, 38);
+        drawWobblyLine(ctxF, bx1 + 1, by + 20, bx1 + bW - 1, by + 20, '#ff7a00', 1.5, 63);
+        
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         const labelColW1 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const valColW1   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
         const pivot1 = cx1 - valColW1 / 2 + labelColW1 / 2;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', cx1, by + 85);
+        ctxF.fillText('化合物 I（水）', cx1, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot1, by + 108);
+        ctxF.fillText('H', pivot1, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', pivot1, by + 108);
+        ctxF.fillText(' = 2.5 g', pivot1, by + bH + 48);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot1, by + 131);
+        ctxF.fillText('O', pivot1, by + bH + 71);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', pivot1, by + 131);
-        
-        // Draw Compound II (Right side) — beaker centered at 3w/4
+        ctxF.fillText(' = 20.0 g', pivot1, by + bH + 71);
+
+        // Draw Compound II (Right side) — beaker centered at 3w/4, fades in on Step 4
         const cx2 = (w * 3) / 4;
-        bx = cx2 - 25;
-        drawWobblyLine(ctxF, bx, by, bx, by + 60, '#2b2b2b', 2.5, 70);
-        drawWobblyLine(ctxF, bx, by + 60, bx + 50, by + 60, '#2b2b2b', 2.5, 71);
-        drawWobblyLine(ctxF, bx + 50, by + 60, bx + 50, by, '#2b2b2b', 2.5, 72);
+        const alpha4 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
+        ctxF.globalAlpha = alpha4;
+        let bx2 = cx2 - bW / 2;
+        drawWobblyLine(ctxF, bx2, by, bx2, by + bH, '#2b2b2b', 2.5, 70);
+        drawWobblyLine(ctxF, bx2, by + bH, bx2 + bW, by + bH, '#2b2b2b', 2.5, 71);
+        drawWobblyLine(ctxF, bx2 + bW, by + bH, bx2 + bW, by, '#2b2b2b', 2.5, 72);
         ctxF.fillStyle = 'rgba(124, 58, 237, 0.15)';
-        ctxF.fillRect(bx + 3, by + 20, 44, 38);
-        drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#7c3aed', 1.5, 73);
-        // Two-column data block, centered under Compound II
+        ctxF.fillRect(bx2 + 3, by + 20, bW - 6, 38);
+        drawWobblyLine(ctxF, bx2 + 1, by + 20, bx2 + bW - 1, by + 20, '#7c3aed', 1.5, 73);
+        
         ctxF.fillStyle = '#1f1f1f';
         const labelColW2 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const valColW2   = Math.max(ctxF.measureText(' = 1.5 g').width, ctxF.measureText(' = 24.0 g').width);
         const pivot2 = cx2 - valColW2 / 2 + labelColW2 / 2;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 II（雙氧水）', cx2, by + 85);
+        ctxF.fillText('化合物 II（雙氧水）', cx2, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot2, by + 108);
+        ctxF.fillText('H', pivot2, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 1.5 g', pivot2, by + 108);
+        ctxF.fillText(' = 1.5 g', pivot2, by + bH + 48);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot2, by + 131);
+        ctxF.fillText('O', pivot2, by + bH + 71);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 24.0 g', pivot2, by + 131);
-        
+        ctxF.fillText(' = 24.0 g', pivot2, by + bH + 71);
+        ctxF.globalAlpha = 1;
+
         ctxF.restore();
     }
     else if (currentStep === 6 || currentStep === 7) {
@@ -865,6 +871,8 @@ function drawRightPanel() {
     if (currentStep === 6 || currentStep === 7) {
         const lineX = 1.0;
         const xPos = mapX(lineX, w);
+        const t6 = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
+        const currentY = mapY(0, h) + (mapY(20.0, h) - mapY(0, h)) * t6;
         
         ctxG.save();
         ctxG.setLineDash([5, 5]);
@@ -872,20 +880,36 @@ function drawRightPanel() {
         ctxG.lineWidth = 2;
         ctxG.beginPath();
         ctxG.moveTo(xPos, mapY(0, h));
-        ctxG.lineTo(xPos, mapY(20.0, h));
+        ctxG.lineTo(xPos, currentY);
         ctxG.stroke();
         ctxG.restore();
         
-        // Draw intersection dots
-        drawWobblyCircle(ctxG, xPos, mapY(8.0, h), 5, '#2563eb', true, 2, 240);
-        ctxG.fillStyle = '#ff7a00';
-        ctxG.font = 'bold 0.95rem sans-serif';
-        ctxG.textAlign = 'left';
-        ctxG.fillText('8.0', xPos + 8, mapY(8.0, h) + 4);
+        // Threshold alphas for vertical comparison intersections
+        const alpha8 = (currentStep === 7) ? 1.0 : ((t6 >= 0.4) ? Math.min(1.0, (t6 - 0.4) / 0.1) : 0);
+        const alpha16 = (currentStep === 7) ? 1.0 : ((t6 >= 0.8) ? Math.min(1.0, (t6 - 0.8) / 0.1) : 0);
+
+        // Draw intersection dots & labels
+        if (alpha8 > 0) {
+            ctxG.save();
+            ctxG.globalAlpha = alpha8;
+            drawWobblyCircle(ctxG, xPos, mapY(8.0, h), 5, 'rgba(37, 99, 235, 0.6)', true, 2, 240); // Blue dot (semi-trans)
+            ctxG.fillStyle = '#ff7a00';
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'left';
+            ctxG.fillText('8.0', xPos + 8, mapY(8.0, h) + 4);
+            ctxG.restore();
+        }
         
-        drawWobblyCircle(ctxG, xPos, mapY(16.0, h), 5, '#2563eb', true, 2, 241);
-        ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4);
+        if (alpha16 > 0) {
+            ctxG.save();
+            ctxG.globalAlpha = alpha16;
+            drawWobblyCircle(ctxG, xPos, mapY(16.0, h), 5, 'rgba(37, 99, 235, 0.6)', true, 2, 241); // Blue dot (semi-trans)
+            ctxG.fillStyle = '#7c3aed';
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'left';
+            ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4);
+            ctxG.restore();
+        }
         
         // Step 7 Vertical Bracket Marks in Red and Green per sketch
         if (currentStep === 7) {
@@ -911,6 +935,8 @@ function drawRightPanel() {
     if (currentStep === 8 || currentStep === 9) {
         const lineY = 16.0;
         const yPos = mapY(lineY, h);
+        const t8 = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
+        const currentX = mapX(0, w) + (mapX(2.5, w) - mapX(0, w)) * t8;
         
         ctxG.save();
         ctxG.setLineDash([5, 5]);
@@ -918,22 +944,38 @@ function drawRightPanel() {
         ctxG.lineWidth = 2;
         ctxG.beginPath();
         ctxG.moveTo(mapX(0, w), yPos);
-        ctxG.lineTo(mapX(2.5, w), yPos);
+        ctxG.lineTo(currentX, yPos);
         ctxG.stroke();
         ctxG.restore();
         
+        // Threshold alphas for horizontal comparison intersections
+        const alpha1 = (currentStep === 9) ? 1.0 : ((t8 >= 0.4) ? Math.min(1.0, (t8 - 0.4) / 0.1) : 0);
+        const alpha2 = (currentStep === 9) ? 1.0 : ((t8 >= 0.8) ? Math.min(1.0, (t8 - 0.8) / 0.1) : 0);
+
         // Draw intersection dots
         const xPos1 = mapX(2.0, w);
-        drawWobblyCircle(ctxG, xPos1, yPos, 5, '#2563eb', true, 2, 250); // Blue dot
-        ctxG.fillStyle = '#ff7a00';
-        ctxG.font = 'bold 0.95rem sans-serif';
-        ctxG.textAlign = 'center';
-        ctxG.fillText('2.0', xPos1, yPos - 10);
+        if (alpha2 > 0) {
+            ctxG.save();
+            ctxG.globalAlpha = alpha2;
+            drawWobblyCircle(ctxG, xPos1, yPos, 5, 'rgba(37, 99, 235, 0.6)', true, 2, 250); // Blue dot (semi-trans)
+            ctxG.fillStyle = '#ff7a00';
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText('2.0', xPos1, yPos - 10);
+            ctxG.restore();
+        }
         
         const xPos2 = mapX(1.0, w);
-        drawWobblyCircle(ctxG, xPos2, yPos, 5, '#2563eb', true, 2, 251); // Blue dot
-        ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('1.0', xPos2, yPos - 10);
+        if (alpha1 > 0) {
+            ctxG.save();
+            ctxG.globalAlpha = alpha1;
+            drawWobblyCircle(ctxG, xPos2, yPos, 5, 'rgba(37, 99, 235, 0.6)', true, 2, 251); // Blue dot (semi-trans)
+            ctxG.fillStyle = '#7c3aed';
+            ctxG.font = 'bold 0.95rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText('1.0', xPos2, yPos - 10);
+            ctxG.restore();
+        }
         
         // Step 9 Horizontal Bracket Marks in Red and Green (Symmetrical to Step 7)
         if (currentStep === 9) {
