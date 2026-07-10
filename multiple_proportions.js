@@ -453,17 +453,7 @@ function drawLeftPanel() {
         ctxF.fillText('化合物 I（水）', cx1, labelY);
         ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, labelY);
-
-        // Draw mass values below the columns
         const lineAlpha = (currentStep === 6) ? t6 : 1.0;
-        ctxF.save();
-        ctxF.globalAlpha = lineAlpha;
-        ctxF.font = FONT_SMALL;
-        ctxF.fillStyle = '#5f5f5f';
-        ctxF.fillText('H = 2.5 g, O = 20.0 g', cx1, h - 55);
-        ctxF.fillText('H = 1.5 g, O = 24.0 g', cx2, h - 55);
-        ctxF.restore();
-
         // Draw horizontal separator line to separate top (equal H) and bottom (O ratio) sections
         ctxF.save();
         ctxF.globalAlpha = lineAlpha;
@@ -656,13 +646,7 @@ function drawLeftPanel() {
         ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
-        // Draw mass values below the columns
-        ctxF.save();
-        ctxF.font = FONT_SMALL;
-        ctxF.fillStyle = '#5f5f5f';
-        ctxF.fillText('H = 2.5 g, O = 20.0 g', cx1, h - 55);
-        ctxF.fillText('H = 1.5 g, O = 24.0 g', cx2, h - 55);
-        ctxF.restore();
+
 
         // Draw horizontal separator line to separate top (equal O) and bottom (H ratio) sections
         ctxF.save();
@@ -1317,9 +1301,9 @@ function drawRightPanel() {
             
             if (currentStep === 10) {
                 const t10 = easeInOutCubic(animProgress);
-                greenY = (yPos - 24) + ((yPos + 44) - (yPos - 24)) * t10;
-                greenAlignTop = (t10 < 0.5);
-                greenLabelY = (yPos - 38) + ((yPos + 72) - (yPos - 38)) * t10;
+                greenY = (yPos - 24) + ((yPos - 8) - (yPos - 24)) * t10;
+                greenAlignTop = true;
+                greenLabelY = (yPos - 38) + ((yPos - 22) - (yPos - 38)) * t10;
             }
             
             // Draw green horizontal bracket
