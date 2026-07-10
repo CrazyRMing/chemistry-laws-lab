@@ -321,18 +321,20 @@ function renderFlaskPanel() {
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6; // normalized droplet time
-            const easeT = easeInOutCubic(t);
-            // Droplet trajectory: from conical flask mouth to right edge
-            const startX = imgX + imgSize * 0.48;
-            const startY = imgY + imgSize * 0.72;
-            const endX = w - 15;
-            const endY = h / 2;
-            
-            // Quadratic Bezier path for water drop fly-out
-            const dropX = startX + (endX - startX) * easeT;
-            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 40;
-            
-            drawWaterDrop(ctxF, dropX, dropY, 12, COLOR_ORANGE);
+            if (t <= 0.5) {
+                const t_left = t / 0.5;
+                const easeT = easeInOutCubic(t_left);
+                // Droplet trajectory starts from conical flask mouth
+                const startX = imgX + imgSize * 0.48;
+                const startY = imgY + imgSize * 0.72;
+                const endX = w;
+                const endY = mapY(wO1, graphCanvas.height);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 40;
+                
+                drawWaterDrop(ctxF, dropX, dropY, 12, COLOR_GRAY_LIGHT);
+            }
         }
     } 
     else if (currentStep === 3) {
@@ -345,16 +347,20 @@ function renderFlaskPanel() {
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
-            const easeT = easeInOutCubic(t);
-            const startX = imgX + imgSize * 0.52;
-            const startY = imgY + imgSize * 0.44;
-            const endX = w - 15;
-            const endY = h / 2;
-            
-            const dropX = startX + (endX - startX) * easeT;
-            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 50;
-            
-            drawWaterDrop(ctxF, dropX, dropY, 14, COLOR_ORANGE);
+            if (t <= 0.5) {
+                const t_left = t / 0.5;
+                const easeT = easeInOutCubic(t_left);
+                // Droplet starts from flame
+                const startX = imgX + imgSize * 0.52;
+                const startY = imgY + imgSize * 0.44;
+                const endX = w;
+                const endY = mapY(wO2, graphCanvas.height);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 50;
+                
+                drawWaterDrop(ctxF, dropX, dropY, 14, COLOR_GRAY_MEDIUM);
+            }
         }
     } 
     else if (currentStep === 4) {
@@ -367,16 +373,20 @@ function renderFlaskPanel() {
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
-            const easeT = easeInOutCubic(t);
-            const startX = imgX + imgSize * 0.3;
-            const startY = imgY + imgSize * 0.65;
-            const endX = w - 15;
-            const endY = h / 2;
-            
-            const dropX = startX + (endX - startX) * easeT;
-            const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 30;
-            
-            drawWaterDrop(ctxF, dropX, dropY, 10, COLOR_ORANGE);
+            if (t <= 0.5) {
+                const t_left = t / 0.5;
+                const easeT = easeInOutCubic(t_left);
+                // Droplet starts from baking soda drug solid heated area
+                const startX = imgX + imgSize * 0.3;
+                const startY = imgY + imgSize * 0.65;
+                const endX = w;
+                const endY = mapY(wO3, graphCanvas.height);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = startY + (endY - startY) * easeT - Math.sin(easeT * Math.PI) * 30;
+                
+                drawWaterDrop(ctxF, dropX, dropY, 10, COLOR_GRAY_DARK);
+            }
         }
     } 
     else if (currentStep === 5) {
@@ -483,6 +493,10 @@ function renderFlaskPanel() {
     }
     else if (currentStep === 7) {
         // Step 7: Formal Law Scroll / Joseph Proust Scroll
+        const alpha7 = easeInOutCubic(animProgress);
+        ctxF.save();
+        ctxF.globalAlpha = alpha7;
+
         // Draw parchment border
         drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 700);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 750);
@@ -499,6 +513,7 @@ function renderFlaskPanel() {
         // Statement
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center'; // Just make sure centering is clean
         ctxF.fillText('「 一種純化合物，不論其來源或', w / 2, 145);
         ctxF.fillText('製備方法為何，其組成元素', w / 2, 190);
         ctxF.fillText('之間的質量比恆為定值。 」', w / 2, 235);
@@ -508,6 +523,7 @@ function renderFlaskPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'right';
         ctxF.fillText('── 普魯斯特 (Joseph Proust, 1799)', w - 70, 285);
+        ctxF.restore();
     }
     else if (currentStep === 8) {
         // Step 8: Show microscopic water molecules
@@ -562,20 +578,53 @@ function renderGraphPanel() {
         drawWobblyLine(ctxG, startX, startY, currentX, currentY, 'rgba(255, 122, 0, 0.55)', 4, 300);
     }
     
-    // Step 2: Plot Point 1
+    // Step 2: Plot Point 1 or Flying Droplet (second half)
+    if (currentStep === 2) {
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6;
+            if (t > 0.5) {
+                const t_right = (t - 0.5) / 0.5;
+                const easeT = easeInOutCubic(t_right);
+                const startX = 0;
+                const endX = mapX(wH1, w);
+                const py = mapY(wO1, h);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = py - Math.sin(easeT * Math.PI) * 20;
+                drawWaterDrop(ctxG, dropX, dropY, 12, COLOR_GRAY_LIGHT);
+            }
+        }
+    }
     if (currentStep >= 2) {
         let t = 1;
         if (currentStep === 2) {
-            // Plot only after droplet reaches the edge (at progress 0.7)
+            // Plot only after droplet lands (at progress 0.7)
             t = animProgress < 0.7 ? 0 : easeOutElastic((animProgress - 0.7) / 0.3);
         }
         const px = mapX(wH1, w);
         const py = mapY(wO1, h);
-        const color = currentStep === 2 ? COLOR_ORANGE : COLOR_GRAY_LIGHT;
-        drawPlotPoint(px, py, 7 * t, color);
+        drawPlotPoint(px, py, 7 * t, COLOR_GRAY_LIGHT);
     }
     
-    // Step 3: Plot Point 2
+    // Step 3: Plot Point 2 or Flying Droplet (second half)
+    if (currentStep === 3) {
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6;
+            if (t > 0.5) {
+                const t_right = (t - 0.5) / 0.5;
+                const easeT = easeInOutCubic(t_right);
+                const startX = 0;
+                const endX = mapX(wH2, w);
+                const py = mapY(wO2, h);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = py - Math.sin(easeT * Math.PI) * 20;
+                drawWaterDrop(ctxG, dropX, dropY, 14, COLOR_GRAY_MEDIUM);
+            }
+        }
+    }
     if (currentStep >= 3) {
         let t = 1;
         if (currentStep === 3) {
@@ -583,11 +632,27 @@ function renderGraphPanel() {
         }
         const px = mapX(wH2, w);
         const py = mapY(wO2, h);
-        const color = currentStep === 3 ? COLOR_ORANGE : COLOR_GRAY_MEDIUM;
-        drawPlotPoint(px, py, 7 * t, color);
+        drawPlotPoint(px, py, 7 * t, COLOR_GRAY_MEDIUM);
     }
     
-    // Step 4: Plot Point 3
+    // Step 4: Plot Point 3 or Flying Droplet (second half)
+    if (currentStep === 4) {
+        const p = animProgress;
+        if (p > 0.1 && p < 0.7) {
+            const t = (p - 0.1) / 0.6;
+            if (t > 0.5) {
+                const t_right = (t - 0.5) / 0.5;
+                const easeT = easeInOutCubic(t_right);
+                const startX = 0;
+                const endX = mapX(wH3, w);
+                const py = mapY(wO3, h);
+                
+                const dropX = startX + (endX - startX) * easeT;
+                const dropY = py - Math.sin(easeT * Math.PI) * 20;
+                drawWaterDrop(ctxG, dropX, dropY, 10, COLOR_GRAY_DARK);
+            }
+        }
+    }
     if (currentStep >= 4) {
         let t = 1;
         if (currentStep === 4) {
@@ -595,8 +660,7 @@ function renderGraphPanel() {
         }
         const px = mapX(wH3, w);
         const py = mapY(wO3, h);
-        const color = currentStep === 4 ? COLOR_ORANGE : COLOR_GRAY_DARK;
-        drawPlotPoint(px, py, 7 * t, color);
+        drawPlotPoint(px, py, 7 * t, COLOR_GRAY_DARK);
     }
     
     // Step 6 & 7: Draw Slope Triangle
@@ -638,66 +702,70 @@ function renderGraphPanel() {
 // UI Drawer Components
 // -------------------------------------------------------------
 function drawGraphAxes(w, h) {
-    // Draw wobbly coordinates grid (clean and steady)
-    for (let x = 0.5; x <= 4.0; x += 0.5) {
-        const px = mapX(x, w);
-        drawWobblyLine(ctxG, px, margin, px, h - margin, 'rgba(43, 43, 43, 0.04)', 1, x * 100);
+    // 1. Draw Grid lines (straight, clean - matching multiple proportions)
+    ctxG.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+    ctxG.lineWidth = 1;
+    for (let xVal = 0.5; xVal <= 4.0; xVal += 0.5) {
+        ctxG.beginPath();
+        ctxG.moveTo(mapX(xVal, w), mapY(0, h));
+        ctxG.lineTo(mapX(xVal, w), mapY(32, h));
+        ctxG.stroke();
     }
-    for (let y = 4; y <= 32; y += 4) {
-        const py = mapY(y, h);
-        drawWobblyLine(ctxG, margin, py, w - margin, py, 'rgba(43, 43, 43, 0.04)', 1, y * 200);
+    for (let yVal = 4; yVal <= 32; yVal += 4) {
+        ctxG.beginPath();
+        ctxG.moveTo(mapX(0, w), mapY(yVal, h));
+        ctxG.lineTo(mapX(4.0, w), mapY(yVal, h));
+        ctxG.stroke();
     }
 
     const originX = mapX(0, w);
     const originY = mapY(0, h);
     
-    // wH axis
-    drawWobblyLine(ctxG, originX, originY, w - margin + 20, originY, '#2b2b2b', 2.5, 10);
-    // wO axis
-    drawWobblyLine(ctxG, originX, originY, originX, margin - 20, '#2b2b2b', 2.5, 20);
+    // 2. Draw Axes (Wobbly - matching multiple proportions, no arrows)
+    drawWobblyLine(ctxG, originX, originY, mapX(4.0, w), originY, '#2b2b2b', 2.5, 201); // X Axis
+    drawWobblyLine(ctxG, originX, originY, originX, mapY(32.0, h), '#2b2b2b', 2.5, 202); // Y Axis
     
-    // Arrow for X axis
-    drawWobblyLine(ctxG, w - margin + 20, originY, w - margin + 12, originY - 6, '#2b2b2b', 2, 11);
-    drawWobblyLine(ctxG, w - margin + 20, originY, w - margin + 12, originY + 6, '#2b2b2b', 2, 12);
-    
-    // Arrow for Y axis
-    drawWobblyLine(ctxG, originX, margin - 20, originX - 6, margin - 12, '#2b2b2b', 2, 21);
-    drawWobblyLine(ctxG, originX, margin - 20, originX + 6, margin - 12, '#2b2b2b', 2, 22);
-
-    ctxG.fillStyle = '#2b2b2b';
-    ctxG.font = FONT_MATH;
-    
-    // Labels - shift wO to the right to avoid cut-off at the left edge
+    // Ticks & labels for X Axis
+    ctxG.font = FONT_SMALL;
     ctxG.textAlign = 'center';
-    ctxG.fillText('氫的質量 wH (g)', w - margin - 50, originY + 40);
-    
-    ctxG.textAlign = 'left';
-    ctxG.fillText('氧的質量 wO (g)', originX + 15, margin - 20);
-    
-    // Ticks wH
-    ctxG.textAlign = 'center';
-    for (let x = 1.0; x <= 4.0; x += 1.0) {
-        const px = mapX(x, w);
-        drawWobblyLine(ctxG, px, originY - 4, px, originY + 4, '#2b2b2b', 1.5, x * 77);
-        ctxG.fillText(x.toFixed(1), px, originY + 22);
+    for (let xVal = 1.0; xVal <= 4.0; xVal += 1.0) {
+        const tx = mapX(xVal, w);
+        const ty = mapY(0, h);
+        drawWobblyLine(ctxG, tx, ty, tx, ty + 5, '#2b2b2b', 1.5, 203 + xVal);
+        ctxG.fillStyle = '#2b2b2b';
+        ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
     }
     
-    // Ticks wO
+    // Ticks & labels for Y Axis
     ctxG.textAlign = 'right';
-    for (let y = 8; y <= 32; y += 8) {
-        const py = mapY(y, h);
-        drawWobblyLine(ctxG, originX - 4, py, originX + 4, '#2b2b2b', 1.5, y * 88);
-        ctxG.fillText(y.toString(), originX - 12, py + 5);
+    for (let yVal = 8; yVal <= 32; yVal += 8) {
+        const tx = mapX(0, w);
+        const ty = mapY(yVal, h);
+        drawWobblyLine(ctxG, tx, ty, tx - 5, ty, '#2b2b2b', 1.5, 210 + yVal);
+        ctxG.fillStyle = '#2b2b2b';
+        ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
     }
     
-    ctxG.fillText('0', originX - 12, originY + 18);
+    // Axis Titles (matching multiple proportions)
+    ctxG.font = FONT_UI;
+    ctxG.fillStyle = '#2b2b2b';
+    
+    // X Axis Label
+    ctxG.textAlign = 'center';
+    ctxG.fillText('氫的質量 wH (g)', w - 100, originY + 40);
+    
+    // Y Axis Label
+    ctxG.textAlign = 'left';
+    ctxG.fillText('氧的質量 wO (g)', originX + 15, 30);
+    
+    ctxG.textAlign = 'right';
+    ctxG.fillText('0', originX - 10, originY + 15);
 }
 
 function drawPlotPoint(x, y, radius, color) {
     if (radius <= 0) return;
-    // Draw point circle cleanly
-    drawWobblyCircle(ctxG, x, y, radius + 2, '#2b2b2b', false, 1.5, x + y);
-    drawWobblyCircle(ctxG, x, y, radius, color, true, 1, x - y);
+    // Draw wobbly filled circle matching Law of Multiple Proportions (no black outline)
+    drawWobblyCircle(ctxG, x, y, radius, color, true, 2, x + y);
 }
 
 // -------------------------------------------------------------
@@ -763,28 +831,32 @@ function drawWaterMolecule(ctx, cx, cy, rO = 22, rH = 13, angleDeg = 104.5, rotA
     drawWobblyLine(ctx, cx, cy, h1x, h1y, '#888888', 2.5, cx + cy);
     drawWobblyLine(ctx, cx, cy, h2x, h2y, '#888888', 2.5, cx - cy);
     
-    // Draw Oxygen atom (large wobbly circle)
-    drawWobblyCircle(ctx, cx, cy, rO, '#faf8f5', true, 2, cx); // match background color
+    // Draw Oxygen atom (large wobbly circle) — Red fill, white text
+    drawWobblyCircle(ctx, cx, cy, rO, '#ef4444', true, 2, cx);
     drawWobblyCircle(ctx, cx, cy, rO, '#2b2b2b', false, 2, cx);
-    ctx.fillStyle = '#2b2b2b';
+    ctx.fillStyle = '#ffffff';
     ctx.font = FONT_UI;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('O', cx, cy);
+    ctx.fillText('O', cx, cy + 5);
     
-    // Draw Hydrogen 1 (small wobbly circle)
-    drawWobblyCircle(ctx, h1x, h1y, rH, '#faf8f5', true, 1.5, h1x);
+    // Draw Hydrogen 1 (small wobbly circle) — White fill, black text
+    drawWobblyCircle(ctx, h1x, h1y, rH, '#ffffff', true, 1.5, h1x);
     drawWobblyCircle(ctx, h1x, h1y, rH, '#2b2b2b', false, 1.5, h1x);
     ctx.fillStyle = '#2b2b2b';
     ctx.font = FONT_SMALL;
-    ctx.fillText('H', h1x, h1y);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('H', h1x, h1y + 4);
     
-    // Draw Hydrogen 2 (small wobbly circle)
-    drawWobblyCircle(ctx, h2x, h2y, rH, '#faf8f5', true, 1.5, h2x);
+    // Draw Hydrogen 2 (small wobbly circle) — White fill, black text
+    drawWobblyCircle(ctx, h2x, h2y, rH, '#ffffff', true, 1.5, h2x);
     drawWobblyCircle(ctx, h2x, h2y, rH, '#2b2b2b', false, 1.5, h2x);
     ctx.fillStyle = '#2b2b2b';
     ctx.font = FONT_SMALL;
-    ctx.fillText('H', h2x, h2y);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('H', h2x, h2y + 4);
 }
 
 // -------------------------------------------------------------
