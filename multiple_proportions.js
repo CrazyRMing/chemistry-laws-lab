@@ -12,7 +12,7 @@ const FONT_MATH = 'bold italic 1.15rem "EB Garamond", serif';
 
 // Navigation State
 let currentStep = 1;
-const totalSteps = 12;
+const totalSteps = 14;
 
 // Seeded Random for Hand-drawn wobbly effect
 let rndSeed = 42;
@@ -122,11 +122,11 @@ const stepTexts = [
     {
         title: "第二步：標記化合物 I 數據點",
         desc: "分析第一種氫氧化合物（即水，此處以「化合物 I」表示）的實驗分析數據：當氫為 2.5g 時，氧為 20.0g。我們在座標圖上點出這一個代表點。",
-        takeaway: "重點：此數據點 (2.5g, 20.0g) 反映了化合物 I 的實測氫氧質量比為 1 : 8。"
+        takeaway: "重點：此數據點反映了化合物 I 的實測氫氧質量比值關係。"
     },
     {
         title: "第三步：繪製化合物 I 質量關係線",
-        desc: "根據定比定律，對於化合物 I 而言，不論樣本大小，其組成的氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
+        desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本的氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
         takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點的直線。"
     },
     {
@@ -141,36 +141,46 @@ const stepTexts = [
     },
     {
         title: "第六步：固定氫質量（劃垂直線）",
-        desc: "劃一條垂直線固定氫的質量（例如 wH = 1.0g，避開實驗數據點）。此時化合物 II 所含氧為 16.0g，化合物 I 為 8.0g。等重氫時，兩者的氧質量比呈簡單整數比 (16.0 : 8.0 = 2 : 1)。",
+        desc: "劃一條垂直線固定氫的質量（例如 wH = 1.0g，避開實驗數據點）。此時在兩條關係直線上，對應的氫元素質量均相同。",
+        takeaway: "重點：此時兩化合物中被分析樣本的氫質量均相同。"
+    },
+    {
+        title: "第七步：氫等重下的氧質量比",
+        desc: "當氫質量固定在 1.0g 時，化合物 II 的氧為 16.0g，化合物 I 的氧為 8.0g。兩者的氧質量比呈現簡單整數比 (16.0 : 8.0 = 2 : 1)。",
         takeaway: "重點：固定氫的質量相同時，兩化合物中的氧質量比為簡單整數比 2 : 1。"
     },
     {
-        title: "第七步：固定氧質量（劃水平線）",
-        desc: "移除垂直線，改劃一條水平線固定氧的質量（例如 wO = 16.0g，避開實驗數據點）。此時化合物 I 所含氫為 2.0g，化合物 II 為 1.0g。等重氧時，兩者的氫質量比亦呈簡單整數比 (2.0 : 1.0 = 2 : 1)。",
+        title: "第八步：固定氧質量（劃水平線）",
+        desc: "移除垂直線，改劃一條水平線固定氧的質量（例如 wO = 16.0g，避開實驗數據點）。此時在兩條關係直線上，對應的氧元素質量均相同。",
+        takeaway: "重點：此時兩化合物中被分析樣本的氧質量均相同。"
+    },
+    {
+        title: "第九步：氧等重下的氫質量比",
+        desc: "當氧質量固定在 16.0g 時，化合物 I 的氫為 2.0g，化合物 II 的氫為 1.0g。兩者的氫質量比呈現簡單整數比 (2.0 : 1.0 = 2 : 1)。",
         takeaway: "重點：固定氧的質量相同時，兩化合物中的氫質量比同樣為簡單整數比 2 : 1。"
     },
     {
-        title: "第八步：倍比定律的宣告",
+        title: "第十步：倍比定律的宣告",
         desc: "這就是著名的「倍比定律」：當甲、乙兩元素結合生成兩種以上的化合物時，若固定甲元素的質量，則各化合物中乙元素的質量將呈現簡單的整數比。",
         takeaway: "重點：倍比定律 ── 由道耳頓於 1803 年提出，是原子論建立的重要定量基石。"
     },
     {
-        title: "第九步：倍比定律與原子說的關係",
+        title: "第十一步：倍比定律與原子說的關係",
         desc: "道耳頓用原子說完美解釋了這個現象：兩物質若含有相同質量的氧，代表兩者在微觀上擁有相同數量的氧原子。此時不同的氫質量，正是由不同數量的氫原子所造成的。",
         takeaway: "重點：等質量的元素在微觀上代表相同數量的原子。"
     },
     {
-        title: "第十步：化學式中原子數的假設",
+        title: "第十二步：化學式中原子數的假設",
         desc: "既然等重的氧原子數量相同，我們可以大膽假設這兩個化合物在化學式中都只含有 1 個氧原子，即化學式分別為 HₓO 與 H_yO。",
         takeaway: "重點：假設兩者氧原子數皆為 1，此時 H 原子數的比值將直接對應其實驗質量比。"
     },
     {
-        title: "第十一步：氫原子數量與質量比的對應",
+        title: "第十三步：氫原子數量與質量比的對應",
         desc: "在此假設下，等重氧時的氫質量比為 2 : 1，這直接反映出兩者所含的氫原子個數比亦為 2 : 1（即 x : y = 2 : 1）。這代表化合物 I 中的氫原子數量是化合物 II 的 2 倍。",
         takeaway: "重點：原子數比 (x : y) = 質量比 = 2 : 1。"
     },
     {
-        title: "第十二步：推導兩化合物之化學式",
+        title: "第十四步：推導兩化合物之化學式",
         desc: "已知化合物 I（水）的化學式為 H₂O（即氧為 1 時氫為 2，x = 2）。由於個數比為 2 : 1，可推知化合物 II 中氫原子數為 1 (y = 1)。因此化合物 II 的最簡式為 HO，化學式為 H₂O₂（雙氧水）。",
         takeaway: "重點：確定其中一個化合物的化學式，即可確定另一個化合物的化學式關係！"
     }
@@ -247,8 +257,8 @@ function updateUI() {
         let visible = false;
         if (id === 1 && currentStep >= 2) visible = true;
         if (id === 2 && currentStep >= 4) visible = true;
-        if (id === 3 && currentStep === 6) visible = true;
-        if (id === 4 && currentStep === 7) visible = true;
+        if (id === 3 && (currentStep === 6 || currentStep === 7)) visible = true;
+        if (id === 4 && (currentStep === 8 || currentStep === 9)) visible = true;
         
         if (visible) {
             item.classList.add('visible');
@@ -377,14 +387,13 @@ function drawLeftPanel() {
         
         ctxF.restore();
     }
-    else if (currentStep === 6) {
-        // Step 6: Equal hydrogen comparison
+    else if (currentStep === 6 || currentStep === 7) {
+        // Step 6 & 7: Equal hydrogen comparison
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 80);
         ctxF.font = FONT_TITLE;
-        ctxF.fillText('等質量 氫 (H = 1.0g) 時：', 50, 75);
+        ctxF.fillText('等質量 氫 (wH 相同) 時：', 50, 75);
         
-        // Draw atom ratio circles
         const cx1 = w / 4 + 10;
         const cx2 = (w * 3) / 4 - 10;
         const cy = h / 2 + 10;
@@ -398,11 +407,14 @@ function drawLeftPanel() {
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx1, cy - 16);
-        // O atom
-        drawWobblyCircle(ctxF, cx1, cy + 25, 20, '#444444', true, 2, 82);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.font = 'bold 1.15rem sans-serif';
-        ctxF.fillText('O', cx1, cy + 30);
+        
+        if (currentStep === 7) {
+            // O atom (only shown in Step 7)
+            drawWobblyCircle(ctxF, cx1, cy + 25, 20, '#444444', true, 2, 82);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.font = 'bold 1.15rem sans-serif';
+            ctxF.fillText('O', cx1, cy + 30);
+        }
         
         // Compound II
         ctxF.fillStyle = '#1f1f1f';
@@ -415,30 +427,37 @@ function drawLeftPanel() {
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx2, cy - 16);
-        // O atoms (2 pieces)
-        drawWobblyCircle(ctxF, cx2 - 22, cy + 25, 20, '#444444', true, 2, 84);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.font = 'bold 1.15rem sans-serif';
-        ctxF.fillText('O', cx2 - 22, cy + 30);
         
-        drawWobblyCircle(ctxF, cx2 + 22, cy + 25, 20, '#444444', true, 2, 85);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.fillText('O', cx2 + 22, cy + 30);
+        if (currentStep === 7) {
+            // O atoms (2 pieces - only shown in Step 7)
+            drawWobblyCircle(ctxF, cx2 - 22, cy + 25, 20, '#444444', true, 2, 84);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.font = 'bold 1.15rem sans-serif';
+            ctxF.fillText('O', cx2 - 22, cy + 30);
+            
+            drawWobblyCircle(ctxF, cx2 + 22, cy + 25, 20, '#444444', true, 2, 85);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.fillText('O', cx2 + 22, cy + 30);
+        }
         
-        // Draw arrow and ratio
+        // Label at bottom
         ctxF.fillStyle = '#ff7a00';
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
-        ctxF.fillText('O 質量比 = 1 : 2', w / 2, h - 60);
+        if (currentStep === 6) {
+            ctxF.fillText('H 相同', w / 2, h - 60);
+        } else {
+            ctxF.fillText('O 數量比 = 1 : 2', w / 2, h - 60);
+        }
         
         ctxF.restore();
     }
-    else if (currentStep === 7) {
-        // Step 7: Equal oxygen comparison
+    else if (currentStep === 8 || currentStep === 9) {
+        // Step 8 & 9: Equal oxygen comparison
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 90);
         ctxF.font = FONT_TITLE;
-        ctxF.fillText('等質量 氧 (O = 16.0g) 時：', 50, 75);
+        ctxF.fillText('等質量 氧 (wO 相同) 時：', 50, 75);
         
         const cx1 = w / 4 + 10;
         const cx2 = (w * 3) / 4 - 10;
@@ -447,20 +466,24 @@ function drawLeftPanel() {
         // Compound I
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 I', cx1 - 35, cy - 60);
-        // H atoms (2 pieces)
-        drawWobblyCircle(ctxF, cx1 - 18, cy - 20, 15, '#ff7a00', true, 2, 91);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.font = 'bold 0.95rem sans-serif';
-        ctxF.textAlign = 'center';
-        ctxF.fillText('H', cx1 - 18, cy - 16);
         
-        drawWobblyCircle(ctxF, cx1 + 18, cy - 20, 15, '#ff7a00', true, 2, 92);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.fillText('H', cx1 + 18, cy - 16);
+        if (currentStep === 9) {
+            // H atoms (2 pieces - only shown in Step 9)
+            drawWobblyCircle(ctxF, cx1 - 18, cy - 20, 15, '#ff7a00', true, 2, 91);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.font = 'bold 0.95rem sans-serif';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('H', cx1 - 18, cy - 16);
+            
+            drawWobblyCircle(ctxF, cx1 + 18, cy - 20, 15, '#ff7a00', true, 2, 92);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.fillText('H', cx1 + 18, cy - 16);
+        }
         // O atom
         drawWobblyCircle(ctxF, cx1, cy + 25, 20, '#444444', true, 2, 93);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 1.15rem sans-serif';
+        ctxF.textAlign = 'center';
         ctxF.fillText('O', cx1, cy + 30);
         
         // Compound II
@@ -468,28 +491,36 @@ function drawLeftPanel() {
         ctxF.textAlign = 'left';
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 II', cx2 - 35, cy - 60);
-        // H atom (1 piece)
-        drawWobblyCircle(ctxF, cx2, cy - 20, 15, '#ff7a00', true, 2, 94);
-        ctxF.fillStyle = '#ffffff';
-        ctxF.font = 'bold 0.95rem sans-serif';
-        ctxF.textAlign = 'center';
-        ctxF.fillText('H', cx2, cy - 16);
+        
+        if (currentStep === 9) {
+            // H atom (1 piece - only shown in Step 9)
+            drawWobblyCircle(ctxF, cx2, cy - 20, 15, '#ff7a00', true, 2, 94);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.font = 'bold 0.95rem sans-serif';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('H', cx2, cy - 16);
+        }
         // O atom
         drawWobblyCircle(ctxF, cx2, cy + 25, 20, '#444444', true, 2, 95);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 1.15rem sans-serif';
+        ctxF.textAlign = 'center';
         ctxF.fillText('O', cx2, cy + 30);
         
-        // Draw arrow and ratio
+        // Label at bottom
         ctxF.fillStyle = '#7c3aed';
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
-        ctxF.fillText('H 質量比 = 2 : 1', w / 2, h - 60);
+        if (currentStep === 8) {
+            ctxF.fillText('O 相同', w / 2, h - 60);
+        } else {
+            ctxF.fillText('H 數量比 = 2 : 1', w / 2, h - 60);
+        }
         
         ctxF.restore();
     }
-    else if (currentStep === 8) {
-        // Step 8: Historical Law Scroll
+    else if (currentStep === 10) {
+        // Step 10: Historical Law Scroll
         ctxF.save();
         // Draw scroll background
         const sx = 40, sy = 40, sw = w - 80, sh = h - 80;
@@ -522,8 +553,8 @@ function drawLeftPanel() {
         ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w / 2 + 30, sy + 215);
         ctxF.restore();
     }
-    else if (currentStep === 9) {
-        // Step 9: Dalton's atom mapping
+    else if (currentStep === 11) {
+        // Step 11: Dalton's atom mapping
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 110);
         ctxF.font = FONT_TITLE;
@@ -557,8 +588,8 @@ function drawLeftPanel() {
         
         ctxF.restore();
     }
-    else if (currentStep === 10) {
-        // Step 10: Formula hypothesis cards
+    else if (currentStep === 12) {
+        // Step 12: Formula hypothesis cards
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 130);
         
@@ -585,8 +616,8 @@ function drawLeftPanel() {
         
         ctxF.restore();
     }
-    else if (currentStep === 11) {
-        // Step 11: Derivation logic math board
+    else if (currentStep === 13) {
+        // Step 13: Derivation logic math board
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 140);
         ctxF.font = FONT_TITLE;
@@ -605,8 +636,8 @@ function drawLeftPanel() {
         ctxF.fillText('這代表化合物 I 的 H 原子數是化合物 II 的 2 倍。', 50, h - 70);
         ctxF.restore();
     }
-    else if (currentStep === 12) {
-        // Step 12: Final determined formulas
+    else if (currentStep === 14) {
+        // Step 14: Final determined formulas
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 150);
         
@@ -693,12 +724,8 @@ function drawRightPanel() {
     
     // 3. Draw Compound I representative point and line
     if (currentStep >= 2) {
-        // Draw Compound I point at (2.5, 20.0)
+        // Draw Compound I point at (2.5, 20.0) without text coordinates per request
         drawWobblyCircle(ctxG, mapX(2.5, w), mapY(20.0, h), 6, '#ff7a00', true, 2, 220);
-        ctxG.font = FONT_SMALL;
-        ctxG.fillStyle = '#ff7a00';
-        ctxG.textAlign = 'left';
-        ctxG.fillText('化合物 I (2.5g, 20.0g)', mapX(2.5, w) + 10, mapY(20.0, h) - 5);
     }
     
     if (currentStep >= 3) {
@@ -711,12 +738,8 @@ function drawRightPanel() {
     
     // 4. Draw Compound II representative point and line
     if (currentStep >= 4) {
-        // Draw Compound II point at (1.5, 24.0)
+        // Draw Compound II point at (1.5, 24.0) without text coordinates per request
         drawWobblyCircle(ctxG, mapX(1.5, w), mapY(24.0, h), 6, '#7c3aed', true, 2, 230);
-        ctxG.font = FONT_SMALL;
-        ctxG.fillStyle = '#7c3aed';
-        ctxG.textAlign = 'right';
-        ctxG.fillText('化合物 II (1.5g, 24.0g)', mapX(1.5, w) - 10, mapY(24.0, h) - 5);
     }
     
     if (currentStep >= 5) {
@@ -727,8 +750,8 @@ function drawRightPanel() {
         ctxG.restore();
     }
     
-    // 5. Draw vertical comparison line (Step 6)
-    if (currentStep === 6) {
+    // 5. Draw vertical comparison line (Step 6 & 7)
+    if (currentStep === 6 || currentStep === 7) {
         const lineX = 1.0;
         const xPos = mapX(lineX, w);
         
@@ -747,29 +770,33 @@ function drawRightPanel() {
         // Intersection 1 with Compound I (y = 8x => O = 8.0)
         drawWobblyCircle(ctxG, xPos, mapY(8.0, h), 5, '#2563eb', true, 2, 240);
         ctxG.fillStyle = '#ff7a00';
-        ctxG.font = 'bold 0.85rem sans-serif';
+        ctxG.font = 'bold 0.95rem sans-serif';
         ctxG.textAlign = 'left';
-        ctxG.fillText('O = 8.0g', xPos + 8, mapY(8.0, h) + 4);
+        ctxG.fillText('8.0', xPos + 8, mapY(8.0, h) + 4); // Only show numeric value, no "O = "
         
         // Intersection 2 with Compound II (y = 16x => O = 16.0)
         drawWobblyCircle(ctxG, xPos, mapY(16.0, h), 5, '#2563eb', true, 2, 241);
         ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('O = 16.0g', xPos + 8, mapY(16.0, h) + 4);
+        ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4); // Only show numeric value, no "O = "
         
-        // Vertical bracket/indicator line
-        drawWobblyLine(ctxG, xPos - 15, mapY(8.0, h), xPos - 15, mapY(16.0, h), '#2563eb', 2, 242);
+        if (currentStep === 7) {
+            // Vertical bracket/indicator line
+            drawWobblyLine(ctxG, xPos - 15, mapY(8.0, h), xPos - 15, mapY(16.0, h), '#2563eb', 2, 242);
+            ctxG.fillStyle = '#2563eb';
+            ctxG.font = FONT_SMALL;
+            ctxG.textAlign = 'right';
+            ctxG.fillText('2 : 1', xPos - 22, mapY(12.0, h) + 5); // Only show ratio, no "比值 ="
+        }
+        
+        // Show fixed H label (only show numeric value at the bottom tick)
         ctxG.fillStyle = '#2563eb';
-        ctxG.font = FONT_SMALL;
-        ctxG.textAlign = 'right';
-        ctxG.fillText('比值 = 2 : 1', xPos - 22, mapY(12.0, h) + 5);
-        
-        // Show fixed H label
+        ctxG.font = 'bold 0.85rem sans-serif';
         ctxG.textAlign = 'center';
-        ctxG.fillText('固定 H = 1.0g', xPos, mapY(0, h) - 10);
+        ctxG.fillText('1.0', xPos, mapY(0, h) - 10);
     }
     
-    // 6. Draw horizontal comparison line (Step 7)
-    if (currentStep === 7) {
+    // 6. Draw horizontal comparison line (Step 8 & 9)
+    if (currentStep === 8 || currentStep === 9) {
         const lineY = 16.0;
         const yPos = mapY(lineY, h);
         
@@ -789,25 +816,29 @@ function drawRightPanel() {
         const xPos1 = mapX(2.0, w);
         drawWobblyCircle(ctxG, xPos1, yPos, 5, '#059669', true, 2, 250);
         ctxG.fillStyle = '#ff7a00';
-        ctxG.font = 'bold 0.85rem sans-serif';
+        ctxG.font = 'bold 0.95rem sans-serif';
         ctxG.textAlign = 'center';
-        ctxG.fillText('H = 2.0g', xPos1, yPos - 10);
+        ctxG.fillText('2.0', xPos1, yPos - 10); // Only show numeric value, no "H = "
         
         // Intersection 2 with Compound II (y = 16x => x = 1.0)
         const xPos2 = mapX(1.0, w);
         drawWobblyCircle(ctxG, xPos2, yPos, 5, '#059669', true, 2, 251);
         ctxG.fillStyle = '#7c3aed';
-        ctxG.fillText('H = 1.0g', xPos2, yPos - 10);
+        ctxG.fillText('1.0', xPos2, yPos - 10); // Only show numeric value, no "H = "
         
-        // Horizontal bracket/indicator line
-        drawWobblyLine(ctxG, xPos2, yPos + 15, xPos1, yPos + 15, '#059669', 2, 252);
+        if (currentStep === 9) {
+            // Horizontal bracket/indicator line
+            drawWobblyLine(ctxG, xPos2, yPos + 15, xPos1, yPos + 15, '#059669', 2, 252);
+            ctxG.fillStyle = '#059669';
+            ctxG.font = FONT_SMALL;
+            ctxG.textAlign = 'center';
+            ctxG.fillText('2 : 1', mapX(1.5, w), yPos + 32); // Only show ratio, no "比值 ="
+        }
+        
+        // Show fixed O label (only show numeric value at the left tick)
         ctxG.fillStyle = '#059669';
-        ctxG.font = FONT_SMALL;
-        ctxG.textAlign = 'center';
-        ctxG.fillText('比值 = 2 : 1', mapX(1.5, w), yPos + 32);
-        
-        // Show fixed O label
+        ctxG.font = 'bold 0.85rem sans-serif';
         ctxG.textAlign = 'left';
-        ctxG.fillText('固定 O = 16.0g', mapX(0, w) + 10, yPos - 10);
+        ctxG.fillText('16.0', mapX(0, w) + 10, yPos - 10);
     }
 }
