@@ -436,9 +436,24 @@ function renderFlaskPanel() {
 
         // Headers
         ctxF.fillText('水源種類', cx1, y0 + 28);
-        ctxF.fillText('氫質量 wH (g)', cx2, y0 + 28);
-        ctxF.fillText('氧質量 wO (g)', cx3, y0 + 28);
-        ctxF.fillText('比值 wO/wH', cx4, y0 + 28);
+        
+        ctxF.fillText('氫質量', cx2, y0 + 18);
+        ctxF.save();
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('wH (g)', cx2, y0 + 36);
+        ctxF.restore();
+        
+        ctxF.fillText('氧質量', cx3, y0 + 18);
+        ctxF.save();
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('wO (g)', cx3, y0 + 36);
+        ctxF.restore();
+        
+        ctxF.fillText('比值', cx4, y0 + 18);
+        ctxF.save();
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('wO/wH', cx4, y0 + 36);
+        ctxF.restore();
 
         // Row 1: 酸鹼中和
         ctxF.font = FONT_SMALL;
