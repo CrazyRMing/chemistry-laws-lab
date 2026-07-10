@@ -301,12 +301,13 @@
 <li><input type="checkbox" checked disabled> **倍比定律數據點標記 I / II**：在座標圖數據點上方標記橘色「I」與紫色「II」，隨點生成同步淡入。</li>
 <li><input type="checkbox" checked disabled> **化合物標題文字著色**：兩頁面左側面板的化合物 I 標題改橘色、化合物 II 改紫色，強化色彩對應。</li>
 <li><input type="checkbox" checked disabled> **定比定律固定實驗數值**：移除隨機生成，改為固定數值（酸鹼中和水 1.34g/10.72g；酒精燃燒水 3.02g/24.16g；小蘇打分解水 0.50g/4.00g），並在圖例下方換行顯示。</li>
-<li><input type="checkbox" checked disabled> **質量儀表板搬移**：兩頁面頂部的 mass-board 全面刪除，改以左側面板下方 HTML 圖例框呈現（名稱與數值換行格式）。</li>
-<li><input type="checkbox" checked disabled> **倍比定律步驟10右側圖改動**：步驟10顯示與步驟9相同的比較結構，移除橘色2.0/紫色1.0標籤，綠色括號以動畫向下移動。</li>
-<li><input type="checkbox" checked disabled> **定比定律步驟6表格優化**：欄位標題改為兩行呈現並加入單位 (g)（配合 FONT_SMALL），數字改黑體 sans-serif，儲存格移除 g 單位，避免排版重疊。</li>
-<li><input type="checkbox" checked disabled> **小蘇打名稱統一**：全站「加熱小蘇打水」一律改為「小蘇打分解水」。</li>
-<li><input type="checkbox" checked disabled> **定比定律步驟7文字對齊**：普魯斯特名言改 textAlign=left，全形空格縮排使三行左邊對齊。</li>
-<li><input type="checkbox" checked disabled> **步驟5文字修改**：「它們在化學性質上完全一樣」改為「它們的組成元素重量比完全一樣」。</li>
+<li><input type="checkbox" checked disabled> **質量資訊與圖例排列優化**：兩頁面頂部的 mass-board 全面刪除，左側 HTML 圖例框改為垂直上下排列（單行不折行）並與右側框大小對齊。</li>
+<li><input type="checkbox" checked disabled> **倍比定律步驟10右側圖及括號動畫**：步驟10顯示與步驟9相同的比較結構，移除橘色 2.0 與紫色 1.0 文字，綠色括號在步驟 10 啟動時些微向下移動，但保持向上彎曲方向（`alignTop = true`）。</li>
+<li><input type="checkbox" checked disabled> **定比定律步驟6表格與右側說明**：表格欄位標題分兩行並加入單位 (g)（配合 FONT_SMALL），數字改用黑體 sans-serif 且垂直置中，移除格內 `g` 單位。右側斜率說明文字取消斜體，改為黑體。</li>
+<li><input type="checkbox" checked disabled> **小蘇打名稱統一**：全站「加熱小蘇打水」一律改為「小蘇打分解水」（含圖例、燒杯、標題、Step 6 表格）。</li>
+<li><input type="checkbox" checked disabled> **定比定律步驟7文字對齊與居中**：名言文字左對齊且全形空格對齊，整個卷軸板塊在左面板內垂直置中。</li>
+<li><input type="checkbox" checked disabled> **步驟5文字與著色**：修改為「它們的組成元素重量比完全一樣」，並將該關鍵字改為橘色，與右側直線呼應。</li>
+<li><input type="checkbox" checked disabled> **倍比定律步驟6~9質量說明**：左面板上方不顯示 H/O 重量，改在左面板下方以對應的顏色（化合物 I 為橘色，化合物 II 為紫色）顯示，右側 legend 中的化合物 I 與 II 移除重量顯示。</li>
 </ul>
 <p></p>
 <h3>下一步 (待議)</h3>
