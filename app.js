@@ -237,33 +237,16 @@ function updateUI() {
     // Update takeaway text
     document.getElementById('takeaway-text').textContent = takeawayTexts[currentStep - 1];
     
-    // Update Mass Board visibility
-    const massBoard = document.getElementById('mass-board');
-    massBoard.classList.toggle('hidden', currentStep < 2);
-    
-    // Set values on indicators
-    document.getElementById('board-h1').textContent = wH1;
-    document.getElementById('board-o1').textContent = wO1;
-    document.getElementById('board-h2').textContent = wH2;
-    document.getElementById('board-o2').textContent = wO2;
-    document.getElementById('board-h3').textContent = wH3;
-    document.getElementById('board-o3').textContent = wO3;
-    
-    // Fade inactive board items
-    document.getElementById('board-h1').parentElement.style.opacity = currentStep >= 2 ? 1 : 0.2;
-    document.getElementById('board-h2').parentElement.style.opacity = currentStep >= 3 ? 1 : 0.2;
-    document.getElementById('board-h3').parentElement.style.opacity = currentStep >= 4 ? 1 : 0.2;
-    
-    // Highlight active board item in orange
-    document.getElementById('board-h1').parentElement.classList.toggle('active', currentStep === 2);
-    document.getElementById('board-h2').parentElement.classList.toggle('active', currentStep === 3);
-    document.getElementById('board-h3').parentElement.classList.toggle('active', currentStep === 4);
-    
     // Toggle active state of HTML legend items
     document.getElementById('legend-item-1').classList.toggle('visible', currentStep >= 2);
     document.getElementById('legend-item-2').classList.toggle('visible', currentStep >= 3);
     document.getElementById('legend-item-3').classList.toggle('visible', currentStep >= 4);
     document.getElementById('legend-item-4').classList.toggle('visible', currentStep >= 5);
+
+    // Toggle active state of Left-side HTML legend items
+    document.getElementById('left-legend-item-1').classList.toggle('visible', currentStep >= 2);
+    document.getElementById('left-legend-item-2').classList.toggle('visible', currentStep >= 3);
+    document.getElementById('left-legend-item-3').classList.toggle('visible', currentStep >= 4);
 }
 
 // Resize and Setup Canvases
@@ -537,10 +520,11 @@ function renderFlaskPanel() {
         // Statement
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
-        ctxF.textAlign = 'center'; // Just make sure centering is clean
-        ctxF.fillText('「 一種純化合物，不論其來源或', w / 2, 145);
-        ctxF.fillText('製備方法為何，其組成元素', w / 2, 190);
-        ctxF.fillText('之間的質量比恆為定值。 」', w / 2, 235);
+        ctxF.textAlign = 'left';
+        const startX = w / 2 - 145;
+        ctxF.fillText('「一種純化合物，不論其來源或', startX, 145);
+        ctxF.fillText('　製備方法為何，其組成元素', startX, 190);
+        ctxF.fillText('　之間的質量比恆為定值。」', startX, 235);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
