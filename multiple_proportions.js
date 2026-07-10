@@ -377,6 +377,11 @@ function drawLeftPanel() {
     else if (currentStep === 2 || currentStep === 3) {
         // Step 2-3: Show Compound I container centered (Step 3 is identical to Step 2)
         ctxF.save();
+        
+        // Slower fade-in on step 2, keep fully visible on step 3
+        const alpha = (currentStep === 2) ? easeInOutCubic(animProgress) : 1;
+        ctxF.globalAlpha = alpha;
+
         drawWobblyRect(ctxF, 40, 40, w - 80, h - 80, '#2b2b2b', true, '#ffffff', 2, 35);
 
         // Beaker geometry — same size as Steps 4-5 (50x60)
@@ -837,7 +842,8 @@ function drawRightPanel() {
     
     // 3. Draw Compound I representative point and line
     if (currentStep >= 2) {
-        drawWobblyCircle(ctxG, mapX(2.5, w), mapY(20.0, h), 6, '#ff7a00', true, 2, 220);
+        const t2 = (currentStep === 2) ? easeInOutCubic(animProgress) : 1;
+        drawWobblyCircle(ctxG, mapX(2.5, w), mapY(20.0, h), 6 * t2, '#ff7a00', true, 2, 220);
     }
     
     if (currentStep >= 3) {
@@ -853,7 +859,8 @@ function drawRightPanel() {
     
     // 4. Draw Compound II representative point and line
     if (currentStep >= 4) {
-        drawWobblyCircle(ctxG, mapX(1.5, w), mapY(24.0, h), 6, '#7c3aed', true, 2, 230);
+        const t4 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
+        drawWobblyCircle(ctxG, mapX(1.5, w), mapY(24.0, h), 6 * t4, '#7c3aed', true, 2, 230);
     }
     
     if (currentStep >= 5) {
