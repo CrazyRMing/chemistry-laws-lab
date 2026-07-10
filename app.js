@@ -5,10 +5,10 @@ const ctxF = flaskCanvas.getContext('2d');
 const ctxG = graphCanvas.getContext('2d');
 
 // Font Configuration
-const FONT_UI = 'bold 1.15rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
-const FONT_TITLE = 'bold 1.35rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
-const FONT_SMALL = '0.95rem "AwkwardBlack 拙黑體", "AwkwardBlack", sans-serif';
-const FONT_MATH = 'bold italic 1.15rem "EB Garamond", "AwkwardBlack 拙黑體", "AwkwardBlack", serif';
+const FONT_UI = 'bold 1.15rem "AwkwardBlack", "AwkwardBlack 拙黑體", sans-serif';
+const FONT_TITLE = 'bold 1.35rem "AwkwardBlack", "AwkwardBlack 拙黑體", sans-serif';
+const FONT_SMALL = '0.95rem "AwkwardBlack", "AwkwardBlack 拙黑體", sans-serif';
+const FONT_MATH = 'bold italic 1.15rem "AwkwardBlack", "AwkwardBlack 拙黑體", "EB Garamond", serif';
 
 // Preload generated sketchy asset images
 const imgTitration = new Image();
@@ -794,7 +794,17 @@ window.onload = () => {
     generateRandomValues();
     resizeCanvases();
     updateUI();
-    drawLoop();
+    if (document.fonts) {
+        document.fonts.ready.then((fontFaceSet) => {
+            console.log("=== Fonts Status ===");
+            fontFaceSet.forEach((font) => {
+                console.log(`Family: ${font.family}, Status: ${font.status}`);
+            });
+            drawLoop();
+        });
+    } else {
+        drawLoop();
+    }
 };
 
 window.onresize = () => {

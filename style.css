@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'AwkwardBlack';
+    src: url('assets/AwkwardBlack_V2_0.ttf') format('truetype');
+}
+
 /* Theme Config - Light theme, EB Garamond serif font for math */
 :root {
     --bg-color: #faf8f5;         /* Cream-white */
@@ -11,9 +16,9 @@
     --color-gray-medium: #888888;
     --color-gray-dark: #444444;
     
-    --font-heading: 'AwkwardBlack 拙黑體', 'AwkwardBlack', 'AwkwardBlack拙黑體', 'Outfit', sans-serif;
-    --font-math: 'EB Garamond', 'AwkwardBlack 拙黑體', 'AwkwardBlack', 'AwkwardBlack拙黑體', 'Noto Sans TC', serif;
-    --font-ui: 'AwkwardBlack 拙黑體', 'AwkwardBlack', 'AwkwardBlack拙黑體', 'Outfit', 'Noto Sans TC', sans-serif;
+    --font-heading: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'Outfit', sans-serif;
+    --font-math: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'EB Garamond', 'Noto Sans TC', serif;
+    --font-ui: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'Outfit', 'Noto Sans TC', sans-serif;
 }
 
 * {
