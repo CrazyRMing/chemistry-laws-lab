@@ -397,22 +397,22 @@ function drawLeftPanel() {
         ctxF.fillRect(bx + 3, by + 20, bW - 6, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + bW - 1, by + 20, '#ff7a00', 1.5, 43);
 
-        // Text below beaker (pivoted two-column layout)
+        // Label above beaker, data below — matching Step 4 layout
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 I（水）', targetCX, by - 15);
         const lW = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const vW = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
         const piv = targetCX - vW / 2 + lW / 2;
-        ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', targetCX, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', piv, by + bH + 48);
+        ctxF.fillText('H', piv, by + bH + 25);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', piv, by + bH + 48);
+        ctxF.fillText(' = 2.5 g', piv, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', piv, by + bH + 71);
+        ctxF.fillText('O', piv, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', piv, by + bH + 71);
+        ctxF.fillText(' = 20.0 g', piv, by + bH + 48);
 
         ctxF.restore();
     }
@@ -503,7 +503,7 @@ function drawLeftPanel() {
 
         const cx1 = w / 4;
         const cx2 = (w * 3) / 4;
-        const cy = h / 2 - 10; // Shifted upward by 25px per request
+        const cy = h / 2 + 15; // Shifted downward (atoms and texts shift down)
         const atomR_H = 15, atomR_O = 20;
 
         // FONT_TITLE header at the top
@@ -515,11 +515,11 @@ function drawLeftPanel() {
         // Transition progress for Step 6
         const t6 = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
 
-        // Draw labels Compound I and II, sliding upwards from h/2-55 to cy-65 during Step 6 transition
+        // Draw static labels Compound I and II at the top (matching Step 4-5) without sliding up
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        const labelY = (currentStep === 6) ? (h / 2 - 55) - 20 * t6 : (cy - 65);
+        const labelY = h / 2 - 55;
         ctxF.fillText('化合物 I（水）', cx1, labelY);
         ctxF.fillText('化合物 II（雙氧水）', cx2, labelY);
 
@@ -692,7 +692,7 @@ function drawLeftPanel() {
 
         const cx1 = w / 4;
         const cx2 = (w * 3) / 4;
-        const cy = h / 2 - 10; // Shifted upward by 25px per request
+        const cy = h / 2 + 15; // Shifted downward (atoms and texts shift down)
         const atomR_H = 15, atomR_O = 20;
 
         // FONT_TITLE header at the top
@@ -705,8 +705,8 @@ function drawLeftPanel() {
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', cx1, cy - 65);
-        ctxF.fillText('化合物 II（雙氧水）', cx2, cy - 65);
+        ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
+        ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
         // Compound I — H atoms fade in during Step 9 (Horizontally arranged: cx1-28 and cx1 at cy+28)
         if (currentStep === 9) {
@@ -725,9 +725,12 @@ function drawLeftPanel() {
             ctxF.restore();
         }
         
+        // t8 must be declared before alpha8_O to avoid TDZ error
+        const t8 = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
+
         // Compound I — O atom (Red fill, black outline, white text) — now at the TOP (cy - 20)
         ctxF.save();
-        const alpha8_O = (currentStep === 8) ? t8 : 1.0;
+        const alpha8_O = t8; // fade in on Step 8 entry, stays at 1 on Step 9
         ctxF.globalAlpha = alpha8_O;
         drawWobblyCircle(ctxF, cx1, cy - 20, atomR_O, '#ef4444', true, 2, 93);
         drawWobblyCircle(ctxF, cx1, cy - 20, atomR_O, '#2b2b2b', false, 2, 93);
@@ -760,8 +763,6 @@ function drawLeftPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('O', cx2, cy - 15);
         ctxF.restore();
-
-        const t8 = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
 
         // 2. Dissolve fading-out Step 7 text and bottom O atoms during Step 8 entry transition
         if (currentStep === 8 && t8 < 1.0) {
@@ -931,37 +932,33 @@ function drawLeftPanel() {
         ctxF.restore();
     }
     else if (currentStep === 10) {
-        // Step 10: Historical Law Scroll
+        // Step 10: Formal Law Scroll / John Dalton Scroll
         ctxF.save();
-        // Draw scroll background
-        const sx = 40, sy = 40, sw = w - 80, sh = h - 80;
-        drawWobblyRect(ctxF, sx, sy, sw, sh, '#2b2b2b', true, '#faf5ec', 2.5, 100);
-        
-        // Scroll roll edges
-        drawWobblyLine(ctxF, sx - 5, sy, sx - 5, sy + sh, '#8b5a2b', 4, 101);
-        drawWobblyLine(ctxF, sx + sw + 5, sy, sx + sw + 5, sy + sh, '#8b5a2b', 4, 102);
-        
-        ctxF.fillStyle = '#2b2b2b';
-        ctxF.textAlign = 'center';
+        // Draw parchment border matching Step 7 of definite proportions
+        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 100);
+        drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 105);
+
+        // Title
+        ctxF.fillStyle = '#ff7a00'; // COLOR_ORANGE
         ctxF.font = FONT_TITLE;
-        ctxF.fillText('📜 倍比定律', w / 2, sy + 60); // Shifted down for breathing room
-        
-        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('倍比定律 (Law of Multiple Proportions)', w / 2, 75);
+
+        // Divider
+        drawWobblyLine(ctxF, 60, 95, w - 60, 95, '#2b2b2b', 1.5, 110);
+
+        // Statement
         ctxF.fillStyle = '#1f1f1f';
-        const textLines = [
-            "當甲、乙兩種元素相結合，",
-            "能生成兩種或以上的化合物時，",
-            "若固定其中甲元素的質量，",
-            "則各化合物中乙元素的質量，",
-            "彼此之間呈簡單的整數比。"
-        ];
-        textLines.forEach((line, idx) => {
-            ctxF.fillText(line, w / 2, sy + 120 + idx * 32); // Increased spacing to 32px
-        });
-        
-        ctxF.font = FONT_SMALL;
+        ctxF.font = FONT_TITLE;
+        ctxF.fillText('「 當甲、乙兩元素結合生成兩種以上的化合物時，', w / 2, 145);
+        ctxF.fillText('若固定甲元素的質量，則各化合物中乙元素的質量，', w / 2, 190);
+        ctxF.fillText('彼此之間呈簡單的整數比。 」', w / 2, 235);
+
+        // Author / Date
         ctxF.fillStyle = '#5f5f5f';
-        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w / 2 + 30, sy + 310); // Shifted down to balance empty bottom space
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'right';
+        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w - 70, 285);
         ctxF.restore();
     }
     else if (currentStep === 11) {
