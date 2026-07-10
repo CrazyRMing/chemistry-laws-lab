@@ -359,15 +359,9 @@ function drawLeftPanel() {
         ctxF.save();
         drawWobblyRect(ctxF, 40, 40, w - 80, h - 80, '#2b2b2b', true, '#ffffff', 2, 35);
         
-        // Title
-        ctxF.font = FONT_TITLE;
-        ctxF.textAlign = 'left';
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.fillText('化合物 I (水 H₂O)', 60, 80);
-        
         // Center Beaker
         const bx = w / 2 - 40;
-        const by = h / 2 - 40;
+        const by = h / 2 - 50;
         drawWobblyLine(ctxF, bx, by, bx, by + 80, '#2b2b2b', 3, 40);
         drawWobblyLine(ctxF, bx, by + 80, bx + 80, by + 80, '#2b2b2b', 3, 41);
         drawWobblyLine(ctxF, bx + 80, by + 80, bx + 80, by, '#2b2b2b', 3, 42);
@@ -377,11 +371,13 @@ function drawLeftPanel() {
         ctxF.fillRect(bx + 4, by + 30, 72, 48);
         drawWobblyLine(ctxF, bx + 2, by + 30, bx + 78, by + 30, '#ff7a00', 2, 43);
         
-        // Text below image (consistent with Step 4-5 text styles)
+        // Three lines of text below the beaker
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        ctxF.fillText('H = 2.5 g, O = 20.0 g', w / 2, by + 115);
+        ctxF.fillText('化合物 I（水）', w / 2, by + 105);
+        ctxF.fillText('H = 2.5 g', w / 2, by + 128);
+        ctxF.fillText('O = 20.0 g', w / 2, by + 151);
         
         ctxF.restore();
     }
@@ -392,37 +388,43 @@ function drawLeftPanel() {
         
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#1f1f1f';
         ctxF.fillText('多種化合物的組成比', 50, 75);
         
-        // Draw Water (Left side)
-        let bx = w / 4 - 25;
-        let by = h / 2 - 20;
-        ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 I (水)', bx - 10, by - 20);
+        const by = h / 2 - 40;
+        
+        // Draw Compound I (Left side) — beaker centered at w/4
+        const cx1 = w / 4;
+        let bx = cx1 - 25;
         drawWobblyLine(ctxF, bx, by, bx, by + 60, '#2b2b2b', 2.5, 60);
         drawWobblyLine(ctxF, bx, by + 60, bx + 50, by + 60, '#2b2b2b', 2.5, 61);
         drawWobblyLine(ctxF, bx + 50, by + 60, bx + 50, by, '#2b2b2b', 2.5, 62);
         ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#ff7a00', 1.5, 63);
-        ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = FONT_SMALL;
-        ctxF.fillText('H = 2.5g, O = 20.0g', bx - 25, by + 85);
-        
-        // Draw H2O2 (Right side)
-        bx = (w * 3) / 4 - 25;
+        // Text below Compound I beaker
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
-        ctxF.fillText('化合物 II (雙氧水)', bx - 20, by - 20);
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 I（水）', cx1, by + 85);
+        ctxF.fillText('H = 2.5 g', cx1, by + 108);
+        ctxF.fillText('O = 20.0 g', cx1, by + 131);
+        
+        // Draw Compound II (Right side) — beaker centered at 3w/4
+        const cx2 = (w * 3) / 4;
+        bx = cx2 - 25;
         drawWobblyLine(ctxF, bx, by, bx, by + 60, '#2b2b2b', 2.5, 70);
         drawWobblyLine(ctxF, bx, by + 60, bx + 50, by + 60, '#2b2b2b', 2.5, 71);
         drawWobblyLine(ctxF, bx + 50, by + 60, bx + 50, by, '#2b2b2b', 2.5, 72);
         ctxF.fillStyle = 'rgba(124, 58, 237, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#7c3aed', 1.5, 73);
-        ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = FONT_SMALL;
-        ctxF.fillText('H = 1.5g, O = 24.0g', bx - 25, by + 85);
+        // Text below Compound II beaker
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 II（雙氧水）', cx2, by + 85);
+        ctxF.fillText('H = 1.5 g', cx2, by + 108);
+        ctxF.fillText('O = 24.0 g', cx2, by + 131);
         
         ctxF.restore();
     }
