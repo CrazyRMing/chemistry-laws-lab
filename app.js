@@ -295,9 +295,14 @@ function renderFlaskPanel() {
     } 
     else if (currentStep === 2) {
         // Step 2: Acid-base Titration
-        const imgSize = Math.min(w, h) * 0.85;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('生成水的方法：酸鹼中和', w / 2, 38);
+
+        const imgSize = Math.min(w, h) * 0.78;
         const imgX = (w - imgSize) / 2;
-        const imgY = (h - imgSize) / 2;
+        const imgY = (h - imgSize) / 2 + 15;
         ctxF.drawImage(imgTitration, imgX, imgY, imgSize, imgSize);
         
         // Droplet flies out
@@ -322,9 +327,14 @@ function renderFlaskPanel() {
     } 
     else if (currentStep === 3) {
         // Step 3: Combustion Setup
-        const imgSize = Math.min(w, h) * 0.85;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('生成水的方法：燃燒', w / 2, 38);
+
+        const imgSize = Math.min(w, h) * 0.78;
         const imgX = (w - imgSize) / 2;
-        const imgY = (h - imgSize) / 2;
+        const imgY = (h - imgSize) / 2 + 15;
         ctxF.drawImage(imgCombustion, imgX, imgY, imgSize, imgSize);
         
         const p = animProgress;
@@ -348,9 +358,14 @@ function renderFlaskPanel() {
     } 
     else if (currentStep === 4) {
         // Step 4: Baking Soda Heating Setup
-        const imgSize = Math.min(w, h) * 0.85;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('生成水的方法：小蘇打熱解', w / 2, 38);
+
+        const imgSize = Math.min(w, h) * 0.78;
         const imgX = (w - imgSize) / 2;
-        const imgY = (h - imgSize) / 2;
+        const imgY = (h - imgSize) / 2 + 15;
         ctxF.drawImage(imgHeating, imgX, imgY, imgSize, imgSize);
         
         const p = animProgress;
