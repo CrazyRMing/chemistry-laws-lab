@@ -593,55 +593,48 @@ function drawLeftPanel() {
             ctxF.save();
             ctxF.globalAlpha = t6;
             ctxF.font = FONT_UI;
-            ctxF.fillStyle = '#ff7a00';
+            ctxF.fillStyle = '#2563eb'; // Blue
             ctxF.textAlign = 'center';
-            ctxF.fillText('H 重量相同', w / 2, h - 85);
+            ctxF.fillText('H 重量相同', w / 2, h - 110);
             ctxF.font = FONT_SMALL;
-            ctxF.fillStyle = '#5f5f5f';
-            ctxF.fillText('表示應有相同數量的 H 原子', w / 2, h - 60);
+            ctxF.fillText('表示應有相同數量的 H 原子', w / 2, h - 90);
             ctxF.restore();
         }
         else if (currentStep === 7) {
             ctxF.save();
-            // Step 6 text remains visible
+            // Step 6 text remains visible in blue at same position
             ctxF.font = FONT_UI;
-            ctxF.fillStyle = '#ff7a00';
+            ctxF.fillStyle = '#2563eb'; // Blue
             ctxF.textAlign = 'center';
             ctxF.fillText('H 重量相同', w / 2, h - 110);
             ctxF.font = FONT_SMALL;
-            ctxF.fillStyle = '#5f5f5f';
             ctxF.fillText('表示應有相同數量的 H 原子', w / 2, h - 90);
 
-            // Red/green O weight ratio text at h - 65
-            const text1 = "O 原子重量為 ";
+            // Red/green O weight ratio text at h - 65 (No (紅色)/(綠色) text)
+            const text1 = "O 原子重量比為 ";
             const text2 = "1";
-            const text3 = " (紅色) : ";
+            const text3 = " : ";
             const text4 = "2";
-            const text5 = " (綠色)";
             ctxF.font = FONT_UI;
             const w1 = ctxF.measureText(text1).width;
             const w2 = ctxF.measureText(text2).width;
             const w3 = ctxF.measureText(text3).width;
             const w4 = ctxF.measureText(text4).width;
-            const w5 = ctxF.measureText(text5).width;
-            const totalW = w1 + w2 + w3 + w4 + w5;
+            const totalW = w1 + w2 + w3 + w4;
             let startX = w / 2 - totalW / 2;
 
             ctxF.textAlign = 'left';
-            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text1, startX, h - 65);
             startX += w1;
             ctxF.fillStyle = '#ef4444'; // Red
             ctxF.fillText(text2, startX, h - 65);
             startX += w2;
-            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text3, startX, h - 65);
             startX += w3;
             ctxF.fillStyle = '#10b981'; // Green
             ctxF.fillText(text4, startX, h - 65);
-            startX += w4;
-            ctxF.fillStyle = '#2b2b2b';
-            ctxF.fillText(text5, startX, h - 65);
 
             // Represent O atoms ratio is also 1 : 2 at h - 45
             const text6 = "表示 O 原子的數量也是 ";
@@ -656,13 +649,13 @@ function drawLeftPanel() {
             const totalW2 = w6 + w7 + w8 + w9;
             let startX2 = w / 2 - totalW2 / 2;
 
-            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text6, startX2, h - 45);
             startX2 += w6;
             ctxF.fillStyle = '#ef4444'; // Red
             ctxF.fillText(text7, startX2, h - 45);
             startX2 += w7;
-            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text8, startX2, h - 45);
             startX2 += w8;
             ctxF.fillStyle = '#10b981'; // Green
@@ -732,55 +725,48 @@ function drawLeftPanel() {
             ctxF.save();
             ctxF.globalAlpha = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
             ctxF.font = FONT_UI;
-            ctxF.fillStyle = '#7c3aed';
+            ctxF.fillStyle = '#2563eb'; // Blue
             ctxF.textAlign = 'center';
-            ctxF.fillText('O 重量相同', w / 2, h - 85);
+            ctxF.fillText('O 重量相同', w / 2, h - 110);
             ctxF.font = FONT_SMALL;
-            ctxF.fillStyle = '#5f5f5f';
-            ctxF.fillText('表示應有相同數量的 O 原子', w / 2, h - 60);
+            ctxF.fillText('表示應有相同數量的 O 原子', w / 2, h - 90);
             ctxF.restore();
         }
         else if (currentStep === 9) {
             ctxF.save();
-            // Step 8 text remains visible
+            // Step 8 text remains visible in blue at same position
             ctxF.font = FONT_UI;
-            ctxF.fillStyle = '#7c3aed';
+            ctxF.fillStyle = '#2563eb'; // Blue
             ctxF.textAlign = 'center';
             ctxF.fillText('O 重量相同', w / 2, h - 110);
             ctxF.font = FONT_SMALL;
-            ctxF.fillStyle = '#5f5f5f';
             ctxF.fillText('表示應有相同數量的 O 原子', w / 2, h - 90);
 
-            // Red/green H weight ratio text at h - 65
-            const text1 = "H 原子重量為 ";
+            // Red/green H weight ratio text at h - 65 (No (綠色)/(紅色) text)
+            const text1 = "H 原子重量比為 ";
             const text2 = "2";
-            const text3 = " (綠色) : ";
+            const text3 = " : ";
             const text4 = "1";
-            const text5 = " (紅色)";
             ctxF.font = FONT_UI;
             const w1 = ctxF.measureText(text1).width;
             const w2 = ctxF.measureText(text2).width;
             const w3 = ctxF.measureText(text3).width;
             const w4 = ctxF.measureText(text4).width;
-            const w5 = ctxF.measureText(text5).width;
-            const totalW = w1 + w2 + w3 + w4 + w5;
+            const totalW = w1 + w2 + w3 + w4;
             let startX = w / 2 - totalW / 2;
 
             ctxF.textAlign = 'left';
-            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text1, startX, h - 65);
             startX += w1;
             ctxF.fillStyle = '#10b981'; // Green
             ctxF.fillText(text2, startX, h - 65);
             startX += w2;
-            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text3, startX, h - 65);
             startX += w3;
             ctxF.fillStyle = '#ef4444'; // Red
             ctxF.fillText(text4, startX, h - 65);
-            startX += w4;
-            ctxF.fillStyle = '#2b2b2b';
-            ctxF.fillText(text5, startX, h - 65);
 
             // Represent H atoms ratio is also 2 : 1 at h - 45
             const text6 = "表示 H 原子的數量也是 ";
@@ -795,13 +781,13 @@ function drawLeftPanel() {
             const totalW2 = w6 + w7 + w8 + w9;
             let startX2 = w / 2 - totalW2 / 2;
 
-            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text6, startX2, h - 45);
             startX2 += w6;
             ctxF.fillStyle = '#10b981'; // Green
             ctxF.fillText(text7, startX2, h - 45);
             startX2 += w7;
-            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillStyle = '#1f1f1f'; // Unified text color
             ctxF.fillText(text8, startX2, h - 45);
             startX2 += w8;
             ctxF.fillStyle = '#ef4444'; // Red
