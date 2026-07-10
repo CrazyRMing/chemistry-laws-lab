@@ -944,7 +944,10 @@ function drawLeftPanel() {
     }
     else if (currentStep === 10) {
         // Step 10: Formal Law Scroll / John Dalton Scroll
+        const alpha10 = easeInOutCubic(animProgress);
         ctxF.save();
+        ctxF.globalAlpha = alpha10;
+        
         // Draw parchment border matching Step 7 of definite proportions
         drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 100);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 105);
