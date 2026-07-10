@@ -270,47 +270,15 @@ function updateUI() {
     document.getElementById('takeaway-text').innerText = currentData.takeaway;
     document.getElementById('step-indicator').innerText = `步驟 ${currentStep} / ${totalSteps}`;
     
-    // Mass board visibility
-    const massBoard = document.getElementById('mass-board');
-    if (currentStep >= 2) {
-        massBoard.classList.remove('hidden');
-        
-        // Update mass board details dynamically
-        const boardH1 = document.getElementById('board-h1');
-        const boardO1 = document.getElementById('board-o1');
-        const boardH2 = document.getElementById('board-h2');
-        const boardO2 = document.getElementById('board-o2');
-        
-        boardH1.innerText = "2.5";
-        boardO1.innerText = "20.0";
-        
-        if (currentStep >= 4) {
-            boardH2.parentElement.style.opacity = "1";
-            boardH2.innerText = "1.5";
-            boardO2.innerText = "24.0";
-        } else {
-            boardH2.parentElement.style.opacity = "0";
-        }
-    } else {
-        massBoard.classList.add('hidden');
-    }
-    
-    // Legend Items active highlighting
-    const items = document.querySelectorAll('.legend-item');
-    items.forEach((item, index) => {
-        const id = index + 1;
-        let visible = false;
-        if (id === 1 && currentStep >= 2) visible = true;
-        if (id === 2 && currentStep >= 4) visible = true;
-        if (id === 3 && (currentStep === 6 || currentStep === 7)) visible = true;
-        if (id === 4 && (currentStep === 8 || currentStep === 9)) visible = true;
-        
-        if (visible) {
-            item.classList.add('visible');
-        } else {
-            item.classList.remove('visible');
-        }
-    });
+    // Toggle active state of right legend items
+    document.getElementById('legend-item-1').classList.toggle('visible', currentStep >= 2);
+    document.getElementById('legend-item-2').classList.toggle('visible', currentStep >= 4);
+    document.getElementById('legend-item-3').classList.toggle('visible', currentStep === 6 || currentStep === 7);
+    document.getElementById('legend-item-4').classList.toggle('visible', currentStep === 8 || currentStep === 9 || currentStep === 10);
+
+    // Toggle active state of left legend items
+    document.getElementById('left-legend-item-1').classList.toggle('visible', currentStep >= 2);
+    document.getElementById('left-legend-item-2').classList.toggle('visible', currentStep >= 4);
 }
 
 function nextStep() {
