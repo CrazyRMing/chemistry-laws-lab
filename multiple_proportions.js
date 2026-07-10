@@ -523,6 +523,13 @@ function drawLeftPanel() {
         ctxF.fillText('化合物 I（水）', cx1, labelY);
         ctxF.fillText('化合物 II（雙氧水）', cx2, labelY);
 
+        // Draw horizontal separator line to separate top (equal H) and bottom (O ratio) sections
+        const lineAlpha = (currentStep === 6) ? t6 : 1.0;
+        ctxF.save();
+        ctxF.globalAlpha = lineAlpha;
+        drawWobblyLine(ctxF, 50, cy + 24, w - 50, cy + 24, '#d1d5db', 1.5, 300);
+        ctxF.restore();
+
         // 1. Draw fading-out beakers during Step 6 entry transition (Pure fade, no sliding)
         if (currentStep === 6 && t6 < 1.0) {
             ctxF.save();
@@ -707,6 +714,11 @@ function drawLeftPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
         ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
+
+        // Draw horizontal separator line to separate top (equal O) and bottom (H ratio) sections
+        ctxF.save();
+        drawWobblyLine(ctxF, 50, cy + 24, w - 50, cy + 24, '#d1d5db', 1.5, 300);
+        ctxF.restore();
 
         // Compound I — H atoms fade in during Step 9 (Horizontally arranged: cx1-28 and cx1 at cy+58)
         if (currentStep === 9) {
