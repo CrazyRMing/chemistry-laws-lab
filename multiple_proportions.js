@@ -499,6 +499,41 @@ function drawLeftPanel() {
         const cy = h / 2 + 15;
         const atomR_H = 15, atomR_O = 20;
 
+        // Transition progress for Step 6
+        const t6 = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
+
+        // 1. Draw fading-out beakers during Step 6 entry transition
+        if (currentStep === 6 && t6 < 1.0) {
+            ctxF.save();
+            ctxF.globalAlpha = 1 - t6;
+            const bW = 50, bH = 60;
+            const byOffset = h / 2 - 40 + t6 * 20; // slide down slightly
+            
+            // Compound I beaker
+            const bx1 = w / 4 - bW / 2;
+            drawWobblyLine(ctxF, bx1, byOffset, bx1, byOffset + bH, '#2b2b2b', 2.5, 60);
+            drawWobblyLine(ctxF, bx1, byOffset + bH, bx1 + bW, byOffset + bH, '#2b2b2b', 2.5, 61);
+            drawWobblyLine(ctxF, bx1 + bW, byOffset + bH, bx1 + bW, byOffset, '#2b2b2b', 2.5, 62);
+            ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
+            ctxF.fillRect(bx1 + 3, byOffset + 20, bW - 6, 38);
+            drawWobblyLine(ctxF, bx1 + 1, byOffset + 20, bx1 + bW - 1, byOffset + 20, '#ff7a00', 1.5, 63);
+            
+            // Compound II beaker
+            const bx2 = (w * 3) / 4 - bW / 2;
+            drawWobblyLine(ctxF, bx2, byOffset, bx2, byOffset + bH, '#2b2b2b', 2.5, 70);
+            drawWobblyLine(ctxF, bx2, byOffset + bH, bx2 + bW, byOffset + bH, '#2b2b2b', 2.5, 71);
+            drawWobblyLine(ctxF, bx2 + bW, byOffset + bH, bx2 + bW, byOffset, '#2b2b2b', 2.5, 72);
+            ctxF.fillStyle = 'rgba(124, 58, 237, 0.15)';
+            ctxF.fillRect(bx2 + 3, byOffset + 20, bW - 6, 38);
+            drawWobblyLine(ctxF, bx2 + 1, byOffset + 20, bx2 + bW - 1, byOffset + 20, '#7c3aed', 1.5, 73);
+            ctxF.restore();
+        }
+
+        // Draw micro comparison details (fading in and sliding down slightly on Step 6)
+        ctxF.save();
+        ctxF.globalAlpha = t6;
+        const currentCy = (currentStep === 6) ? (cy - 15) + 15 * t6 : cy;
+
         // Description text at TOP
         ctxF.font = FONT_UI;
         ctxF.fillStyle = '#ff7a00';
@@ -510,31 +545,48 @@ function drawLeftPanel() {
         }
 
         // Compound I — H atom
-        drawWobblyCircle(ctxF, cx1, cy - 20, atomR_H, '#ff7a00', true, 2, 81);
+        drawWobblyCircle(ctxF, cx1, currentCy - 20, atomR_H, '#ff7a00', true, 2, 81);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
-        ctxF.fillText('H', cx1, cy - 16);
-        if (currentStep === 7) {
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#444444', true, 2, 82);
-            ctxF.fillStyle = '#ffffff';
-            ctxF.font = 'bold 1.15rem sans-serif';
-            ctxF.fillText('O', cx1, cy + 33);
-        }
+        ctxF.fillText('H', cx1, currentCy - 16);
+        
         // Compound I label BELOW atoms
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
-        const labelY6_I = (currentStep === 7) ? cy + 28 + atomR_O + 22 : cy - 20 + atomR_H + 22;
+        const labelY6_I = (currentStep === 7) ? cy + 28 + atomR_O + 22 : currentCy - 20 + atomR_H + 22;
         ctxF.fillText('化合物 I', cx1, labelY6_I);
 
         // Compound II — H atom
-        drawWobblyCircle(ctxF, cx2, cy - 20, atomR_H, '#ff7a00', true, 2, 83);
+        drawWobblyCircle(ctxF, cx2, currentCy - 20, atomR_H, '#ff7a00', true, 2, 83);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
-        ctxF.fillText('H', cx2, cy - 16);
+        ctxF.fillText('H', cx2, currentCy - 16);
+        
+        // Compound II label BELOW atoms
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        const labelY6_II = (currentStep === 7) ? cy + 28 + atomR_O + 22 : currentCy - 20 + atomR_H + 22;
+        ctxF.fillText('化合物 II', cx2, labelY6_II);
+        ctxF.restore();
+
+        // 2. Fade in O atoms in Step 7
         if (currentStep === 7) {
+            ctxF.save();
+            const alpha7 = easeInOutCubic(animProgress);
+            ctxF.globalAlpha = alpha7;
+            
+            // Compound I — O atom
+            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#444444', true, 2, 82);
+            ctxF.fillStyle = '#ffffff';
+            ctxF.font = 'bold 1.15rem sans-serif';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('O', cx1, cy + 33);
+            
+            // Compound II — 2 O atoms
             drawWobblyCircle(ctxF, cx2 - 22, cy + 28, atomR_O, '#444444', true, 2, 84);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
@@ -542,13 +594,9 @@ function drawLeftPanel() {
             drawWobblyCircle(ctxF, cx2 + 22, cy + 28, atomR_O, '#444444', true, 2, 85);
             ctxF.fillStyle = '#ffffff';
             ctxF.fillText('O', cx2 + 22, cy + 33);
+            
+            ctxF.restore();
         }
-        // Compound II label BELOW atoms
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = FONT_UI;
-        ctxF.textAlign = 'center';
-        const labelY6_II = (currentStep === 7) ? cy + 28 + atomR_O + 22 : cy - 20 + atomR_H + 22;
-        ctxF.fillText('化合物 II', cx2, labelY6_II);
 
         ctxF.restore();
     }
@@ -572,8 +620,10 @@ function drawLeftPanel() {
             ctxF.fillText('H 原子數量比 = 2 : 1', w / 2, 75);
         }
 
-        // Compound I
+        // Compound I — H atoms fade in during Step 9
         if (currentStep === 9) {
+            ctxF.save();
+            ctxF.globalAlpha = easeInOutCubic(animProgress);
             drawWobblyCircle(ctxF, cx1 - 18, cy - 20, atomR_H, '#ff7a00', true, 2, 91);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 0.95rem sans-serif';
@@ -582,6 +632,7 @@ function drawLeftPanel() {
             drawWobblyCircle(ctxF, cx1 + 18, cy - 20, atomR_H, '#ff7a00', true, 2, 92);
             ctxF.fillStyle = '#ffffff';
             ctxF.fillText('H', cx1 + 18, cy - 16);
+            ctxF.restore();
         }
         drawWobblyCircle(ctxF, cx1, cy + 25, atomR_O, '#444444', true, 2, 93);
         ctxF.fillStyle = '#ffffff';
@@ -595,13 +646,16 @@ function drawLeftPanel() {
         const labelY8_I = cy + 25 + atomR_O + 22;
         ctxF.fillText('化合物 I', cx1, labelY8_I);
 
-        // Compound II
+        // Compound II — H atom fades in during Step 9
         if (currentStep === 9) {
+            ctxF.save();
+            ctxF.globalAlpha = easeInOutCubic(animProgress);
             drawWobblyCircle(ctxF, cx2, cy - 20, atomR_H, '#ff7a00', true, 2, 94);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 0.95rem sans-serif';
             ctxF.textAlign = 'center';
             ctxF.fillText('H', cx2, cy - 16);
+            ctxF.restore();
         }
         drawWobblyCircle(ctxF, cx2, cy + 25, atomR_O, '#444444', true, 2, 95);
         ctxF.fillStyle = '#ffffff';
