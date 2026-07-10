@@ -740,8 +740,11 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx, ty + 5, '#2b2b2b', 1.5, 203 + xVal);
         
         if ((currentStep === 6 || currentStep === 7) && xVal === 1.0) {
+            ctxG.save();
             ctxG.fillStyle = '#2563eb'; // Blue text label
-            ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
+            ctxG.font = 'bold 1.15rem sans-serif'; // Larger & Bold
+            ctxG.fillText(xVal.toFixed(1), tx, ty + 20);
+            ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
             ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
@@ -760,8 +763,11 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx - 5, ty, '#2b2b2b', 1.5, 210 + yVal);
         
         if ((currentStep === 8 || currentStep === 9) && yVal === 16) {
+            ctxG.save();
             ctxG.fillStyle = '#2563eb'; // Blue text label
+            ctxG.font = 'bold 1.15rem sans-serif'; // Larger & Bold
             ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
+            ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
             ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
