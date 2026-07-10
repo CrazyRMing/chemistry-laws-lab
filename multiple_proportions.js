@@ -371,12 +371,14 @@ function drawLeftPanel() {
         ctxF.fillRect(bx + 4, by + 30, 72, 48);
         drawWobblyLine(ctxF, bx + 2, by + 30, bx + 78, by + 30, '#ff7a00', 2, 43);
         
-        // Three lines of text below the beaker — pivot aligns the '=' signs
+        // Two-column data block, centered under the compound name
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
-        const pivot23 = w / 2;
+        const labelColW23 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
+        const valColW23   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
+        const pivot23 = w / 2 - valColW23 / 2 + labelColW23 / 2;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', pivot23, by + 105);
+        ctxF.fillText('化合物 I（水）', w / 2, by + 105);
         ctxF.textAlign = 'right';
         ctxF.fillText('H', pivot23, by + 128);
         ctxF.textAlign = 'left';
@@ -409,19 +411,22 @@ function drawLeftPanel() {
         ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#ff7a00', 1.5, 63);
-        // Text below Compound I beaker — pivot aligns the '=' signs
+        // Two-column data block, centered under Compound I
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
+        const labelColW1 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
+        const valColW1   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
+        const pivot1 = cx1 - valColW1 / 2 + labelColW1 / 2;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, by + 85);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', cx1, by + 108);
+        ctxF.fillText('H', pivot1, by + 108);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', cx1, by + 108);
+        ctxF.fillText(' = 2.5 g', pivot1, by + 108);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', cx1, by + 131);
+        ctxF.fillText('O', pivot1, by + 131);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', cx1, by + 131);
+        ctxF.fillText(' = 20.0 g', pivot1, by + 131);
         
         // Draw Compound II (Right side) — beaker centered at 3w/4
         const cx2 = (w * 3) / 4;
@@ -432,18 +437,21 @@ function drawLeftPanel() {
         ctxF.fillStyle = 'rgba(124, 58, 237, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#7c3aed', 1.5, 73);
-        // Text below Compound II beaker — pivot aligns the '=' signs
+        // Two-column data block, centered under Compound II
         ctxF.fillStyle = '#1f1f1f';
+        const labelColW2 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
+        const valColW2   = Math.max(ctxF.measureText(' = 1.5 g').width, ctxF.measureText(' = 24.0 g').width);
+        const pivot2 = cx2 - valColW2 / 2 + labelColW2 / 2;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 II（雙氧水）', cx2, by + 85);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', cx2, by + 108);
+        ctxF.fillText('H', pivot2, by + 108);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 1.5 g', cx2, by + 108);
+        ctxF.fillText(' = 1.5 g', pivot2, by + 108);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', cx2, by + 131);
+        ctxF.fillText('O', pivot2, by + 131);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 24.0 g', cx2, by + 131);
+        ctxF.fillText(' = 24.0 g', pivot2, by + 131);
         
         ctxF.restore();
     }
