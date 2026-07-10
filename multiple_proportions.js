@@ -920,8 +920,53 @@ function drawLeftPanel() {
         ctxF.font = FONT_TITLE;
         ctxF.fillText('「 當甲、乙兩元素結合，', w / 2, cy - 50);
         ctxF.fillText('生成兩種以上的化合物時，', w / 2, cy - 10);
-        ctxF.fillText('若固定甲元素的質量，', w / 2, cy + 30);
-        ctxF.fillText('則乙元素的質量比呈簡單整數比。 」', w / 2, cy + 70);
+        // Render colored sub-strings for Dalton's statement
+        ctxF.font = FONT_TITLE;
+        
+        // Line 3: 若[固定甲元素的質量](blue)，
+        const text3_1 = '若';
+        const text3_2 = '固定甲元素的質量';
+        const text3_3 = '，';
+        const w3_1 = ctxF.measureText(text3_1).width;
+        const w3_2 = ctxF.measureText(text3_2).width;
+        const w3_3 = ctxF.measureText(text3_3).width;
+        const totalW3 = w3_1 + w3_2 + w3_3;
+        
+        let currentX3 = w / 2 - totalW3 / 2;
+        ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text3_1, currentX3, cy + 30);
+        currentX3 += w3_1;
+        ctxF.fillStyle = '#2563eb'; // Blue
+        ctxF.fillText(text3_2, currentX3, cy + 30);
+        currentX3 += w3_2;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text3_3, currentX3, cy + 30);
+
+        // Line 4: 則乙元素的質量比呈[簡單](red)[整數比](green)。 」
+        const text4_1 = '則乙元素的質量比呈';
+        const text4_2 = '簡單';
+        const text4_3 = '整數比';
+        const text4_4 = '。 」';
+        const w4_1 = ctxF.measureText(text4_1).width;
+        const w4_2 = ctxF.measureText(text4_2).width;
+        const w4_3 = ctxF.measureText(text4_3).width;
+        const w4_4 = ctxF.measureText(text4_4).width;
+        const totalW4 = w4_1 + w4_2 + w4_3 + w4_4;
+
+        let currentX4 = w / 2 - totalW4 / 2;
+        ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text4_1, currentX4, cy + 70);
+        currentX4 += w4_1;
+        ctxF.fillStyle = '#dc2626'; // Red
+        ctxF.fillText(text4_2, currentX4, cy + 70);
+        currentX4 += w4_2;
+        ctxF.fillStyle = '#059669'; // Green
+        ctxF.fillText(text4_3, currentX4, cy + 70);
+        currentX4 += w4_3;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(text4_4, currentX4, cy + 70);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
