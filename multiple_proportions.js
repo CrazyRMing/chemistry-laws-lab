@@ -398,10 +398,11 @@ function drawLeftPanel() {
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + bW - 1, by + 20, '#ff7a00', 1.5, 43);
 
         // Label above beaker, data below — matching Step 4 layout
-        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillStyle = '#ff7a00'; // Colored Compound I title (Orange)
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', targetCX, by - 15);
+        ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
         const lW = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const vW = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
         const piv = targetCX - vW / 2 + lW / 2;
@@ -444,10 +445,11 @@ function drawLeftPanel() {
         drawWobblyLine(ctxF, bx1 + 1, by + 20, bx1 + bW - 1, by + 20, '#ff7a00', 1.5, 63);
         
         // Draw Compound I label above beaker
-        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillStyle = '#ff7a00'; // Colored Compound I title (Orange)
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, by - 15);
+        ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
         
         // Two-column data block, centered under Compound I beaker
         const labelColW1 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
@@ -475,10 +477,11 @@ function drawLeftPanel() {
         drawWobblyLine(ctxF, bx2 + 1, by + 20, bx2 + bW - 1, by + 20, '#7c3aed', 1.5, 73);
         
         // Draw Compound II label above beaker
-        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 II（雙氧水）', cx2, by - 15);
+        ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
         
         // Two-column data block, centered under Compound II beaker
         const labelColW2 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
@@ -516,11 +519,12 @@ function drawLeftPanel() {
         const t6 = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
 
         // Draw static labels Compound I and II at the top (matching Step 4-5) without sliding up
-        ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         const labelY = h / 2 - 55;
+        ctxF.fillStyle = '#ff7a00'; // Colored Compound I title (Orange)
         ctxF.fillText('化合物 I（水）', cx1, labelY);
+        ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, labelY);
 
         // Draw horizontal separator line to separate top (equal H) and bottom (O ratio) sections
@@ -709,10 +713,11 @@ function drawLeftPanel() {
         ctxF.fillText('元素質量與原子數量關係', 50, 75);
 
         // Draw static labels Compound I and II at the top, matching Step 4-5
-        ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
+        ctxF.fillStyle = '#ff7a00'; // Colored Compound I title (Orange)
         ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
+        ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
         // Draw horizontal separator line to separate top (equal O) and bottom (H ratio) sections
