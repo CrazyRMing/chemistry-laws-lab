@@ -26,10 +26,6 @@
         <div class="info-card">
             <h1 id="step-title">倍比定律探討</h1>
             <p id="step-desc">請點擊下方「下一步」開始探索化學中神奇的比例律。</p>
-            <div id="mass-board" class="mass-board hidden">
-                <span class="mass-item text-coral">化合物 I：H = <span id="board-h1">1.0</span>g, O = <span id="board-o1">8.0</span>g</span>
-                <span class="mass-item text-teal">化合物 II：H = <span id="board-h2">1.0</span>g, O = <span id="board-o2">16.0</span>g</span>
-            </div>
         </div>
 
         <!-- Two Canvas panels side by side -->
@@ -39,6 +35,16 @@
                 <div class="panel-label">示意圖與微觀說明</div>
                 <div class="canvas-wrapper">
                     <canvas id="flaskCanvas"></canvas>
+                </div>
+                <div class="graph-legend-html">
+                    <div class="legend-item" id="left-legend-item-1">
+                        <span class="legend-dot" style="background-color: #ff7a00;"></span>
+                        <span>化合物 I (水)：H = 2.5g, O = 20.0g</span>
+                    </div>
+                    <div class="legend-item" id="left-legend-item-2">
+                        <span class="legend-dot" style="background-color: #7c3aed;"></span>
+                        <span>化合物 II (雙氧水)：H = 1.5g, O = 24.0g</span>
+                    </div>
                 </div>
             </div>
 

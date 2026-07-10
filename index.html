@@ -26,11 +26,6 @@
         <div class="info-card">
             <h1 id="step-title">定比定律探討</h1>
             <p id="step-desc">請點擊下方「下一步」開始探索化學中神奇的比例律。</p>
-            <div id="mass-board" class="mass-board hidden">
-                <span class="mass-item text-coral">酸鹼中和水：H = <span id="board-h1">0.0</span>g, O = <span id="board-o1">0.0</span>g</span>
-                <span class="mass-item text-teal">酒精燃燒水：H = <span id="board-h2">0.0</span>g, O = <span id="board-o2">0.0</span>g</span>
-                <span class="mass-item text-gold">加熱小蘇打水：H = <span id="board-h3">0.0</span>g, O = <span id="board-o3">0.0</span>g</span>
-            </div>
         </div>
 
         <!-- Two Canvas panels side by side -->
@@ -40,6 +35,20 @@
                 <div class="panel-label">化學實驗模擬</div>
                 <div class="canvas-wrapper">
                     <canvas id="flaskCanvas"></canvas>
+                </div>
+                <div class="graph-legend-html">
+                    <div class="legend-item" id="left-legend-item-1">
+                        <span class="legend-dot" style="background-color: #cccccc;"></span>
+                        <span>酸鹼中和水：H = 1.34g, O = 10.72g</span>
+                    </div>
+                    <div class="legend-item" id="left-legend-item-2">
+                        <span class="legend-dot" style="background-color: #888888;"></span>
+                        <span>酒精燃燒水：H = 3.02g, O = 24.16g</span>
+                    </div>
+                    <div class="legend-item" id="left-legend-item-3">
+                        <span class="legend-dot" style="background-color: #444444;"></span>
+                        <span>加熱小蘇打水：H = 0.50g, O = 4.00g</span>
+                    </div>
                 </div>
             </div>
 
