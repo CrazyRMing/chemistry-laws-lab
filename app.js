@@ -546,9 +546,56 @@ function renderFlaskPanel() {
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'left';
         const startX = w / 2 - 145;
-        ctxF.fillText('「一種純化合物，不論其來源或', startX, cyScroll - 15);
+        // Render colored sub-strings for Proust statement
+        // Line 1: 「一種純[化合物](orange)，不論其來源或
+        const t1_1 = '「一種純';
+        const t1_2 = '化合物';
+        const t1_3 = '，不論其來源或';
+        const w1_1 = ctxF.measureText(t1_1).width;
+        const w1_2 = ctxF.measureText(t1_2).width;
+        const w1_3 = ctxF.measureText(t1_3).width;
+        
+        let cx1 = startX;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(t1_1, cx1, cyScroll - 15);
+        cx1 += w1_1;
+        ctxF.fillStyle = '#ff7a00'; // Orange
+        ctxF.fillText(t1_2, cx1, cyScroll - 15);
+        cx1 += w1_2;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(t1_3, cx1, cyScroll - 15);
+
+        // Line 2: 　製備方法為何，其組成元素
+        ctxF.fillStyle = '#1f1f1f';
         ctxF.fillText('　製備方法為何，其組成元素', startX, cyScroll + 30);
-        ctxF.fillText('　之間的質量比恆為定值。」', startX, cyScroll + 75);
+
+        // Line 3: 　之間的[質量比](orange)恆[為定值](orange)。」
+        const t3_1 = '　之間的';
+        const t3_2 = '質量比';
+        const t3_3 = '恆';
+        const t3_4 = '為定值';
+        const t3_5 = '。」';
+        const w3_1 = ctxF.measureText(t3_1).width;
+        const w3_2 = ctxF.measureText(t3_2).width;
+        const w3_3 = ctxF.measureText(t3_3).width;
+        const w3_4 = ctxF.measureText(t3_4).width;
+        const w3_5 = ctxF.measureText(t3_5).width;
+        
+        let cx3 = startX;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(t3_1, cx3, cyScroll + 75);
+        cx3 += w3_1;
+        ctxF.fillStyle = '#ff7a00'; // Orange
+        ctxF.fillText(t3_2, cx3, cyScroll + 75);
+        cx3 += w3_2;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(t3_3, cx3, cyScroll + 75);
+        cx3 += w3_3;
+        ctxF.fillStyle = '#ff7a00'; // Orange
+        ctxF.fillText(t3_4, cx3, cyScroll + 75);
+        cx3 += w3_4;
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.fillText(t3_5, cx3, cyScroll + 75);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
