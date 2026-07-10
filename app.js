@@ -47,14 +47,14 @@ const takeawayTexts = [
 let wH1, wO1, wH2, wO2, wH3, wO3;
 
 function generateRandomValues() {
-    wH1 = (1.0 + Math.random() * 0.8).toFixed(2); // 1.0 ~ 1.8
-    wO1 = (wH1 * 8).toFixed(2);
+    wH1 = "1.34";
+    wO1 = "10.72";
     
-    wH2 = (2.2 + Math.random() * 1.0).toFixed(2); // 2.2 ~ 3.2
-    wO2 = (wH2 * 8).toFixed(2);
+    wH2 = "3.02";
+    wO2 = "24.16";
     
-    wH3 = (0.4 + Math.random() * 0.5).toFixed(2); // 0.4 ~ 0.9
-    wO3 = (wH3 * 8).toFixed(2);
+    wH3 = "0.50";
+    wO3 = "4.00";
 }
 
 // Math Easing Functions
@@ -317,6 +317,14 @@ function renderFlaskPanel() {
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgTitration, imgX, imgY, imgSize, imgSize);
         
+        // Draw mass text below illustration
+        ctxF.save();
+        ctxF.font = 'bold 1.15rem sans-serif';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('酸鹼中和水：H = 1.34 g, O = 10.72 g', w / 2, h - 25);
+        ctxF.restore();
+        
         // Droplet flies out
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
@@ -344,6 +352,14 @@ function renderFlaskPanel() {
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgCombustion, imgX, imgY, imgSize, imgSize);
         
+        // Draw mass text below illustration
+        ctxF.save();
+        ctxF.font = 'bold 1.15rem sans-serif';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('酒精燃燒水：H = 3.02 g, O = 24.16 g', w / 2, h - 25);
+        ctxF.restore();
+        
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
@@ -369,6 +385,14 @@ function renderFlaskPanel() {
         const imgX = (w - imgSize) / 2;
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgHeating, imgX, imgY, imgSize, imgSize);
+        
+        // Draw mass text below illustration
+        ctxF.save();
+        ctxF.font = 'bold 1.15rem sans-serif';
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.textAlign = 'center';
+        ctxF.fillText('加熱小蘇打水：H = 0.50 g, O = 4.00 g', w / 2, h - 25);
+        ctxF.restore();
         
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
@@ -400,9 +424,9 @@ function renderFlaskPanel() {
         ctxF.fillText('分析三種來源的水滴', w / 2, h / 2 - 90);
         
         // Render 3 Beakers in Gray Shades matching the Graph Points
-        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
-        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
-        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
+        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', 'H=1.34g, O=10.72g', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
+        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', 'H=3.02g, O=24.16g', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
+        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '加熱小蘇打水', 'H=0.50g, O=4.00g', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
@@ -772,7 +796,7 @@ function drawPlotPoint(x, y, radius, color) {
 // High-Quality Static Chemical Apparatus Illustrations
 // -------------------------------------------------------------
 
-function drawStaticBeaker(ctx, cx, cy, r, height, label, liquidColor, dropletColor, seed) {
+function drawStaticBeaker(ctx, cx, cy, r, height, label, valueText, liquidColor, dropletColor, seed) {
     // Draw beaker lines
     ctx.beginPath();
     ctx.moveTo(cx - r, cy - height);
@@ -796,6 +820,14 @@ function drawStaticBeaker(ctx, cx, cy, r, height, label, liquidColor, dropletCol
     ctx.font = FONT_SMALL;
     ctx.textAlign = 'center';
     ctx.fillText(label, cx, cy + 20);
+    
+    if (valueText) {
+        ctx.save();
+        ctx.font = '0.85rem sans-serif';
+        ctx.fillStyle = '#5f5f5f';
+        ctx.fillText(valueText, cx, cy + 38);
+        ctx.restore();
+    }
     
     // Floating water droplet
     drawWaterDrop(ctx, cx, cy - height - 20, 10, dropletColor);
