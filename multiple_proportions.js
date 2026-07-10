@@ -947,18 +947,19 @@ function drawLeftPanel() {
         // Divider
         drawWobblyLine(ctxF, 60, 95, w - 60, 95, '#2b2b2b', 1.5, 110);
 
-        // Statement
+        // Statement (broken into 4 shorter lines to prevent overflow)
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
-        ctxF.fillText('「 當甲、乙兩元素結合生成兩種以上的化合物時，', w / 2, 145);
-        ctxF.fillText('若固定甲元素的質量，則各化合物中乙元素的質量，', w / 2, 190);
-        ctxF.fillText('彼此之間呈簡單的整數比。 」', w / 2, 235);
+        ctxF.fillText('「 當甲、乙兩元素結合，', w / 2, 130);
+        ctxF.fillText('生成兩種以上的化合物時，', w / 2, 170);
+        ctxF.fillText('若固定甲元素的質量，', w / 2, 210);
+        ctxF.fillText('則乙元素的質量比呈簡單整數比。 」', w / 2, 250);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'right';
-        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w - 70, 285);
+        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w - 70, 290);
         ctxF.restore();
     }
     else if (currentStep === 11) {
