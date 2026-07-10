@@ -889,7 +889,7 @@ function drawRightPanel() {
             ctxG.fillStyle = '#ef4444';
             ctxG.font = 'bold 1.05rem sans-serif';
             ctxG.textAlign = 'center';
-            ctxG.fillText('1', mapX(0.5, w), yPos + 22);
+            ctxG.fillText('1', mapX(0.5, w), yPos + 36);
             
             // Draw green horizontal bracket (0 to 2.0) above the line and labels
             drawHorizontalBracket(ctxG, mapX(0, w), mapX(2.0, w), yPos - 24, '#10b981', true);
