@@ -416,7 +416,8 @@ function renderFlaskPanel() {
     }
     else if (currentStep === 6) {
         // Step 6: Quantitative Analysis Data Table
-        const y0 = 90, y1 = 135, y2 = 180, y3 = 225, y4 = 270;
+        const cy = h / 2;
+        const y0 = cy - 90, y1 = cy - 45, y2 = cy, y3 = cy + 45, y4 = cy + 90;
         const x0 = 40;
         const x1 = x0 + (w - 80) * 0.25;
         const x2 = x1 + (w - 80) * 0.22;
@@ -435,7 +436,7 @@ function renderFlaskPanel() {
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
-        ctxF.fillText('定量分析數據表 (wO / wH)', w / 2, 60);
+        ctxF.fillText('定量分析數據表 (wO / wH)', w / 2, cy - 122);
 
         // Horizontal grid lines
         drawWobblyLine(ctxF, x0, y0, x4, y0, '#2b2b2b', 2, 601);
@@ -518,7 +519,7 @@ function renderFlaskPanel() {
         // Bottom takeaway inside canvas
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
-        ctxF.fillText('觀察發現：不同來源的水，其組成的質量比值恆為定值。', w / 2, h - 45);
+        ctxF.fillText('觀察發現：不同來源的水，其組成的質量比值恆為定值。', w / 2, cy + 122);
     }
     else if (currentStep === 7) {
         // Step 7: Formal Law Scroll / Joseph Proust Scroll
@@ -619,11 +620,12 @@ function renderFlaskPanel() {
         // Explanatory text
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
-        ctxF.fillText('每個水分子 (H₂O) 恆由 2 個 H 與 1 個 O 原子結合', w / 2, h - 80);
+        ctxF.fillText('每個水分子 (H₂O) 恆由 2 個 H 與 1 個 O 原子結合', w / 2, h - 85);
         
-        ctxF.font = FONT_MATH;
+        ctxF.font = FONT_UI;
         ctxF.fillStyle = COLOR_ORANGE;
-        ctxF.fillText('原子質量比 ── 氧 (16) : 氫 (1) × 2 = 8 : 1', w / 2, h - 50);
+        ctxF.fillText('原子質量比', w / 2, h - 55);
+        ctxF.fillText('氧 (16) : 氫 (1) × 2 = 8 : 1', w / 2, h - 30);
     }
     
     ctxF.restore();
