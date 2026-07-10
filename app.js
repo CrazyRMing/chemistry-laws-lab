@@ -387,9 +387,31 @@ function renderFlaskPanel() {
         drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', '', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
         drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', '', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
-        ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
-        ctxF.fillText('實驗分析顯示：它們的組成元素重量比完全一樣，', w / 2, h / 2 + 95);
+        const text1 = '實驗分析顯示：它們的';
+        const text2 = '組成元素重量比完全一樣';
+        const text3 = '，';
+        
+        const w1 = ctxF.measureText(text1).width;
+        const w2 = ctxF.measureText(text2).width;
+        const w3 = ctxF.measureText(text3).width;
+        const totalW = w1 + w2 + w3;
+        
+        let startX = w / 2 - totalW / 2;
+        ctxF.save();
+        ctxF.textAlign = 'left';
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.fillText(text1, startX, h / 2 + 95);
+        startX += w1;
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.fillText(text2, startX, h / 2 + 95);
+        startX += w2;
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.fillText(text3, startX, h / 2 + 95);
+        ctxF.restore();
+        
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.textAlign = 'center';
         ctxF.fillText('不論來源為何，皆為相同物質「水 (H₂O)」。', w / 2, h / 2 + 120);
     }
     else if (currentStep === 6) {
@@ -430,59 +452,68 @@ function renderFlaskPanel() {
         drawWobblyLine(ctxF, x4, y0, x4, y4, '#2b2b2b', 2, 610);
 
         // Text rendering
+        ctxF.save();
+        ctxF.textBaseline = 'middle';
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
 
+        const centerY0 = (y0 + y1) / 2;
+        const centerY1 = (y1 + y2) / 2;
+        const centerY2 = (y2 + y3) / 2;
+        const centerY3 = (y3 + y4) / 2;
+
         // Headers
-        ctxF.fillText('水源種類', cx1, y0 + 28);
+        ctxF.fillText('水源種類', cx1, centerY0);
         
-        ctxF.fillText('氫質量', cx2, y0 + 18);
+        ctxF.fillText('氫質量', cx2, centerY0 - 9);
         ctxF.save();
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('wH (g)', cx2, y0 + 36);
+        ctxF.fillText('wH (g)', cx2, centerY0 + 9);
         ctxF.restore();
         
-        ctxF.fillText('氧質量', cx3, y0 + 18);
+        ctxF.fillText('氧質量', cx3, centerY0 - 9);
         ctxF.save();
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('wO (g)', cx3, y0 + 36);
+        ctxF.fillText('wO (g)', cx3, centerY0 + 9);
         ctxF.restore();
         
-        ctxF.fillText('比值', cx4, y0 + 18);
+        ctxF.fillText('比值', cx4, centerY0 - 9);
         ctxF.save();
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('wO/wH', cx4, y0 + 36);
+        ctxF.fillText('wO/wH', cx4, centerY0 + 9);
         ctxF.restore();
 
         // Row 1: 酸鹼中和
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('酸鹼中和水', cx1, y1 + 28);
+        ctxF.fillText('酸鹼中和水', cx1, centerY1);
         ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
-        ctxF.fillText(`${wH1}`, cx2, y1 + 28);
-        ctxF.fillText(`${wO1}`, cx3, y1 + 28);
+        ctxF.fillText(`${wH1}`, cx2, centerY1);
+        ctxF.fillText(`${wO1}`, cx3, centerY1);
         ctxF.fillStyle = COLOR_ORANGE;
-        ctxF.fillText(`${wO1}/${wH1} = 8.0`, cx4, y1 + 28);
+        ctxF.fillText(`${wO1}/${wH1} = 8.0`, cx4, centerY1);
 
         // Row 2: 酒精燃燒
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('酒精燃燒水', cx1, y2 + 28);
+        ctxF.fillText('酒精燃燒水', cx1, centerY2);
         ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
-        ctxF.fillText(`${wH2}`, cx2, y2 + 28);
-        ctxF.fillText(`${wO2}`, cx3, y2 + 28);
+        ctxF.fillText(`${wH2}`, cx2, centerY2);
+        ctxF.fillText(`${wO2}`, cx3, centerY2);
         ctxF.fillStyle = COLOR_ORANGE;
-        ctxF.fillText(`${wO2}/${wH2} = 8.0`, cx4, y2 + 28);
+        ctxF.fillText(`${wO2}/${wH2} = 8.0`, cx4, centerY2);
 
         // Row 3: 小蘇打分解
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('小蘇打分解水', cx1, y3 + 28);
+        ctxF.fillText('小蘇打分解水', cx1, centerY3);
         ctxF.font = 'bold 1.1rem sans-serif'; // Bold sans-serif for numbers per request
-        ctxF.fillText(`${wH3}`, cx2, y3 + 28);
-        ctxF.fillText(`${wO3}`, cx3, y3 + 28);
+        ctxF.fillText(`${wH3}`, cx2, centerY3);
+        ctxF.fillText(`${wO3}`, cx3, centerY3);
         ctxF.fillStyle = COLOR_ORANGE;
-        ctxF.fillText(`${wO3}/${wH3} = 8.0`, cx4, y3 + 28);
+        ctxF.fillText(`${wO3}/${wH3} = 8.0`, cx4, centerY3);
+        
+        ctxF.restore();
 
         // Bottom takeaway inside canvas
         ctxF.fillStyle = '#5f5f5f';
@@ -495,6 +526,8 @@ function renderFlaskPanel() {
         ctxF.save();
         ctxF.globalAlpha = alpha7;
 
+        const cyScroll = h / 2;
+
         // Draw parchment border
         drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 700);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 750);
@@ -503,25 +536,25 @@ function renderFlaskPanel() {
         ctxF.fillStyle = COLOR_ORANGE;
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
-        ctxF.fillText('定比定律 (Law of Definite Proportions)', w / 2, 75);
+        ctxF.fillText('定比定律 (Law of Definite Proportions)', w / 2, cyScroll - 85);
 
         // Divider
-        drawWobblyLine(ctxF, 60, 95, w - 60, 95, '#2b2b2b', 1.5, 710);
+        drawWobblyLine(ctxF, 60, cyScroll - 65, w - 60, cyScroll - 65, '#2b2b2b', 1.5, 710);
 
         // Statement
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'left';
         const startX = w / 2 - 145;
-        ctxF.fillText('「一種純化合物，不論其來源或', startX, 145);
-        ctxF.fillText('　製備方法為何，其組成元素', startX, 190);
-        ctxF.fillText('　之間的質量比恆為定值。」', startX, 235);
+        ctxF.fillText('「一種純化合物，不論其來源或', startX, cyScroll - 15);
+        ctxF.fillText('　製備方法為何，其組成元素', startX, cyScroll + 30);
+        ctxF.fillText('　之間的質量比恆為定值。」', startX, cyScroll + 75);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'right';
-        ctxF.fillText('── 普魯斯特 (Joseph Proust, 1799)', w - 70, 285);
+        ctxF.fillText('── 普魯斯特 (Joseph Proust, 1799)', w - 70, cyScroll + 125);
         ctxF.restore();
     }
     else if (currentStep === 8) {
@@ -688,7 +721,7 @@ function renderGraphPanel() {
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
         
         // Slope calculation formula - placed in top-left clear area to avoid overlaps
-        ctxG.font = FONT_MATH;
+        ctxG.font = FONT_UI;
         ctxG.fillStyle = COLOR_ORANGE;
         ctxG.textAlign = 'left';
         ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', margin + 20, margin + 35);
