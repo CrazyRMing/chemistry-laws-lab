@@ -1238,8 +1238,10 @@ function drawRightPanel() {
             ctxG.restore();
         }
         
-        // Step 7 Vertical Bracket Marks in Red and Green per sketch
+        // Step 7 Vertical Bracket Marks in Red and Green per sketch - Fades in!
         if (currentStep === 7) {
+            ctxG.save();
+            ctxG.globalAlpha = easeInOutCubic(animProgress);
             // Draw red vertical bracket (0 to 8.0) on the left of the line
             drawVerticalBracket(ctxG, xPos - 8, mapY(0, h), mapY(8.0, h), '#ef4444', true);
             // Label 1 in red to the left of the red bracket
@@ -1255,6 +1257,7 @@ function drawRightPanel() {
             ctxG.font = 'bold 1.05rem sans-serif';
             ctxG.textAlign = 'left';
             ctxG.fillText('2', xPos + 62, mapY(8.0, h) + 5);
+            ctxG.restore();
         }
     }
     
@@ -1304,8 +1307,10 @@ function drawRightPanel() {
             ctxG.restore();
         }
         
-        // Step 9 Horizontal Bracket Marks in Red and Green (Symmetrical to Step 7)
+        // Step 9 Horizontal Bracket Marks in Red and Green (Symmetrical to Step 7) - Fades in!
         if (currentStep === 9) {
+            ctxG.save();
+            ctxG.globalAlpha = easeInOutCubic(animProgress);
             // Draw red horizontal bracket (0 to 1.0) below the line
             drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), yPos + 8, '#ef4444', false);
             // Label 1 in red below the red bracket
@@ -1321,6 +1326,7 @@ function drawRightPanel() {
             ctxG.font = 'bold 1.05rem sans-serif';
             ctxG.textAlign = 'center';
             ctxG.fillText('2', mapX(1.0, w), yPos - 38);
+            ctxG.restore();
         }
     }
 }
