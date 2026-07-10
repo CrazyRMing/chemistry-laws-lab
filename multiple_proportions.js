@@ -443,21 +443,24 @@ function drawLeftPanel() {
         ctxF.fillRect(bx1 + 3, by + 20, bW - 6, 38);
         drawWobblyLine(ctxF, bx1 + 1, by + 20, bx1 + bW - 1, by + 20, '#ff7a00', 1.5, 63);
         
+        // Draw Compound I label above beaker
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 I（水）', cx1, by - 15);
+        
+        // Two-column data block, centered under Compound I beaker
         const labelColW1 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const valColW1   = Math.max(ctxF.measureText(' = 2.5 g').width, ctxF.measureText(' = 20.0 g').width);
         const pivot1 = cx1 - valColW1 / 2 + labelColW1 / 2;
-        ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', cx1, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot1, by + bH + 48);
+        ctxF.fillText('H', pivot1, by + bH + 25);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 2.5 g', pivot1, by + bH + 48);
+        ctxF.fillText(' = 2.5 g', pivot1, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot1, by + bH + 71);
+        ctxF.fillText('O', pivot1, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 20.0 g', pivot1, by + bH + 71);
+        ctxF.fillText(' = 20.0 g', pivot1, by + bH + 48);
 
         // Draw Compound II (Right side) — beaker centered at 3w/4, fades in on Step 4
         const cx2 = (w * 3) / 4;
@@ -471,20 +474,24 @@ function drawLeftPanel() {
         ctxF.fillRect(bx2 + 3, by + 20, bW - 6, 38);
         drawWobblyLine(ctxF, bx2 + 1, by + 20, bx2 + bW - 1, by + 20, '#7c3aed', 1.5, 73);
         
+        // Draw Compound II label above beaker
         ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 II（雙氧水）', cx2, by - 15);
+        
+        // Two-column data block, centered under Compound II beaker
         const labelColW2 = Math.max(ctxF.measureText('H').width, ctxF.measureText('O').width);
         const valColW2   = Math.max(ctxF.measureText(' = 1.5 g').width, ctxF.measureText(' = 24.0 g').width);
         const pivot2 = cx2 - valColW2 / 2 + labelColW2 / 2;
-        ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 II（雙氧水）', cx2, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('H', pivot2, by + bH + 48);
+        ctxF.fillText('H', pivot2, by + bH + 25);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 1.5 g', pivot2, by + bH + 48);
+        ctxF.fillText(' = 1.5 g', pivot2, by + bH + 25);
         ctxF.textAlign = 'right';
-        ctxF.fillText('O', pivot2, by + bH + 71);
+        ctxF.fillText('O', pivot2, by + bH + 48);
         ctxF.textAlign = 'left';
-        ctxF.fillText(' = 24.0 g', pivot2, by + bH + 71);
+        ctxF.fillText(' = 24.0 g', pivot2, by + bH + 48);
         ctxF.globalAlpha = 1;
 
         ctxF.restore();
@@ -494,13 +501,20 @@ function drawLeftPanel() {
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 80);
 
-        const cx1 = w / 4 + 10;
-        const cx2 = (w * 3) / 4 - 10;
+        const cx1 = w / 4;
+        const cx2 = (w * 3) / 4;
         const cy = h / 2 + 15;
         const atomR_H = 15, atomR_O = 20;
 
         // Transition progress for Step 6
         const t6 = (currentStep === 6) ? easeInOutCubic(animProgress) : 1;
+
+        // Draw static labels Compound I and II at the top, matching Step 4-5
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
+        ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
         // 1. Draw fading-out beakers during Step 6 entry transition
         if (currentStep === 6 && t6 < 1.0) {
@@ -534,16 +548,6 @@ function drawLeftPanel() {
         ctxF.globalAlpha = t6;
         const currentCy = (currentStep === 6) ? (cy - 15) + 15 * t6 : cy;
 
-        // Description text at TOP
-        ctxF.font = FONT_UI;
-        ctxF.fillStyle = '#ff7a00';
-        ctxF.textAlign = 'center';
-        if (currentStep === 6) {
-            ctxF.fillText('H 原子數量相同', w / 2, 75);
-        } else {
-            ctxF.fillText('O 原子數量比 = 1 : 2', w / 2, 75);
-        }
-
         // Compound I — H atom
         drawWobblyCircle(ctxF, cx1, currentCy - 20, atomR_H, '#ff7a00', true, 2, 81);
         ctxF.fillStyle = '#ffffff';
@@ -551,26 +555,12 @@ function drawLeftPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx1, currentCy - 16);
         
-        // Compound I label BELOW atoms
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = FONT_UI;
-        ctxF.textAlign = 'center';
-        const labelY6_I = (currentStep === 7) ? cy + 28 + atomR_O + 22 : currentCy - 20 + atomR_H + 22;
-        ctxF.fillText('化合物 I', cx1, labelY6_I);
-
         // Compound II — H atom
         drawWobblyCircle(ctxF, cx2, currentCy - 20, atomR_H, '#ff7a00', true, 2, 83);
         ctxF.fillStyle = '#ffffff';
         ctxF.font = 'bold 0.95rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('H', cx2, currentCy - 16);
-        
-        // Compound II label BELOW atoms
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = FONT_UI;
-        ctxF.textAlign = 'center';
-        const labelY6_II = (currentStep === 7) ? cy + 28 + atomR_O + 22 : currentCy - 20 + atomR_H + 22;
-        ctxF.fillText('化合物 II', cx2, labelY6_II);
         ctxF.restore();
 
         // 2. Fade in O atoms in Step 7
@@ -598,6 +588,89 @@ function drawLeftPanel() {
             ctxF.restore();
         }
 
+        // 3. Draw Bottom text descriptions
+        if (currentStep === 6) {
+            ctxF.save();
+            ctxF.globalAlpha = t6;
+            ctxF.font = FONT_UI;
+            ctxF.fillStyle = '#ff7a00';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('H 重量相同', w / 2, h - 85);
+            ctxF.font = FONT_SMALL;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText('表示應有相同數量的 H 原子', w / 2, h - 60);
+            ctxF.restore();
+        }
+        else if (currentStep === 7) {
+            ctxF.save();
+            // Step 6 text remains visible
+            ctxF.font = FONT_UI;
+            ctxF.fillStyle = '#ff7a00';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('H 重量相同', w / 2, h - 110);
+            ctxF.font = FONT_SMALL;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText('表示應有相同數量的 H 原子', w / 2, h - 90);
+
+            // Red/green O weight ratio text at h - 65
+            const text1 = "O 原子重量為 ";
+            const text2 = "1";
+            const text3 = " (紅色) : ";
+            const text4 = "2";
+            const text5 = " (綠色)";
+            ctxF.font = FONT_UI;
+            const w1 = ctxF.measureText(text1).width;
+            const w2 = ctxF.measureText(text2).width;
+            const w3 = ctxF.measureText(text3).width;
+            const w4 = ctxF.measureText(text4).width;
+            const w5 = ctxF.measureText(text5).width;
+            const totalW = w1 + w2 + w3 + w4 + w5;
+            let startX = w / 2 - totalW / 2;
+
+            ctxF.textAlign = 'left';
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text1, startX, h - 65);
+            startX += w1;
+            ctxF.fillStyle = '#ef4444'; // Red
+            ctxF.fillText(text2, startX, h - 65);
+            startX += w2;
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text3, startX, h - 65);
+            startX += w3;
+            ctxF.fillStyle = '#10b981'; // Green
+            ctxF.fillText(text4, startX, h - 65);
+            startX += w4;
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text5, startX, h - 65);
+
+            // Represent O atoms ratio is also 1 : 2 at h - 45
+            const text6 = "表示 O 原子的數量也是 ";
+            const text7 = "1";
+            const text8 = " : ";
+            const text9 = "2";
+            ctxF.font = FONT_SMALL;
+            const w6 = ctxF.measureText(text6).width;
+            const w7 = ctxF.measureText(text7).width;
+            const w8 = ctxF.measureText(text8).width;
+            const w9 = ctxF.measureText(text9).width;
+            const totalW2 = w6 + w7 + w8 + w9;
+            let startX2 = w / 2 - totalW2 / 2;
+
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText(text6, startX2, h - 45);
+            startX2 += w6;
+            ctxF.fillStyle = '#ef4444'; // Red
+            ctxF.fillText(text7, startX2, h - 45);
+            startX2 += w7;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText(text8, startX2, h - 45);
+            startX2 += w8;
+            ctxF.fillStyle = '#10b981'; // Green
+            ctxF.fillText(text9, startX2, h - 45);
+
+            ctxF.restore();
+        }
+
         ctxF.restore();
     }
     else if (currentStep === 8 || currentStep === 9) {
@@ -605,20 +678,17 @@ function drawLeftPanel() {
         ctxF.save();
         drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 2, 90);
 
-        const cx1 = w / 4 + 10;
-        const cx2 = (w * 3) / 4 - 10;
+        const cx1 = w / 4;
+        const cx2 = (w * 3) / 4;
         const cy = h / 2 + 15;
         const atomR_H = 15, atomR_O = 20;
 
-        // Description text at TOP
+        // Draw static labels Compound I and II at the top, matching Step 4-5
+        ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
-        ctxF.fillStyle = '#7c3aed';
         ctxF.textAlign = 'center';
-        if (currentStep === 8) {
-            ctxF.fillText('O 原子數量相同', w / 2, 75);
-        } else {
-            ctxF.fillText('H 原子數量比 = 2 : 1', w / 2, 75);
-        }
+        ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
+        ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
         // Compound I — H atoms fade in during Step 9
         if (currentStep === 9) {
@@ -639,12 +709,6 @@ function drawLeftPanel() {
         ctxF.font = 'bold 1.15rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('O', cx1, cy + 30);
-        // Compound I label BELOW atoms
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = FONT_UI;
-        ctxF.textAlign = 'center';
-        const labelY8_I = cy + 25 + atomR_O + 22;
-        ctxF.fillText('化合物 I', cx1, labelY8_I);
 
         // Compound II — H atom fades in during Step 9
         if (currentStep === 9) {
@@ -662,12 +726,89 @@ function drawLeftPanel() {
         ctxF.font = 'bold 1.15rem sans-serif';
         ctxF.textAlign = 'center';
         ctxF.fillText('O', cx2, cy + 30);
-        // Compound II label BELOW atoms
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = FONT_UI;
-        ctxF.textAlign = 'center';
-        const labelY8_II = cy + 25 + atomR_O + 22;
-        ctxF.fillText('化合物 II', cx2, labelY8_II);
+
+        // 3. Draw Bottom text descriptions
+        if (currentStep === 8) {
+            ctxF.save();
+            ctxF.globalAlpha = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
+            ctxF.font = FONT_UI;
+            ctxF.fillStyle = '#7c3aed';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('O 重量相同', w / 2, h - 85);
+            ctxF.font = FONT_SMALL;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText('表示應有相同數量的 O 原子', w / 2, h - 60);
+            ctxF.restore();
+        }
+        else if (currentStep === 9) {
+            ctxF.save();
+            // Step 8 text remains visible
+            ctxF.font = FONT_UI;
+            ctxF.fillStyle = '#7c3aed';
+            ctxF.textAlign = 'center';
+            ctxF.fillText('O 重量相同', w / 2, h - 110);
+            ctxF.font = FONT_SMALL;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText('表示應有相同數量的 O 原子', w / 2, h - 90);
+
+            // Red/green H weight ratio text at h - 65
+            const text1 = "H 原子重量為 ";
+            const text2 = "2";
+            const text3 = " (綠色) : ";
+            const text4 = "1";
+            const text5 = " (紅色)";
+            ctxF.font = FONT_UI;
+            const w1 = ctxF.measureText(text1).width;
+            const w2 = ctxF.measureText(text2).width;
+            const w3 = ctxF.measureText(text3).width;
+            const w4 = ctxF.measureText(text4).width;
+            const w5 = ctxF.measureText(text5).width;
+            const totalW = w1 + w2 + w3 + w4 + w5;
+            let startX = w / 2 - totalW / 2;
+
+            ctxF.textAlign = 'left';
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text1, startX, h - 65);
+            startX += w1;
+            ctxF.fillStyle = '#10b981'; // Green
+            ctxF.fillText(text2, startX, h - 65);
+            startX += w2;
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text3, startX, h - 65);
+            startX += w3;
+            ctxF.fillStyle = '#ef4444'; // Red
+            ctxF.fillText(text4, startX, h - 65);
+            startX += w4;
+            ctxF.fillStyle = '#2b2b2b';
+            ctxF.fillText(text5, startX, h - 65);
+
+            // Represent H atoms ratio is also 2 : 1 at h - 45
+            const text6 = "表示 H 原子的數量也是 ";
+            const text7 = "2";
+            const text8 = " : ";
+            const text9 = "1";
+            ctxF.font = FONT_SMALL;
+            const w6 = ctxF.measureText(text6).width;
+            const w7 = ctxF.measureText(text7).width;
+            const w8 = ctxF.measureText(text8).width;
+            const w9 = ctxF.measureText(text9).width;
+            const totalW2 = w6 + w7 + w8 + w9;
+            let startX2 = w / 2 - totalW2 / 2;
+
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText(text6, startX2, h - 45);
+            startX2 += w6;
+            ctxF.fillStyle = '#10b981'; // Green
+            ctxF.fillText(text7, startX2, h - 45);
+            startX2 += w7;
+            ctxF.fillStyle = '#5f5f5f';
+            ctxF.fillText(text8, startX2, h - 45);
+            startX2 += w8;
+            ctxF.fillStyle = '#ef4444'; // Red
+            ctxF.fillText(text9, startX2, h - 45);
+
+            ctxF.restore();
+        }
 
         ctxF.restore();
     }
