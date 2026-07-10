@@ -370,6 +370,9 @@ function drawLeftPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', targetCX, by - 15);
+        ctxF.font = FONT_SMALL;
+        ctxF.fillStyle = '#ff7a00'; // Compound I (Orange)
+        ctxF.fillText('H = 2.5 g, O = 20.0 g', targetCX, by + bH + 25);
         ctxF.restore();
     }
     else if (currentStep === 4 || currentStep === 5) {
@@ -404,7 +407,11 @@ function drawLeftPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, by - 15);
+        ctxF.font = FONT_SMALL;
+        ctxF.fillStyle = '#ff7a00'; // Compound I (Orange)
+        ctxF.fillText('H = 2.5 g, O = 20.0 g', cx1, by + bH + 25);
         ctxF.fillStyle = '#1f1f1f'; // Restore color for following texts
+        
         // Draw Compound II (Right side) — beaker centered at 3w/4, fades in on Step 4
         const cx2 = (w * 3) / 4;
         const alpha4 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
@@ -422,6 +429,9 @@ function drawLeftPanel() {
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 II（雙氧水）', cx2, by - 15);
+        ctxF.font = FONT_SMALL;
+        ctxF.fillStyle = '#7c3aed'; // Compound II (Purple)
+        ctxF.fillText('H = 1.5 g, O = 24.0 g', cx2, by + bH + 25);
         ctxF.globalAlpha = 1;
 
         ctxF.restore();
