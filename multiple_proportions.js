@@ -166,8 +166,8 @@ const stepTexts = [
     },
     {
         title: "第三步：繪製化合物 I 質量關係線",
-        desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本的氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
-        takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點的直線。"
+        desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本 the 氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
+        takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點 the 直線。"
     },
     {
         title: "第四步：標記化合物 II 數據點",
@@ -316,6 +316,7 @@ function nextStep() {
     }
 }
 
+// Draw Loop calling both canvases
 function prevStep() {
     if (currentStep > 1) {
         currentStep--;
@@ -378,8 +379,8 @@ function drawLeftPanel() {
         // Right Column: Mass Details (prevent occlusion)
         const tx = w * 2 / 3 - 30;
         ctxF.fillStyle = '#1f1f1f';
-        ctxG.textAlign = 'left';
         ctxF.font = FONT_UI;
+        ctxF.textAlign = 'left';
         ctxF.fillText('組成分數據：', tx, by + 20);
         ctxF.fillText('H = 2.5 g', tx, by + 45);
         ctxF.fillText('O = 20.0 g', tx, by + 70);
@@ -741,14 +742,11 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx, ty + 5, '#2b2b2b', 1.5, 203 + xVal);
         
         if ((currentStep === 6 || currentStep === 7) && xVal === 1.0) {
-            // Highlight x=1.0 with blue circle background per request
-            ctxG.save();
-            ctxG.fillStyle = 'rgba(37, 99, 235, 0.15)'; // light blue bg
-            drawWobblyCircle(ctxG, tx, ty + 14, 13, '#2563eb', true, 1.5, 300);
-            ctxG.fillStyle = '#2563eb'; // blue text
-            ctxG.font = 'bold 0.95rem sans-serif';
-            ctxG.textAlign = 'center';
+            ctxG.fillStyle = '#2b2b2b';
             ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
+            // Draw a blue circle below 1.0
+            ctxG.save();
+            drawWobblyCircle(ctxG, tx, ty + 30, 6, '#2563eb', true, 1.5, 300);
             ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
@@ -768,14 +766,11 @@ function drawRightPanel() {
         drawWobblyLine(ctxG, tx, ty, tx - 5, ty, '#2b2b2b', 1.5, 210 + yVal);
         
         if ((currentStep === 8 || currentStep === 9) && yVal === 16) {
-            // Highlight y=16 with green circle background per request
+            ctxG.fillStyle = '#2b2b2b';
+            ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
+            // Draw a green circle to the left of 16
             ctxG.save();
-            ctxG.fillStyle = 'rgba(5, 150, 105, 0.15)'; // light green bg
-            drawWobblyCircle(ctxG, tx - 16, ty + 1, 13, '#059669', true, 1.5, 301);
-            ctxG.fillStyle = '#059669'; // green text
-            ctxG.font = 'bold 0.95rem sans-serif';
-            ctxG.textAlign = 'center';
-            ctxG.fillText(yVal.toString(), tx - 16, ty + 5);
+            drawWobblyCircle(ctxG, tx - 24, ty + 2, 6, '#059669', true, 1.5, 301);
             ctxG.restore();
         } else {
             ctxG.fillStyle = '#2b2b2b';
@@ -840,16 +835,23 @@ function drawRightPanel() {
         ctxG.fillStyle = '#7c3aed';
         ctxG.fillText('16.0', xPos + 8, mapY(16.0, h) + 4);
         
-        // Step 7 Vertical/Horizontal Bracket Marks in Red and Green per sketch
+        // Step 7 Vertical Bracket Marks in Red and Green per sketch
         if (currentStep === 7) {
-            // Draw red horizontal bracket at bottom (0 to 1.0)
-            drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), mapY(0, h) + 26, '#ef4444', false);
-            
-            // Draw red vertical bracket (0 to 8.0)
+            // Draw red vertical bracket (0 to 8.0) on the left of the line
             drawVerticalBracket(ctxG, xPos - 8, mapY(0, h), mapY(8.0, h), '#ef4444', true);
+            // Label 1 in red to the left of the red bracket
+            ctxG.fillStyle = '#ef4444';
+            ctxG.font = 'bold 1.05rem sans-serif';
+            ctxG.textAlign = 'right';
+            ctxG.fillText('1', xPos - 22, mapY(4.0, h) + 5);
             
-            // Draw green vertical bracket (8.0 to 16.0)
-            drawVerticalBracket(ctxG, xPos - 8, mapY(8.0, h), mapY(16.0, h), '#10b981', true);
+            // Draw green vertical bracket (0 to 16.0) on the right of the line and labels
+            drawVerticalBracket(ctxG, xPos + 48, mapY(0, h), mapY(16.0, h), '#10b981', false);
+            // Label 2 in green to the right of the green bracket
+            ctxG.fillStyle = '#10b981';
+            ctxG.font = 'bold 1.05rem sans-serif';
+            ctxG.textAlign = 'left';
+            ctxG.fillText('2', xPos + 62, mapY(8.0, h) + 5);
         }
     }
     
@@ -881,16 +883,23 @@ function drawRightPanel() {
         ctxG.fillStyle = '#7c3aed';
         ctxG.fillText('1.0', xPos2, yPos - 10);
         
-        // Step 9 Horizontal/Vertical Bracket Marks in Red and Green (Symmetrical to Step 7)
+        // Step 9 Horizontal Bracket Marks in Red and Green (Symmetrical to Step 7)
         if (currentStep === 9) {
-            // Draw red vertical bracket on left axis (0 to 16.0)
-            drawVerticalBracket(ctxG, mapX(0, w) - 26, mapY(0, h), mapY(16.0, h), '#ef4444', true);
+            // Draw red horizontal bracket (0 to 1.0) below the line
+            drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), yPos + 8, '#ef4444', false);
+            // Label 1 in red below the red bracket
+            ctxG.fillStyle = '#ef4444';
+            ctxG.font = 'bold 1.05rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText('1', mapX(0.5, w), yPos + 22);
             
-            // Draw red horizontal bracket (0 to 1.0)
-            drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), yPos + 12, '#ef4444', false);
-            
-            // Draw green horizontal bracket (1.0 to 2.0)
-            drawHorizontalBracket(ctxG, mapX(1.0, w), mapX(2.0, w), yPos + 12, '#10b981', false);
+            // Draw green horizontal bracket (0 to 2.0) above the line and labels
+            drawHorizontalBracket(ctxG, mapX(0, w), mapX(2.0, w), yPos - 24, '#10b981', true);
+            // Label 2 in green above the green bracket
+            ctxG.fillStyle = '#10b981';
+            ctxG.font = 'bold 1.05rem sans-serif';
+            ctxG.textAlign = 'center';
+            ctxG.fillText('2', mapX(1.0, w), yPos - 38);
         }
     }
 }
