@@ -1,6 +1,6 @@
 /* Theme Config - Light theme, EB Garamond serif font for math */
 :root {
-    --bg-color: #faf8f5;         /* Cream-white */
+    --bg-color: #ffffff;         /* White */
     --panel-bg: rgba(255, 255, 255, 0.85);
     --border-color: #2b2b2b;     /* Charcoal gray */
     --text-primary: #1f1f1f;

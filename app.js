@@ -1,4 +1,4 @@
-// Canvas & UI Setup
+﻿// Canvas & UI Setup
 const flaskCanvas = document.getElementById('flaskCanvas');
 const graphCanvas = document.getElementById('graphCanvas');
 const ctxF = flaskCanvas.getContext('2d');
@@ -545,7 +545,7 @@ function renderFlaskPanel() {
         const cyScroll = h / 2;
 
         // Draw parchment border
-        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 700);
+        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#ffffff', 2.5, 700);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 750);
 
         // Title
@@ -653,7 +653,7 @@ function renderGraphPanel() {
     ctxG.clearRect(0, 0, w, h);
     
     // Paper bg
-    ctxG.fillStyle = '#faf8f5';
+    ctxG.fillStyle = '#ffffff';
     ctxG.fillRect(0, 0, w, h);
     
     // Draw Axis System
@@ -852,7 +852,7 @@ function drawGraphAxes(w, h) {
     
     // Y Axis Label
     ctxG.textAlign = 'left';
-    ctxG.fillText('氧的質量 wO (g)', originX + 15, 30);
+    ctxG.fillText('氧的質量 wO (g)', 10, 30);
     
     ctxG.textAlign = 'right';
     ctxG.fillText('0', originX - 10, originY + 15);

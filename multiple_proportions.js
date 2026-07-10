@@ -1,4 +1,4 @@
-// Canvas & UI Setup
+﻿// Canvas & UI Setup
 const flaskCanvas = document.getElementById('flaskCanvas');
 const graphCanvas = document.getElementById('graphCanvas');
 const ctxF = flaskCanvas.getContext('2d');
@@ -12,7 +12,7 @@ const FONT_MATH = 'bold italic 1.15rem "EB Garamond", serif';
 
 // Navigation State
 let currentStep = 1;
-const totalSteps = 14;
+const totalSteps = 10;
 let animProgress = 0; // 0 → 1 per step
 
 function easeInOutCubic(t) {
@@ -208,26 +208,6 @@ const stepTexts = [
         title: "第十步：倍比定律的宣告",
         desc: "這就是著名的「倍比定律」：當甲、乙兩元素結合生成兩種以上的化合物時，若固定甲元素的質量，則各化合物中乙元素的質量將呈現簡單的整數比。",
         takeaway: "重點：倍比定律 ── 由道耳頓於 1803 年提出，是原子論建立的重要定量基石。"
-    },
-    {
-        title: "第十一步：倍比定律與原子說的關係",
-        desc: "道耳頓用原子說完美解釋了這個現象：兩物質若含有相同質量的氧，代表兩者在微觀上擁有相同數量的氧原子。此時不同的氫質量，正是由不同數量的氫原子所造成的。",
-        takeaway: "重點：等質量的元素在微觀上代表相同數量的原子。"
-    },
-    {
-        title: "第十二步：化學式中原子數的假設",
-        desc: "既然等重的氧原子數量相同，我們可以大膽假設這兩個化合物在化學式中都只含有 1 個氧原子，即化學式分別為 HₓO 與 H_yO。",
-        takeaway: "重點：假設兩者氧原子數皆為 1，此時 H 原子數的比值將直接對應其實驗質量比。"
-    },
-    {
-        title: "第十三步：氫原子數量與質量比的對應",
-        desc: "在此假設下，等重氧時的氫質量比為 2 : 1，這直接反映出兩者所含的氫原子個數比亦為 2 : 1（即 x : y = 2 : 1）。這代表化合物 I 中的氫原子數量是化合物 II 的 2 倍。",
-        takeaway: "重點：原子數比 (x : y) = 質量比 = 2 : 1。"
-    },
-    {
-        title: "第十四步：推導兩化合物之化學式",
-        desc: "已知化合物 I（水）的化學式為 H₂O（即氧為 1 時氫為 2，x = 2）。由於個數比為 2 : 1，可推知化合物 II 中氫原子數為 1 (y = 1)。因此化合物 II 的最簡式為 HO，化學式為 H₂O₂（雙氧水）。",
-        takeaway: "重點：確定其中一個化合物的化學式，即可確定另一個化合物的化學式關係！"
     }
 ];
 
@@ -332,7 +312,7 @@ function drawLeftPanel() {
     if (currentStep === 1) {
         // Step 1: Chalkboard banner
         ctxF.save();
-        drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#faf8f5', 3, 20);
+        drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 3, 20);
         ctxF.fillStyle = '#2b2b2b';
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
@@ -897,7 +877,7 @@ function drawLeftPanel() {
         ctxF.globalAlpha = alpha10;
         
         // Draw parchment border matching Step 7 of definite proportions
-        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 100);
+        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#ffffff', 2.5, 100);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 105);
 
         const cy = h / 2;
@@ -1072,7 +1052,7 @@ function drawLeftPanel() {
         
         // Compound I card
         const cw = 120, ch = 110;
-        drawWobblyRect(ctxF, w / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#faf8f5', 2.5, 151);
+        drawWobblyRect(ctxF, w / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#ffffff', 2.5, 151);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 I (水)', w / 4, h / 2 - 10);
         ctxF.font = 'bold italic 1.65rem "EB Garamond", serif';
@@ -1081,7 +1061,7 @@ function drawLeftPanel() {
         
         // Compound II card
         ctxF.fillStyle = '#1f1f1f';
-        drawWobblyRect(ctxF, (w * 3) / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#faf8f5', 2.5, 152);
+        drawWobblyRect(ctxF, (w * 3) / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#ffffff', 2.5, 152);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 II (雙氧水)', (w * 3) / 4, h / 2 - 10);
         ctxF.font = 'bold italic 1.65rem "EB Garamond", serif';
@@ -1164,7 +1144,7 @@ function drawRightPanel() {
     // Y-Axis Label with RESET textAlign to avoid clipping
     ctxG.font = FONT_UI;
     ctxG.textAlign = 'left'; // Reset alignment to prevent clipping!
-    ctxG.fillText('氧的質量 wO (g)', mapX(0, w) + 15, 30);
+      ctxG.fillText('氧的質量 wO (g)', 10, 30);
     ctxG.textAlign = 'right'; // Restore tick alignment
     ctxG.fillText('0', mapX(0, w) - 10, mapY(0, h) + 15);
     
