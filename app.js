@@ -300,14 +300,6 @@ function renderFlaskPanel() {
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgTitration, imgX, imgY, imgSize, imgSize);
         
-        // Draw mass text below illustration
-        ctxF.save();
-        ctxF.font = 'bold 1.15rem sans-serif';
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.textAlign = 'center';
-        ctxF.fillText('酸鹼中和水：H = 1.34 g, O = 10.72 g', w / 2, h - 25);
-        ctxF.restore();
-        
         // Droplet flies out
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
@@ -335,14 +327,6 @@ function renderFlaskPanel() {
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgCombustion, imgX, imgY, imgSize, imgSize);
         
-        // Draw mass text below illustration
-        ctxF.save();
-        ctxF.font = 'bold 1.15rem sans-serif';
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.textAlign = 'center';
-        ctxF.fillText('酒精燃燒水：H = 3.02 g, O = 24.16 g', w / 2, h - 25);
-        ctxF.restore();
-        
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
             const t = (p - 0.1) / 0.6;
@@ -368,14 +352,6 @@ function renderFlaskPanel() {
         const imgX = (w - imgSize) / 2;
         const imgY = (h - imgSize) / 2;
         ctxF.drawImage(imgHeating, imgX, imgY, imgSize, imgSize);
-        
-        // Draw mass text below illustration
-        ctxF.save();
-        ctxF.font = 'bold 1.15rem sans-serif';
-        ctxF.fillStyle = '#1f1f1f';
-        ctxF.textAlign = 'center';
-        ctxF.fillText('加熱小蘇打水：H = 0.50 g, O = 4.00 g', w / 2, h - 25);
-        ctxF.restore();
         
         const p = animProgress;
         if (p > 0.1 && p < 0.7) {
@@ -407,9 +383,9 @@ function renderFlaskPanel() {
         ctxF.fillText('分析三種來源的水滴', w / 2, h / 2 - 90);
         
         // Render 3 Beakers in Gray Shades matching the Graph Points
-        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', 'H=1.34g, O=10.72g', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
-        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', 'H=3.02g, O=24.16g', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
-        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '加熱小蘇打水', 'H=0.50g, O=4.00g', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
+        drawStaticBeaker(ctxF, gap, cy, 35, 55, '酸鹼中和水', '', 'rgba(204, 204, 204, 0.35)', COLOR_GRAY_LIGHT, 110);
+        drawStaticBeaker(ctxF, gap * 2, cy, 35, 55, '酒精燃燒水', '', 'rgba(136, 136, 136, 0.35)', COLOR_GRAY_MEDIUM, 120);
+        drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '加熱小蘇打水', '', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
