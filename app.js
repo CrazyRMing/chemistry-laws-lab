@@ -4,6 +4,12 @@ const graphCanvas = document.getElementById('graphCanvas');
 const ctxF = flaskCanvas.getContext('2d');
 const ctxG = graphCanvas.getContext('2d');
 
+// Font Configuration
+const FONT_UI = 'bold 1.15rem "AwkwardBlack 拙黑體", sans-serif';
+const FONT_TITLE = 'bold 1.35rem "AwkwardBlack 拙黑體", sans-serif';
+const FONT_SMALL = '0.95rem "AwkwardBlack 拙黑體", sans-serif';
+const FONT_MATH = 'bold italic 1.15rem "EB Garamond", "AwkwardBlack 拙黑體", serif';
+
 // Preload generated sketchy asset images
 const imgTitration = new Image();
 imgTitration.src = 'assets/titration.png?v=' + Date.now();
@@ -102,6 +108,17 @@ function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2, seed 
         ctx.lineWidth = width + (seededRandom() - 0.5) * 0.2;
         ctx.stroke();
     }
+}
+
+function drawWobblyRect(ctx, x, y, w, h, color = '#2b2b2b', fill = false, fillColor = '#ffffff', width = 2, seed = 42) {
+    if (fill) {
+        ctx.fillStyle = fillColor;
+        ctx.fillRect(x, y, w, h);
+    }
+    drawWobblyLine(ctx, x, y, x + w, y, color, width, seed);
+    drawWobblyLine(ctx, x + w, y, x + w, y + h, color, width, seed + 1);
+    drawWobblyLine(ctx, x + w, y + h, x, y + h, color, width, seed + 2);
+    drawWobblyLine(ctx, x, y + h, x, y, color, width, seed + 3);
 }
 
 function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width = 2, seed = 100) {
@@ -288,7 +305,7 @@ function renderFlaskPanel() {
     if (currentStep === 1) {
         // Step 1: Blank canvas with introductory title
         ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = 'italic 1.2rem "EB Garamond", serif';
+        ctxF.font = FONT_MATH;
         ctxF.textAlign = 'center';
         ctxF.fillText('定比定律實驗演示', w / 2, h / 2 - 20);
         ctxF.fillText('在此收集並分析不同來源的水滴', w / 2, h / 2 + 15);
@@ -362,13 +379,13 @@ function renderFlaskPanel() {
             drawWaterDrop(ctxF, dropX, dropY, 10, COLOR_ORANGE);
         }
     } 
-    else if (currentStep >= 5 && currentStep <= 7) {
-        // Step 5, 6, 7: Show three beakers of water side-by-side (Identical composition)
+    else if (currentStep === 5) {
+        // Step 5: Show three beakers of water side-by-side (Identical composition)
         const gap = w / 4;
         const cy = h / 2 + 20;
         
         ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = 'bold 1.2rem sans-serif';
+        ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
         ctxF.fillText('分析三種來源的水滴', w / 2, h / 2 - 90);
         
@@ -378,28 +395,138 @@ function renderFlaskPanel() {
         drawStaticBeaker(ctxF, gap * 3, cy, 35, 55, '小蘇打分解水', 'rgba(68, 68, 68, 0.35)', COLOR_GRAY_DARK, 130);
         
         ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = 'italic 1.1rem "EB Garamond", serif';
+        ctxF.font = FONT_UI;
         ctxF.fillText('實驗分析顯示：它們在化學性質上完全一樣，', w / 2, h / 2 + 95);
         ctxF.fillText('不論來源為何，皆為相同物質「水 (H₂O)」。', w / 2, h / 2 + 120);
+    }
+    else if (currentStep === 6) {
+        // Step 6: Quantitative Analysis Data Table
+        const y0 = 90, y1 = 135, y2 = 180, y3 = 225, y4 = 270;
+        const x0 = 40;
+        const x1 = x0 + (w - 80) * 0.25;
+        const x2 = x1 + (w - 80) * 0.22;
+        const x3 = x2 + (w - 80) * 0.22;
+        const x4 = w - 40;
+
+        const cx1 = (x0 + x1) / 2;
+        const cx2 = (x1 + x2) / 2;
+        const cx3 = (x2 + x3) / 2;
+        const cx4 = (x3 + x4) / 2;
+
+        // Draw outer card outline
+        drawWobblyRect(ctxF, 25, 25, w - 50, h - 50, '#2b2b2b', true, '#ffffff', 2.5, 600);
+
+        // Title
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('定量分析數據表 (wO / wH)', w / 2, 60);
+
+        // Horizontal grid lines
+        drawWobblyLine(ctxF, x0, y0, x4, y0, '#2b2b2b', 2, 601);
+        drawWobblyLine(ctxF, x0, y1, x4, y1, '#2b2b2b', 2, 602);
+        drawWobblyLine(ctxF, x0, y2, x4, y2, '#888888', 1, 603);
+        drawWobblyLine(ctxF, x0, y3, x4, y3, '#888888', 1, 604);
+        drawWobblyLine(ctxF, x0, y4, x4, y4, '#2b2b2b', 2, 605);
+
+        // Vertical grid lines
+        drawWobblyLine(ctxF, x0, y0, x0, y4, '#2b2b2b', 2, 606);
+        drawWobblyLine(ctxF, x1, y0, x1, y4, '#888888', 1, 607);
+        drawWobblyLine(ctxF, x2, y0, x2, y4, '#888888', 1, 608);
+        drawWobblyLine(ctxF, x3, y0, x3, y4, '#888888', 1, 609);
+        drawWobblyLine(ctxF, x4, y0, x4, y4, '#2b2b2b', 2, 610);
+
+        // Text rendering
+        ctxF.fillStyle = '#2b2b2b';
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'center';
+
+        // Headers
+        ctxF.fillText('水源種類', cx1, y0 + 28);
+        ctxF.fillText('氫質量 wH', cx2, y0 + 28);
+        ctxF.fillText('氧質量 wO', cx3, y0 + 28);
+        ctxF.fillText('比值 wO/wH', cx4, y0 + 28);
+
+        // Row 1: 酸鹼中和
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('酸鹼中和水', cx1, y1 + 28);
+        ctxF.font = FONT_MATH;
+        ctxF.fillText(`${wH1} g`, cx2, y1 + 28);
+        ctxF.fillText(`${wO1} g`, cx3, y1 + 28);
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.fillText(`${wO1}/${wH1} = 8.0`, cx4, y1 + 28);
+
+        // Row 2: 氫氣燃燒
+        ctxF.fillStyle = '#2b2b2b';
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('氫氣燃燒水', cx1, y2 + 28);
+        ctxF.font = FONT_MATH;
+        ctxF.fillText(`${wH2} g`, cx2, y2 + 28);
+        ctxF.fillText(`${wO2} g`, cx3, y2 + 28);
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.fillText(`${wO2}/${wH2} = 8.0`, cx4, y2 + 28);
+
+        // Row 3: 小蘇打分解
+        ctxF.fillStyle = '#2b2b2b';
+        ctxF.font = FONT_SMALL;
+        ctxF.fillText('小蘇打分解水', cx1, y3 + 28);
+        ctxF.font = FONT_MATH;
+        ctxF.fillText(`${wH3} g`, cx2, y3 + 28);
+        ctxF.fillText(`${wO3} g`, cx3, y3 + 28);
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.fillText(`${wO3}/${wH3} = 8.0`, cx4, y3 + 28);
+
+        // Bottom takeaway inside canvas
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.font = FONT_UI;
+        ctxF.fillText('觀察發現：不同來源的水，其組成的質量比值恆為定值。', w / 2, h - 45);
+    }
+    else if (currentStep === 7) {
+        // Step 7: Formal Law Scroll / Joseph Proust Scroll
+        // Draw parchment border
+        drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 700);
+        drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 750);
+
+        // Title
+        ctxF.fillStyle = COLOR_ORANGE;
+        ctxF.font = FONT_TITLE;
+        ctxF.textAlign = 'center';
+        ctxF.fillText('定比定律 (Law of Definite Proportions)', w / 2, 75);
+
+        // Divider
+        drawWobblyLine(ctxF, 60, 95, w - 60, 95, '#2b2b2b', 1.5, 710);
+
+        // Statement
+        ctxF.fillStyle = '#1f1f1f';
+        ctxF.font = FONT_TITLE;
+        ctxF.fillText('「 一種純化合物，不論其來源或', w / 2, 145);
+        ctxF.fillText('製備方法為何，其組成元素', w / 2, 190);
+        ctxF.fillText('之間的質量比恆為定值。 」', w / 2, 235);
+
+        // Author / Date
+        ctxF.fillStyle = '#5f5f5f';
+        ctxF.font = FONT_UI;
+        ctxF.textAlign = 'right';
+        ctxF.fillText('── 普魯斯特 (Joseph Proust, 1799)', w - 70, 285);
     }
     else if (currentStep === 8) {
         // Step 8: Show microscopic water molecules
         ctxF.fillStyle = '#1f1f1f';
-        ctxF.font = 'bold 1.25rem sans-serif';
+        ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
         ctxF.fillText('微觀原理：原子以固定比例結合', w / 2, 45);
         
-        // Draw 3 water molecules at different spots with slight rotation
+        // Draw 3 water molecules
         drawWaterMolecule(ctxF, w / 2 - 85, h / 2 - 30, 22, 13, 104.5, -Math.PI / 6);
         drawWaterMolecule(ctxF, w / 2 + 85, h / 2 - 10, 22, 13, 104.5, Math.PI / 4);
         drawWaterMolecule(ctxF, w / 2, h / 2 + 75, 22, 13, 104.5, Math.PI + Math.PI / 8);
         
         // Explanatory text
         ctxF.fillStyle = '#5f5f5f';
-        ctxF.font = 'bold 1.05rem sans-serif';
+        ctxF.font = FONT_UI;
         ctxF.fillText('每個水分子 (H₂O) 恆由 2 個 H 與 1 個 O 原子結合', w / 2, h - 80);
         
-        ctxF.font = 'italic 1.15rem "EB Garamond", serif';
+        ctxF.font = FONT_MATH;
         ctxF.fillStyle = COLOR_ORANGE;
         ctxF.fillText('原子質量比 ── 氧 (16) : 氫 (1) × 2 = 8 : 1', w / 2, h - 50);
     }
@@ -492,13 +619,13 @@ function renderGraphPanel() {
         drawWobblyLine(ctxG, rx, cy, rx, ry, '#888888', 1.5, 500);
         
         ctxG.fillStyle = '#2b2b2b';
-        ctxG.font = 'bold 0.9rem sans-serif';
+        ctxG.font = FONT_SMALL;
         ctxG.textAlign = 'center';
         ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
         
         // Slope calculation formula - placed in top-left clear area to avoid overlaps
-        ctxG.font = 'bold 1.15rem "EB Garamond", serif';
+        ctxG.font = FONT_MATH;
         ctxG.fillStyle = COLOR_ORANGE;
         ctxG.textAlign = 'left';
         ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', margin + 20, margin + 35);
@@ -538,7 +665,7 @@ function drawGraphAxes(w, h) {
     drawWobblyLine(ctxG, originX, margin - 20, originX + 6, margin - 12, '#2b2b2b', 2, 22);
 
     ctxG.fillStyle = '#2b2b2b';
-    ctxG.font = 'bold italic 1.15rem "EB Garamond", serif';
+    ctxG.font = FONT_MATH;
     
     // Labels - shift wO to the right to avoid cut-off at the left edge
     ctxG.textAlign = 'center';
@@ -598,7 +725,7 @@ function drawStaticBeaker(ctx, cx, cy, r, height, label, liquidColor, dropletCol
     
     // Label text
     ctx.fillStyle = '#1f1f1f';
-    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.font = FONT_SMALL;
     ctx.textAlign = 'center';
     ctx.fillText(label, cx, cy + 20);
     
@@ -640,7 +767,7 @@ function drawWaterMolecule(ctx, cx, cy, rO = 22, rH = 13, angleDeg = 104.5, rotA
     drawWobblyCircle(ctx, cx, cy, rO, '#faf8f5', true, 2, cx); // match background color
     drawWobblyCircle(ctx, cx, cy, rO, '#2b2b2b', false, 2, cx);
     ctx.fillStyle = '#2b2b2b';
-    ctx.font = 'bold 1.1rem sans-serif';
+    ctx.font = FONT_UI;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('O', cx, cy);
@@ -649,14 +776,14 @@ function drawWaterMolecule(ctx, cx, cy, rO = 22, rH = 13, angleDeg = 104.5, rotA
     drawWobblyCircle(ctx, h1x, h1y, rH, '#faf8f5', true, 1.5, h1x);
     drawWobblyCircle(ctx, h1x, h1y, rH, '#2b2b2b', false, 1.5, h1x);
     ctx.fillStyle = '#2b2b2b';
-    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.font = FONT_SMALL;
     ctx.fillText('H', h1x, h1y);
     
     // Draw Hydrogen 2 (small wobbly circle)
     drawWobblyCircle(ctx, h2x, h2y, rH, '#faf8f5', true, 1.5, h2x);
     drawWobblyCircle(ctx, h2x, h2y, rH, '#2b2b2b', false, 1.5, h2x);
     ctx.fillStyle = '#2b2b2b';
-    ctx.font = 'bold 0.85rem sans-serif';
+    ctx.font = FONT_SMALL;
     ctx.fillText('H', h2x, h2y);
 }
 

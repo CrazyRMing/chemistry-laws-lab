@@ -200,43 +200,136 @@
         <main class="card">
             <!-- README.md Content -->
             <article class="doc-content active" id="doc-readme">
-                <h1>化學基本定律虛擬實驗室 - 3B1B 步驟動畫</h1>
-                <p>本分支實作了定比定律（Law of Definite Proportions）的步驟引導式動畫，重現 3Blue1Brown 的數學幾何美學與不完美的手繪風格。</p>
-                <h2>本次優化特色</h2>
-                <ul>
-                    <li><strong>生圖模型手繪插圖</strong>：左側改為加載極具質感的生成式手繪裝置圖片，且清除背景填色為純白色，與插圖背景無縫融合，徹底解決代碼畫圖的簡陋感。</li>
-                    <li><strong>水滴與點彈出動畫連動</strong>：水滴自裝置的出水點平滑滑出，在抵達右界時，右側座標散點以 Elastic 動效彈出。</li>
-                    <li><strong>正體中文與座標標籤</strong>：完全使用台灣正體中文習慣，且座標軸使用 <code>&lt;sub&gt;</code> 標籤完美渲染下標。</li>
-                    <li><strong>圖面整潔與圖例化</strong>：散點不再疊加座標文字，改在圖表左上角顯示精美的手繪圖例。</li>
-                </ul>
-            </article>
+<h1>化學基本定律虛擬實驗室 (Chemical Laws Virtual Lab)</h1>
+<p></p>
+<p>一個基於 HTML5 Canvas 與 Vanilla JS 實作的互動網頁，旨在幫助學生視覺化理解兩個化學基本定律：</p>
+<p>1. **定比定律 (Law of Definite Proportions)**</p>
+<p>2. **倍比定律 (Law of Multiple Proportions)**</p>
+<p></p>
+<h2>專案特色</h2>
+<ul>
+<li>**零外部依賴**：完全採用純原生 HTML5、CSS3 與 ES6+ JavaScript，下載後按兩下即可直接在任何瀏覽器中離線開啟。</li>
+<li>**現代視覺美學**：採用高對比度的深色模式與半透明毛玻璃（Glassmorphism）卡片，搭配精緻的按鈕動畫與流暢的物理碰撞模擬。</li>
+<li>**即時數據回饋**：反應前後的原子數量、分子個數、游離原子、以及質量的比例變化皆會即時計算並呈現在漂亮的表格中。</li>
+</ul>
+<p></p>
+<h2>運行方式</h2>
+<p>1. 將本專案下載/複製到您的電腦中。</p>
+<p>2. 連按兩下開啟 <code>index.html</code> 即可在瀏覽器（Chrome, Edge, Firefox, Safari 等）中運行。</p>
+<p></p>
+<h2>實驗說明</h2>
+<p></p>
+<h3>1. 定比定律（氫氧合成水）</h3>
+<ul>
+<li>**反應方程式**：$2\text{H}_2 + \text{O}_2 \rightarrow 2\text{H}_2\text{O}$</li>
+<li>**質量關係**：氫原子量為 1，氧原子量為 16。水分子（$H_2O$）中，氫與氧的質量比恆為 $2 \times 1 : 16 = 1 : 8$。</li>
+<li>**實驗方式**：拖曳滑桿設定初始的氫原子（H）與氧原子（O）個數，點擊「開始反應」。你將看到原子隨機運動碰撞並結合成水分子，多餘的原子則保持游離狀態。數據面板會即時計算生成的質量比是否符合 $1:8$。</li>
+</ul>
+<p></p>
+<h3>2. 倍比定律（碳氧反應）</h3>
+<ul>
+<li>**反應方程式**：</li>
+<li>一氧化碳：$\text{C} + \text{O} \rightarrow \text{CO}$</li>
+<li>二氧化碳：$\text{C} + 2\text{O} \rightarrow \text{CO}_2$</li>
+<li>**質量關係**：碳原子量為 12，氧原子量為 16。</li>
+<li>在 $CO$ 中，12 克碳與 16 克氧結合。</li>
+<li>在 $CO_2$ 中，12 克碳與 32 克氧結合。</li>
+<li>相同質量的碳（例如 12 克）所結合的氧質量比為 $16 : 32 = 1 : 2$（簡單整數比）。</li>
+<li>**實驗方式**：點擊「一氧化碳模式」或「二氧化碳模式」，設定原子個數並開始反應。數據面板會對比兩種模式下，與相同碳原子結合的氧原子的倍數關係。</li>
+</ul>
+</article>
 
             <!-- PROJECT_NOTES.md Content -->
             <article class="doc-content" id="doc-notes">
-                <h1>專案開發筆記 (PROJECT_NOTES)</h1>
-                <h2>開發背景與目標</h2>
-                <p>配合化學教學，建立一個直觀、好懂且具有 3B1B (Manim) 動畫質感的引導式手繪動畫網頁，說明<strong>定比定律</strong>。</p>
-                <h2>開發完成事項 (`3b1b-style` 分支優化)</h2>
-                <ul>
-                    <li>[x] 使用生圖模型生成 titration、combustion、heating 三張高質感手繪插畫圖片置於 <code>assets/</code>。</li>
-                    <li>[x] 預載入圖片，並在 `renderFlaskPanel` 內以 <code>drawImage</code> 置中渲染。</li>
-                    <li>[x] 調整水滴拋物線滑出起點，使其與載入的靜態圖片噴口完美重合。</li>
-                    <li>[x] 將左側 Canvas 背景清除填色設為純白色（<code>#ffffff</code>）以融合圖片白底。</li>
-                    <li>[x] 更新 <code>index.html</code> 與 <code>app.js</code> 內的中文文字為正體中文，座標軸使用 <code>&lt;sub&gt;</code> 標籤。</li>
-                    <li>[x] 圖上點不顯座標，改置於左上角手繪圖例框內，維持圖面整潔。</li>
-                </ul>
-            </article>
+<h1>專案開發筆記 (PROJECT_NOTES)</h1>
+<p></p>
+<h2>開發背景與目標</h2>
+<p>配合化學教學，建立一個直觀、好懂且具有 3B1B (Manim) 動畫質感的引導式手繪動畫網頁，說明**定比定律**。</p>
+<p>網頁支援明亮主題（奶油白 <code>#FAF8F5</code>、石墨深灰線條與皇家藍直線），藉由一個 7 步驟的流程，向學生逐步推演普魯斯特的重大化學定律。</p>
+<p></p>
+<h2>目前進度 (`3b1b-style` 分支資產優化版)</h2>
+<ul>
+<li><input type="checkbox" checked disabled> 新增 `3b1b-style` 分支，與原先的虛擬實驗室區分開來。</li>
+<li><input type="checkbox" checked disabled> 更新 `index.html` 結構為單頁 7 步驟的「上一步 / 下一步」雙畫布引導式版面。</li>
+<li><input type="checkbox" checked disabled> 修正 X-Y 軸的下標標示，改用原生 HTML `<sub>` 標籤實現 $w_H - w_O$ 的完美渲染。</li>
+<li><input type="checkbox" checked disabled> 優化座標圖圖面，將原本散落在數據點旁的座標名稱文字全部移至左上角的手繪圖例框中。</li>
+<li><input type="checkbox" checked disabled> 修正歷史觀點，在步驟 5 移除原先的 H2O 微觀球棍結構，改為展示三杯不同來源的宏觀水滴對比，加深定比定律「不論物質來源其組成恆定」的宏觀本質。</li>
+<li><input type="checkbox" checked disabled> **生圖模型資產整合**：使用 `generate_image` 生圖模型，為三種反應生成了三張風格極高、一致的極簡手繪線條靜態圖片（滴定管與錐形瓶、燃燒皿與冷凝罩、酒精燈與試管），存放在專案 `assets/` 資料夾下。</li>
+<li><input type="checkbox" checked disabled> **Canvas 影像載入與置中**：在 `app.js` 中新增資產預載入，並在繪圖時自適應視窗大小將圖片渲染在左側 Canvas 內。</li>
+<li><input type="checkbox" checked disabled> **水滴滑出軌跡校準**：重新調整水滴從反應裝置（如滴定管嘴、冷凝管口、試管口）滑出的起點，使其與生圖資產完美對接。</li>
+<li><input type="checkbox" checked disabled> 驗證三個點的質量比例在隨機數值下恆為完美的 8.0。</li>
+<li><input type="checkbox" checked disabled> 通過瀏覽器自動化腳本功能測試，控制台零錯誤。</li>
+</ul>
+<p></p>
+<h2>技術實現與生圖提示</h2>
+<ul>
+<li>**生成圖片提示詞 (Prompt)**：</li>
+</ul>
+<p>  -Titration: <code>A minimalist, hand-drawn vector line art illustration of an acid-base titration setup on a solid white background. It includes a metal ring stand, a thin glass burette clamped to the stand, and a glass conical flask directly underneath. Sketchy pencil-stroke style, clean charcoal lines, no color, no labels, no text, clean scientific schematic, 3b1b mathematical video style.</code></p>
+<p>  -Combustion: <code>A minimalist, hand-drawn vector line art illustration of a hydrogen combustion setup on a solid white background. It includes a metal stand, a thin glass tube with a nozzle from which a small flame burns, and a glass condenser funnel positioned directly above the flame to collect condensed water. Sketchy pencil-stroke style, clean charcoal lines, no color except a tiny orange hue for the flame...</code></p>
+<p>  -Heating: <code>A minimalist, hand-drawn vector line art illustration of a thermal decomposition heating setup on a solid white background. It includes a metal ring stand, a horizontal glass test tube clamped to the stand, a small alcohol burner underneath heating the test tube, and a small amount of white powder inside the tube...</code></p>
+<p></p>
+<h2>2026-07-10 今日完成事項 (SOIL 風格重製 + A版本簡報)</h2>
+<p></p>
+<h3>完成</h3>
+<ul>
+<li><input type="checkbox" checked disabled> **SOIL 風格重製**：全面移除雜色，改用黑/白/灰 + 橘色單一焦點；新增 SOIL 頁眉（黑底頁碼方框 + 橘色標線）、底部 takeaway box。</li>
+<li><input type="checkbox" checked disabled> **圖例移出 Canvas**：改用 HTML flex 區塊渲染圖例，清空畫布左上角空間，消除文字切邊與物件重疊。</li>
+<li><input type="checkbox" checked disabled> **斜率文字定位**：移至畫布左上角空白區，橘色顯示，無重疊。</li>
+<li><input type="checkbox" checked disabled> **燃燒實驗設備簡化**：Step 3 改用單純酒精燈插圖。</li>
+<li><input type="checkbox" checked disabled> **加熱試管傾斜修正**：Step 4 改用使用者提供之正確傾斜圖（加熱端右側翹高，管口左側朝下），符合化學實驗安全規範。</li>
+<li><input type="checkbox" checked disabled> **定比線半透明置底**：先繪製 `rgba(255,122,0,0.55)` 定比線，再繪製數據點，確保點覆蓋於線上。</li>
+<li><input type="checkbox" checked disabled> **下一步按鈕修正**：修復白底白字隱形問題，改為橘底白字黑框。</li>
+<li><input type="checkbox" checked disabled> **新增 Step 8 微觀解釋**：Canvas 手繪三個 H₂O 分子（帶擺動動畫），說明定比定律的原子層級成因。</li>
+<li><input type="checkbox" checked disabled> **防快取機制**：圖片 src 加上 `?v=Date.now()` 防快取時間戳。</li>
+<li><input type="checkbox" checked disabled> **安裝全域技能**：`soil-teaching-slides` 技能包安裝至 `C:\Users\user\.gemini\config\skills\`。</li>
+<li><input type="checkbox" checked disabled> **A 版本簡報生成**：為 8 個步驟分別生圖（手繪 SOIL 16:9 格式），以 `pack_images_to_pptx.py` 封裝輸出 `定比定律教學簡報(A版本).pptx`（3 MB，8 slides，8 媒體圖）。</li>
+</ul>
+<p></p>
+<h3>踩坑筆記</h3>
+<ul>
+<li>`heating.png` 傾斜方向 AI 生圖容易搞錯；最終使用者直接提供參考圖，複製覆蓋最可靠。</li>
+<li>Canvas 圖例框畫在 canvas 內容易切字，移到 HTML 是根本解法。</li>
+<li>`pack_images_to_pptx.py` 為純 stdlib，不依賴 python-pptx，可直接執行。</li>
+</ul>
+<p></p>
+<h3>下一步 (待議)</h3>
+<ul>
+<li><input type="checkbox" disabled> 考慮製作 B 版本（可編輯 PPTX，文字可改）。</li>
+<li><input type="checkbox" disabled> 動畫可進一步加入更多步驟說明（如 Dalton 原子說補充）。</li>
+<li><input type="checkbox" disabled> 考慮部署至 GitHub Pages 供學生線上瀏覽互動動畫。</li>
+</ul>
+</article>
 
             <!-- ANTIGRAVITY.md Content -->
             <article class="doc-content" id="doc-antigravity">
-                <h1>AntiGravity 專案協同開發指南</h1>
-                <h2>開發技術棧</h2>
-                <ul>
-                    <li><strong>核心</strong>：HTML5 + Vanilla JavaScript (ES6+)</li>
-                    <li><strong>樣式</strong>：Vanilla CSS (明亮淺奶油白紙張底色，石墨深灰線條與外框)</li>
-                    <li><strong>動畫技術</strong>：HTML5 Canvas 影像與數學緩動引擎</li>
-                </ul>
-            </article>
+<h1>AntiGravity 專案協同開發指南</h1>
+<p></p>
+<p>本專案是用於說明**定比定律 (Law of Definite Proportions)** 與 **倍比定律 (Law of Multiple Proportions)** 的互動網頁動畫實驗室。</p>
+<p></p>
+<h2>開發技術棧</h2>
+<ul>
+<li>**核心**：HTML5 + Vanilla JavaScript (ES6+)</li>
+<li>**樣式**：Vanilla CSS (深色模式配色的玻璃擬物化 Glassmorphism 設計，配合 Outfit/Inter 字型)</li>
+<li>**動畫技術**：HTML5 Canvas 粒子引擎</li>
+</ul>
+<p></p>
+<h2>協作規則</h2>
+<p>1. **極簡與效率 (Ponytail 模式)**：</p>
+<ul>
+<li>儘可能避免引入外部大型 JS/CSS 庫（如 Bootstrap、Tailwind 或複雜的 React/Vite 框架）。</li>
+<li>保留程式碼的簡單與純粹性，無須編譯即可透過瀏覽器直接開啟（方便於因材網系統、外掛中離線使用）。</li>
+</ul>
+<p>2. **視覺效果與美學 (Aesthetics)**：</p>
+<ul>
+<li>使用精美的高對比度漸層與毛玻璃卡片。</li>
+<li>粒子碰撞結合必須有流暢的動態過渡動畫與反彈效果。</li>
+</ul>
+<p>3. **專案筆記更新**：</p>
+<ul>
+<li>每當階段性功能完成或有新發現，必須隨時更新 `PROJECT_NOTES.md`，並在收工前編譯/同步至 `專案報告.html`。</li>
+</ul>
+</article>
         </main>
 
         <footer>

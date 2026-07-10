@@ -11,9 +11,9 @@
     --color-gray-medium: #888888;
     --color-gray-dark: #444444;
     
-    --font-heading: 'Outfit', sans-serif;
-    --font-math: 'EB Garamond', 'Noto Sans TC', serif;
-    --font-ui: 'Outfit', 'Noto Sans TC', sans-serif;
+    --font-heading: 'AwkwardBlack 拙黑體', 'Outfit', sans-serif;
+    --font-math: 'EB Garamond', 'AwkwardBlack 拙黑體', 'Noto Sans TC', serif;
+    --font-ui: 'AwkwardBlack 拙黑體', 'Outfit', 'Noto Sans TC', sans-serif;
 }
 
 * {
