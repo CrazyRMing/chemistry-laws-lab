@@ -612,10 +612,10 @@ function renderFlaskPanel() {
         ctxF.textAlign = 'center';
         ctxF.fillText('微觀原理：原子以固定比例結合', w / 2, 45);
         
-        // Draw 3 water molecules
-        drawWaterMolecule(ctxF, w / 2 - 85, h / 2 - 30, 22, 13, 104.5, -Math.PI / 6);
-        drawWaterMolecule(ctxF, w / 2 + 85, h / 2 - 10, 22, 13, 104.5, Math.PI / 4);
-        drawWaterMolecule(ctxF, w / 2, h / 2 + 75, 22, 13, 104.5, Math.PI + Math.PI / 8);
+        // Draw 3 water molecules (shifted up by 30px to balance vertical space)
+        drawWaterMolecule(ctxF, w / 2 - 85, h / 2 - 60, 22, 13, 104.5, -Math.PI / 6);
+        drawWaterMolecule(ctxF, w / 2 + 85, h / 2 - 40, 22, 13, 104.5, Math.PI / 4);
+        drawWaterMolecule(ctxF, w / 2, h / 2 + 45, 22, 13, 104.5, Math.PI + Math.PI / 8);
         
         // Explanatory text
         ctxF.fillStyle = '#5f5f5f';
