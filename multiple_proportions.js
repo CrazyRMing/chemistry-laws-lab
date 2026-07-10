@@ -579,29 +579,29 @@ function drawLeftPanel() {
             ctxF.globalAlpha = alpha7;
             
             // Compound I — O atom (Red fill, wobbly black outline, white text)
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#ef4444', true, 2, 82);
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#2b2b2b', false, 2, 82);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_O, '#ef4444', true, 2, 82);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_O, '#2b2b2b', false, 2, 82);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('O', cx1, cy + 33);
+            ctxF.fillText('O', cx1, cy + 63);
             
             // Compound II — 2 O atoms (Horizontally arranged: first at cx2, second at cx2+36)
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_O, '#ef4444', true, 2, 84);
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_O, '#2b2b2b', false, 2, 84);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_O, '#ef4444', true, 2, 84);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_O, '#2b2b2b', false, 2, 84);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('O', cx2, cy + 33);
-            drawWobblyCircle(ctxF, cx2 + 36, cy + 28, atomR_O, '#ef4444', true, 2, 85);
-            drawWobblyCircle(ctxF, cx2 + 36, cy + 28, atomR_O, '#2b2b2b', false, 2, 85);
+            ctxF.fillText('O', cx2, cy + 63);
+            drawWobblyCircle(ctxF, cx2 + 36, cy + 58, atomR_O, '#ef4444', true, 2, 85);
+            drawWobblyCircle(ctxF, cx2 + 36, cy + 58, atomR_O, '#2b2b2b', false, 2, 85);
             ctxF.fillStyle = '#ffffff';
-            ctxF.fillText('O', cx2 + 36, cy + 33);
+            ctxF.fillText('O', cx2 + 36, cy + 63);
             
             ctxF.restore();
         }
 
-        // 3. Draw middle text descriptions (H is at cy-25/cy-5, O is at cy+23/cy+43)
+        // 3. Draw middle text descriptions (H is at cy-25/cy-5, O is at cy+53/cy+73)
         if (currentStep === 6) {
             ctxF.save();
             ctxF.globalAlpha = t6;
@@ -626,7 +626,7 @@ function drawLeftPanel() {
             ctxF.fillText('表示應有相同數量的 H 原子', w / 2, cy - 5);
             ctxF.restore();
 
-            // Red/green O weight ratio text at cy + 23 - Fades in!
+            // Red/green O weight ratio text at cy + 53 - Fades in!
             ctxF.save();
             ctxF.globalAlpha = alpha7; // Apply fade-in to O weight ratio text
             
@@ -644,18 +644,18 @@ function drawLeftPanel() {
 
             ctxF.textAlign = 'left';
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text1, startX, cy + 23);
+            ctxF.fillText(text1, startX, cy + 53);
             startX += w1;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text2, startX, cy + 23);
+            ctxF.fillText(text2, startX, cy + 53);
             startX += w2;
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text3, startX, cy + 23);
+            ctxF.fillText(text3, startX, cy + 53);
             startX += w3;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text4, startX, cy + 23);
+            ctxF.fillText(text4, startX, cy + 53);
 
-            // Represent O atoms ratio is also 1 : 2 at cy + 43
+            // Represent O atoms ratio is also 1 : 2 at cy + 73
             const text6 = "表示 O 原子的數量也是 ";
             const text7 = "1";
             const text8 = " : ";
@@ -669,16 +669,16 @@ function drawLeftPanel() {
             let startX2 = w / 2 - totalW2 / 2;
 
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text6, startX2, cy + 43);
+            ctxF.fillText(text6, startX2, cy + 73);
             startX2 += w6;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text7, startX2, cy + 43);
+            ctxF.fillText(text7, startX2, cy + 73);
             startX2 += w7;
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text8, startX2, cy + 43);
+            ctxF.fillText(text8, startX2, cy + 73);
             startX2 += w8;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text9, startX2, cy + 43);
+            ctxF.fillText(text9, startX2, cy + 73);
 
             ctxF.restore();
         }
@@ -708,20 +708,20 @@ function drawLeftPanel() {
         ctxF.fillText('化合物 I（水）', cx1, h / 2 - 55);
         ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
-        // Compound I — H atoms fade in during Step 9 (Horizontally arranged: cx1-28 and cx1 at cy+28)
+        // Compound I — H atoms fade in during Step 9 (Horizontally arranged: cx1-28 and cx1 at cy+58)
         if (currentStep === 9) {
             ctxF.save();
             ctxF.globalAlpha = easeInOutCubic(animProgress);
-            drawWobblyCircle(ctxF, cx1 - 28, cy + 28, atomR_H, '#ffffff', true, 2, 91);
-            drawWobblyCircle(ctxF, cx1 - 28, cy + 28, atomR_H, '#2b2b2b', false, 2, 91);
+            drawWobblyCircle(ctxF, cx1 - 28, cy + 58, atomR_H, '#ffffff', true, 2, 91);
+            drawWobblyCircle(ctxF, cx1 - 28, cy + 58, atomR_H, '#2b2b2b', false, 2, 91);
             ctxF.fillStyle = '#2b2b2b';
             ctxF.font = 'bold 0.95rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('H', cx1 - 28, cy + 32);
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_H, '#ffffff', true, 2, 92);
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_H, '#2b2b2b', false, 2, 92);
+            ctxF.fillText('H', cx1 - 28, cy + 62);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_H, '#ffffff', true, 2, 92);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_H, '#2b2b2b', false, 2, 92);
             ctxF.fillStyle = '#2b2b2b';
-            ctxF.fillText('H', cx1, cy + 32);
+            ctxF.fillText('H', cx1, cy + 62);
             ctxF.restore();
         }
         
@@ -740,16 +740,16 @@ function drawLeftPanel() {
         ctxF.fillText('O', cx1, cy - 15);
         ctxF.restore();
 
-        // Compound II — H atom fades in during Step 9 (White fill, black outline, black text) — now at the BOTTOM (cy + 28)
+        // Compound II — H atom fades in during Step 9 (White fill, black outline, black text) — now at the BOTTOM (cy + 58)
         if (currentStep === 9) {
             ctxF.save();
             ctxF.globalAlpha = easeInOutCubic(animProgress);
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_H, '#ffffff', true, 2, 94);
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_H, '#2b2b2b', false, 2, 94);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_H, '#ffffff', true, 2, 94);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_H, '#2b2b2b', false, 2, 94);
             ctxF.fillStyle = '#2b2b2b';
             ctxF.font = 'bold 0.95rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('H', cx2, cy + 32);
+            ctxF.fillText('H', cx2, cy + 62);
             ctxF.restore();
         }
         
@@ -770,29 +770,28 @@ function drawLeftPanel() {
             ctxF.globalAlpha = 1 - t8;
             
             // Fading out Compound I bottom O atom
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#ef4444', true, 2, 82);
-            drawWobblyCircle(ctxF, cx1, cy + 28, atomR_O, '#2b2b2b', false, 2, 82);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_O, '#ef4444', true, 2, 82);
+            drawWobblyCircle(ctxF, cx1, cy + 58, atomR_O, '#2b2b2b', false, 2, 82);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('O', cx1, cy + 33);
+            ctxF.fillText('O', cx1, cy + 63);
             
             // Fading out Compound II bottom 2 O atoms (horizontally arranged)
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_O, '#ef4444', true, 2, 84);
-            drawWobblyCircle(ctxF, cx2, cy + 28, atomR_O, '#2b2b2b', false, 2, 84);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_O, '#ef4444', true, 2, 84);
+            drawWobblyCircle(ctxF, cx2, cy + 58, atomR_O, '#2b2b2b', false, 2, 84);
             ctxF.fillStyle = '#ffffff';
             ctxF.font = 'bold 1.15rem sans-serif';
             ctxF.textAlign = 'center';
-            ctxF.fillText('O', cx2, cy + 33);
-            drawWobblyCircle(ctxF, cx2 + 36, cy + 28, atomR_O, '#ef4444', true, 2, 85);
-            drawWobblyCircle(ctxF, cx2 + 36, cy + 28, atomR_O, '#2b2b2b', false, 2, 85);
+            ctxF.fillText('O', cx2, cy + 63);
+            drawWobblyCircle(ctxF, cx2 + 36, cy + 58, atomR_O, '#ef4444', true, 2, 85);
+            drawWobblyCircle(ctxF, cx2 + 36, cy + 58, atomR_O, '#2b2b2b', false, 2, 85);
             ctxF.fillStyle = '#ffffff';
-            ctxF.fillText('O', cx2 + 36, cy + 33);
+            ctxF.fillText('O', cx2 + 36, cy + 63);
 
             ctxF.font = FONT_UI;
             ctxF.fillStyle = '#2563eb'; // Blue
             ctxF.textAlign = 'center';
-            ctxF.fillText('H', w / 2, cy - 25); // Wait! No, let's keep the exact text: 'H 重量相同'
             ctxF.fillText('H 重量相同', w / 2, cy - 25);
             ctxF.font = FONT_SMALL;
             ctxF.fillText('表示應有相同數量的 H 原子', w / 2, cy - 5);
@@ -811,16 +810,16 @@ function drawLeftPanel() {
             let startX = w / 2 - totalW / 2;
             ctxF.textAlign = 'left';
             ctxF.fillStyle = '#1f1f1f';
-            ctxF.fillText(text1, startX, cy + 23);
+            ctxF.fillText(text1, startX, cy + 53);
             startX += w1;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text2, startX, cy + 23);
+            ctxF.fillText(text2, startX, cy + 53);
             startX += w2;
             ctxF.fillStyle = '#1f1f1f';
-            ctxF.fillText(text3, startX, cy + 23);
+            ctxF.fillText(text3, startX, cy + 53);
             startX += w3;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text4, startX, cy + 23);
+            ctxF.fillText(text4, startX, cy + 53);
 
             // Represent O atoms ratio
             const text6 = "表示 O 原子的數量也是 ";
@@ -835,20 +834,20 @@ function drawLeftPanel() {
             const totalW2 = w6 + w7 + w8 + w9;
             let startX2 = w / 2 - totalW2 / 2;
             ctxF.fillStyle = '#1f1f1f';
-            ctxF.fillText(text6, startX2, cy + 43);
+            ctxF.fillText(text6, startX2, cy + 73);
             startX2 += w6;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text7, startX2, cy + 43);
+            ctxF.fillText(text7, startX2, cy + 73);
             startX2 += w7;
             ctxF.fillStyle = '#1f1f1f';
-            ctxF.fillText(text8, startX2, cy + 43);
+            ctxF.fillText(text8, startX2, cy + 73);
             startX2 += w8;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text9, startX2, cy + 43);
+            ctxF.fillText(text9, startX2, cy + 73);
             ctxF.restore();
         }
 
-        // 3. Draw text descriptions (Equal weight premise always at top cy-25/cy-5, ratio always at bottom cy+23/cy+43)
+        // 3. Draw text descriptions (Equal weight premise always at top cy-25/cy-5, ratio always at bottom cy+53/cy+73)
         if (currentStep === 8) {
             ctxF.save();
             ctxF.globalAlpha = t8;
@@ -871,7 +870,7 @@ function drawLeftPanel() {
             ctxF.fillText('表示應有相同數量的 O 原子', w / 2, cy - 5);
             ctxF.restore();
 
-            // Red/green H weight ratio text at cy + 23 - Fades in!
+            // Red/green H weight ratio text at cy + 53 - Fades in!
             ctxF.save();
             const alpha9 = easeInOutCubic(animProgress);
             ctxF.globalAlpha = alpha9;
@@ -890,18 +889,18 @@ function drawLeftPanel() {
 
             ctxF.textAlign = 'left';
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text1, startX, cy + 23);
+            ctxF.fillText(text1, startX, cy + 53);
             startX += w1;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text2, startX, cy + 23);
+            ctxF.fillText(text2, startX, cy + 53);
             startX += w2;
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text3, startX, cy + 23);
+            ctxF.fillText(text3, startX, cy + 53);
             startX += w3;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text4, startX, cy + 23);
+            ctxF.fillText(text4, startX, cy + 53);
 
-            // Represent H atoms ratio is also 2 : 1 at cy + 43
+            // Represent H atoms ratio is also 2 : 1 at cy + 73
             const text6 = "表示 H 原子的數量也是 ";
             const text7 = "2";
             const text8 = " : ";
@@ -915,16 +914,16 @@ function drawLeftPanel() {
             let startX2 = w / 2 - totalW2 / 2;
 
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text6, startX2, cy + 43);
+            ctxF.fillText(text6, startX2, cy + 73);
             startX2 += w6;
             ctxF.fillStyle = '#10b981'; // Green
-            ctxF.fillText(text7, startX2, cy + 43);
+            ctxF.fillText(text7, startX2, cy + 73);
             startX2 += w7;
             ctxF.fillStyle = '#1f1f1f'; // Unified text color
-            ctxF.fillText(text8, startX2, cy + 43);
+            ctxF.fillText(text8, startX2, cy + 73);
             startX2 += w8;
             ctxF.fillStyle = '#ef4444'; // Red
-            ctxF.fillText(text9, startX2, cy + 43);
+            ctxF.fillText(text9, startX2, cy + 73);
 
             ctxF.restore();
         }
@@ -938,28 +937,30 @@ function drawLeftPanel() {
         drawWobblyRect(ctxF, 35, 35, w - 70, h - 70, '#2b2b2b', true, '#faf8f5', 2.5, 100);
         drawWobblyRect(ctxF, 43, 43, w - 86, h - 86, '#888888', false, '', 1, 105);
 
+        const cy = h / 2;
+
         // Title
         ctxF.fillStyle = '#ff7a00'; // COLOR_ORANGE
         ctxF.font = FONT_TITLE;
         ctxF.textAlign = 'center';
-        ctxF.fillText('倍比定律 (Law of Multiple Proportions)', w / 2, 75);
+        ctxF.fillText('倍比定律 (Law of Multiple Proportions)', w / 2, cy - 105);
 
         // Divider
-        drawWobblyLine(ctxF, 60, 95, w - 60, 95, '#2b2b2b', 1.5, 110);
+        drawWobblyLine(ctxF, 60, cy - 85, w - 60, cy - 85, '#2b2b2b', 1.5, 110);
 
         // Statement (broken into 4 shorter lines to prevent overflow)
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_TITLE;
-        ctxF.fillText('「 當甲、乙兩元素結合，', w / 2, 130);
-        ctxF.fillText('生成兩種以上的化合物時，', w / 2, 170);
-        ctxF.fillText('若固定甲元素的質量，', w / 2, 210);
-        ctxF.fillText('則乙元素的質量比呈簡單整數比。 」', w / 2, 250);
+        ctxF.fillText('「 當甲、乙兩元素結合，', w / 2, cy - 50);
+        ctxF.fillText('生成兩種以上的化合物時，', w / 2, cy - 10);
+        ctxF.fillText('若固定甲元素的質量，', w / 2, cy + 30);
+        ctxF.fillText('則乙元素的質量比呈簡單整數比。 」', w / 2, cy + 70);
 
         // Author / Date
         ctxF.fillStyle = '#5f5f5f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'right';
-        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w - 70, 290);
+        ctxF.fillText('── 道耳頓 (John Dalton, 1803)', w - 70, cy + 110);
         ctxF.restore();
     }
     else if (currentStep === 11) {
