@@ -371,13 +371,20 @@ function drawLeftPanel() {
         ctxF.fillRect(bx + 4, by + 30, 72, 48);
         drawWobblyLine(ctxF, bx + 2, by + 30, bx + 78, by + 30, '#ff7a00', 2, 43);
         
-        // Three lines of text below the beaker
+        // Three lines of text below the beaker — pivot aligns the '=' signs
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
+        const pivot23 = w / 2;
         ctxF.textAlign = 'center';
-        ctxF.fillText('化合物 I（水）', w / 2, by + 105);
-        ctxF.fillText('H = 2.5 g', w / 2, by + 128);
-        ctxF.fillText('O = 20.0 g', w / 2, by + 151);
+        ctxF.fillText('化合物 I（水）', pivot23, by + 105);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('H', pivot23, by + 128);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 2.5 g', pivot23, by + 128);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('O', pivot23, by + 151);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 20.0 g', pivot23, by + 151);
         
         ctxF.restore();
     }
@@ -402,13 +409,19 @@ function drawLeftPanel() {
         ctxF.fillStyle = 'rgba(255, 122, 0, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#ff7a00', 1.5, 63);
-        // Text below Compound I beaker
+        // Text below Compound I beaker — pivot aligns the '=' signs
         ctxF.fillStyle = '#1f1f1f';
         ctxF.font = FONT_UI;
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 I（水）', cx1, by + 85);
-        ctxF.fillText('H = 2.5 g', cx1, by + 108);
-        ctxF.fillText('O = 20.0 g', cx1, by + 131);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('H', cx1, by + 108);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 2.5 g', cx1, by + 108);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('O', cx1, by + 131);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 20.0 g', cx1, by + 131);
         
         // Draw Compound II (Right side) — beaker centered at 3w/4
         const cx2 = (w * 3) / 4;
@@ -419,12 +432,18 @@ function drawLeftPanel() {
         ctxF.fillStyle = 'rgba(124, 58, 237, 0.15)';
         ctxF.fillRect(bx + 3, by + 20, 44, 38);
         drawWobblyLine(ctxF, bx + 1, by + 20, bx + 49, by + 20, '#7c3aed', 1.5, 73);
-        // Text below Compound II beaker
+        // Text below Compound II beaker — pivot aligns the '=' signs
         ctxF.fillStyle = '#1f1f1f';
         ctxF.textAlign = 'center';
         ctxF.fillText('化合物 II（雙氧水）', cx2, by + 85);
-        ctxF.fillText('H = 1.5 g', cx2, by + 108);
-        ctxF.fillText('O = 24.0 g', cx2, by + 131);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('H', cx2, by + 108);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 1.5 g', cx2, by + 108);
+        ctxF.textAlign = 'right';
+        ctxF.fillText('O', cx2, by + 131);
+        ctxF.textAlign = 'left';
+        ctxF.fillText(' = 24.0 g', cx2, by + 131);
         
         ctxF.restore();
     }
