@@ -1,8 +1,3 @@
-@font-face {
-    font-family: 'AwkwardBlack';
-    src: url('assets/AwkwardBlack_V2_0.ttf') format('truetype');
-}
-
 /* Theme Config - Light theme, EB Garamond serif font for math */
 :root {
     --bg-color: #faf8f5;         /* Cream-white */
@@ -16,9 +11,9 @@
     --color-gray-medium: #888888;
     --color-gray-dark: #444444;
     
-    --font-heading: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'Outfit', sans-serif;
-    --font-math: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'EB Garamond', 'Noto Sans TC', serif;
-    --font-ui: 'AwkwardBlack', 'AwkwardBlack 拙黑體', 'Outfit', 'Noto Sans TC', sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+    --font-math: 'EB Garamond', 'Noto Sans TC', serif;
+    --font-ui: 'Outfit', 'Noto Sans TC', sans-serif;
 }
 
 * {
@@ -147,10 +142,10 @@ body {
 }
 
 .graph-legend-html {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto;
     justify-content: center;
-    gap: 0.8rem 1.2rem;
+    gap: 0.8rem 2.5rem;
     margin-top: 1rem;
     padding: 0.75rem;
     border: 3px solid var(--border-color);
