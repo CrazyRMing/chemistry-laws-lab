@@ -45,7 +45,8 @@
 - Canvas 圖例框畫在 canvas 內容易切字，移到 HTML 是根本解法；使用 Flex 換行對齊時會因為各字串寬度不等導致圖例點參差不齊，改用 CSS Grid 網格是解決垂直對齊最簡單、最穩固的方案。
 - `pack_images_to_pptx.py` 為純 stdlib，不依賴 python-pptx，可直接執行。
 
+- [x] **新增倍比定律互動網頁**：新建 `multiple_proportions.html` 與 `multiple_proportions.js`，包含 11 個互動步驟，推導化合物 I (水) 與化合物 II (雙氧水) 的質量關係與化學式，並提供首頁頁眉導覽切換。
+
 ### 下一步 (待議)
 - [ ] 考慮製作 B 版本（可編輯 PPTX，文字可改）。
-- [ ] 動畫可進一步加入更多步驟說明（如 Dalton 原子說補充）。
 - [ ] 考慮部署至 GitHub Pages 供學生線上瀏覽互動動畫。

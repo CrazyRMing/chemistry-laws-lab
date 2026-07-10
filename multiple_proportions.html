@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>定比定律互動動畫 - 3B1B 風格</title>
+    <title>倍比定律互動動畫 - 3B1B 風格</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,28 +16,27 @@
         <div class="soil-header">
             <div class="soil-page-num" id="soil-page-num">01</div>
             <div class="soil-section-info">
-                <span class="soil-course-label">基礎化學 (定比定律)</span>
+                <span class="soil-course-label">基礎化學 (倍比定律)</span>
                 <span class="soil-orange-line"></span>
             </div>
-            <a href="multiple_proportions.html" class="nav-page-link">👉 切換至倍比定律</a>
+            <a href="index.html" class="nav-page-link">👈 返回定比定律</a>
         </div>
 
         <!-- Explanatory Header Area -->
         <div class="info-card">
-            <h1 id="step-title">定比定律探討</h1>
+            <h1 id="step-title">倍比定律探討</h1>
             <p id="step-desc">請點擊下方「下一步」開始探索化學中神奇的比例律。</p>
             <div id="mass-board" class="mass-board hidden">
-                <span class="mass-item text-coral">酸鹼中和水：H = <span id="board-h1">0.0</span>g, O = <span id="board-o1">0.0</span>g</span>
-                <span class="mass-item text-teal">燃燒反應水：H = <span id="board-h2">0.0</span>g, O = <span id="board-o2">0.0</span>g</span>
-                <span class="mass-item text-gold">加熱小蘇打水：H = <span id="board-h3">0.0</span>g, O = <span id="board-o3">0.0</span>g</span>
+                <span class="mass-item text-coral">化合物 I：H = <span id="board-h1">1.0</span>g, O = <span id="board-o1">8.0</span>g</span>
+                <span class="mass-item text-teal">化合物 II：H = <span id="board-h2">1.0</span>g, O = <span id="board-o2">16.0</span>g</span>
             </div>
         </div>
 
         <!-- Two Canvas panels side by side -->
         <div class="animation-container">
-            <!-- Left panel: chemical reaction animation -->
+            <!-- Left panel: chemical reaction animation / visual explanation -->
             <div class="panel-box left-panel">
-                <div class="panel-label">化學實驗模擬</div>
+                <div class="panel-label">示意圖與微觀說明</div>
                 <div class="canvas-wrapper">
                     <canvas id="flaskCanvas"></canvas>
                 </div>
@@ -51,20 +50,20 @@
                 </div>
                 <div class="graph-legend-html">
                     <div class="legend-item" id="legend-item-1">
-                        <span class="legend-dot" style="background-color: #cccccc;"></span>
-                        <span>酸鹼中和水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                        <span class="legend-line" style="background-color: #ff7a00; height: 3px; width: 15px; border-radius: 0;"></span>
+                        <span>化合物 I 質量關係線 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
                     </div>
                     <div class="legend-item" id="legend-item-2">
-                        <span class="legend-dot" style="background-color: #888888;"></span>
-                        <span>氫氣燃燒水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                        <span class="legend-line" style="background-color: #7c3aed; height: 3px; width: 15px; border-radius: 0;"></span>
+                        <span>化合物 II 質量關係線 (w<sub>O</sub> / w<sub>H</sub> = 16.0)</span>
                     </div>
                     <div class="legend-item" id="legend-item-3">
-                        <span class="legend-dot" style="background-color: #444444;"></span>
-                        <span>小蘇打分解水 (w<sub>O</sub> / w<sub>H</sub> = 8.0)</span>
+                        <span class="legend-line" style="background-color: #2563eb; height: 15px; width: 3px; border-radius: 0; transform: rotate(0deg);"></span>
+                        <span>等氫質量線 (w<sub>H</sub> 相同)</span>
                     </div>
                     <div class="legend-item" id="legend-item-4">
-                        <span class="legend-line" style="background-color: #ff7a00;"></span>
-                        <span>定比線 w<sub>O</sub> = 8 × w<sub>H</sub></span>
+                        <span class="legend-line" style="background-color: #059669; height: 3px; width: 15px; border-radius: 0;"></span>
+                        <span>等氧質量線 (w<sub>O</sub> 相同)</span>
                     </div>
                 </div>
             </div>
@@ -79,11 +78,11 @@
         <!-- Navigation controller -->
         <div class="nav-control-bar">
             <button class="nav-btn" id="btn-back" onclick="prevStep()">上一步</button>
-            <div class="step-indicator" id="step-indicator">步驟 1 / 8</div>
+            <div class="step-indicator" id="step-indicator">步驟 1 / 11</div>
             <button class="nav-btn btn-primary" id="btn-next" onclick="nextStep()">下一步</button>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="multiple_proportions.js"></script>
 </body>
 </html>

@@ -328,3 +328,24 @@ canvas {
 .takeaway-text {
     line-height: 1.4;
 }
+
+/* Page Navigation Link */
+.nav-page-link {
+    margin-left: auto;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-orange);
+    text-decoration: none;
+    border: 2px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+.nav-page-link:hover {
+    background: var(--bg-color);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+}
