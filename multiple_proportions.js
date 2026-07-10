@@ -454,6 +454,17 @@ function drawLeftPanel() {
         ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, labelY);
         const lineAlpha = (currentStep === 6) ? t6 : 1.0;
+        // Draw mass values below the columns
+        ctxF.save();
+        ctxF.globalAlpha = lineAlpha;
+        ctxF.font = FONT_SMALL;
+        ctxF.textAlign = 'center';
+        ctxF.fillStyle = '#ff7a00'; // Compound I (Orange)
+        ctxF.fillText('H = 2.5 g, O = 20.0 g', cx1, h - 55);
+        ctxF.fillStyle = '#7c3aed'; // Compound II (Purple)
+        ctxF.fillText('H = 1.5 g, O = 24.0 g', cx2, h - 55);
+        ctxF.restore();
+
         // Draw horizontal separator line to separate top (equal H) and bottom (O ratio) sections
         ctxF.save();
         ctxF.globalAlpha = lineAlpha;
@@ -646,7 +657,15 @@ function drawLeftPanel() {
         ctxF.fillStyle = '#7c3aed'; // Colored Compound II title (Purple)
         ctxF.fillText('化合物 II（雙氧水）', cx2, h / 2 - 55);
 
-
+        // Draw mass values below the columns
+        ctxF.save();
+        ctxF.font = FONT_SMALL;
+        ctxF.textAlign = 'center';
+        ctxF.fillStyle = '#ff7a00'; // Compound I (Orange)
+        ctxF.fillText('H = 2.5 g, O = 20.0 g', cx1, h - 55);
+        ctxF.fillStyle = '#7c3aed'; // Compound II (Purple)
+        ctxF.fillText('H = 1.5 g, O = 24.0 g', cx2, h - 55);
+        ctxF.restore();
 
         // Draw horizontal separator line to separate top (equal O) and bottom (H ratio) sections
         ctxF.save();
