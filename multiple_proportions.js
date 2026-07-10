@@ -1179,6 +1179,15 @@ function drawRightPanel() {
     if (currentStep >= 2) {
         const t2 = (currentStep === 2) ? easeInOutCubic(animProgress) : 1;
         drawWobblyCircle(ctxG, mapX(2.5, w), mapY(20.0, h), 6 * t2, '#ff7a00', true, 2, 220);
+        
+        // Draw Compound I label "I" above the point
+        ctxG.save();
+        ctxG.globalAlpha = t2;
+        ctxG.fillStyle = '#ff7a00';
+        ctxG.font = 'bold 1.1rem sans-serif';
+        ctxG.textAlign = 'center';
+        ctxG.fillText('I', mapX(2.5, w), mapY(20.0, h) - 12);
+        ctxG.restore();
     }
     
     if (currentStep >= 3) {
@@ -1196,6 +1205,15 @@ function drawRightPanel() {
     if (currentStep >= 4) {
         const t4 = (currentStep === 4) ? easeInOutCubic(animProgress) : 1;
         drawWobblyCircle(ctxG, mapX(1.5, w), mapY(24.0, h), 6 * t4, '#7c3aed', true, 2, 230);
+        
+        // Draw Compound II label "II" above the point
+        ctxG.save();
+        ctxG.globalAlpha = t4;
+        ctxG.fillStyle = '#7c3aed';
+        ctxG.font = 'bold 1.1rem sans-serif';
+        ctxG.textAlign = 'center';
+        ctxG.fillText('II', mapX(1.5, w), mapY(24.0, h) - 12);
+        ctxG.restore();
     }
     
     if (currentStep >= 5) {
