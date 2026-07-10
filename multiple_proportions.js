@@ -1316,8 +1316,8 @@ function drawRightPanel() {
         }
     }
     
-    // 6. Draw horizontal comparison line (Step 8 & 9)
-    if (currentStep === 8 || currentStep === 9) {
+    // 6. Draw horizontal comparison line (Step 8, 9 & 10)
+    if (currentStep === 8 || currentStep === 9 || currentStep === 10) {
         const lineY = 16.0;
         const yPos = mapY(lineY, h);
         const t8 = (currentStep === 8) ? easeInOutCubic(animProgress) : 1;
@@ -1334,8 +1334,8 @@ function drawRightPanel() {
         ctxG.restore();
         
         // Threshold alphas for horizontal comparison intersections
-        const alpha1 = (currentStep === 9) ? 1.0 : ((t8 >= 0.4) ? Math.min(1.0, (t8 - 0.4) / 0.1) : 0);
-        const alpha2 = (currentStep === 9) ? 1.0 : ((t8 >= 0.8) ? Math.min(1.0, (t8 - 0.8) / 0.1) : 0);
+        const alpha1 = (currentStep === 9 || currentStep === 10) ? 1.0 : ((t8 >= 0.4) ? Math.min(1.0, (t8 - 0.4) / 0.1) : 0);
+        const alpha2 = (currentStep === 9 || currentStep === 10) ? 1.0 : ((t8 >= 0.8) ? Math.min(1.0, (t8 - 0.8) / 0.1) : 0);
 
         // Draw intersection dots
         const xPos1 = mapX(2.0, w);
@@ -1343,10 +1343,12 @@ function drawRightPanel() {
             ctxG.save();
             ctxG.globalAlpha = alpha2;
             drawWobblyCircle(ctxG, xPos1, yPos, 5, 'rgba(37, 99, 235, 0.6)', true, 2, 250); // Blue dot (semi-trans)
-            ctxG.fillStyle = '#ff7a00';
-            ctxG.font = 'bold 0.95rem sans-serif';
-            ctxG.textAlign = 'center';
-            ctxG.fillText('2.0', xPos1, yPos - 10);
+            if (currentStep === 8 || currentStep === 9) { // Remove in step 10 per request
+                ctxG.fillStyle = '#ff7a00';
+                ctxG.font = 'bold 0.95rem sans-serif';
+                ctxG.textAlign = 'center';
+                ctxG.fillText('2.0', xPos1, yPos - 10);
+            }
             ctxG.restore();
         }
         
@@ -1355,17 +1357,24 @@ function drawRightPanel() {
             ctxG.save();
             ctxG.globalAlpha = alpha1;
             drawWobblyCircle(ctxG, xPos2, yPos, 5, 'rgba(37, 99, 235, 0.6)', true, 2, 251); // Blue dot (semi-trans)
-            ctxG.fillStyle = '#7c3aed';
-            ctxG.font = 'bold 0.95rem sans-serif';
-            ctxG.textAlign = 'center';
-            ctxG.fillText('1.0', xPos2, yPos - 10);
+            if (currentStep === 8 || currentStep === 9) { // Remove in step 10 per request
+                ctxG.fillStyle = '#7c3aed';
+                ctxG.font = 'bold 0.95rem sans-serif';
+                ctxG.textAlign = 'center';
+                ctxG.fillText('1.0', xPos2, yPos - 10);
+            }
             ctxG.restore();
         }
         
-        // Step 9 Horizontal Bracket Marks in Red and Green (Symmetrical to Step 7) - Fades in!
-        if (currentStep === 9) {
+        // Step 9 & 10 Horizontal Bracket Marks in Red and Green - Fades in!
+        if (currentStep === 9 || currentStep === 10) {
             ctxG.save();
-            ctxG.globalAlpha = easeInOutCubic(animProgress);
+            if (currentStep === 9) {
+                ctxG.globalAlpha = easeInOutCubic(animProgress);
+            } else {
+                ctxG.globalAlpha = 1.0;
+            }
+            
             // Draw red horizontal bracket (0 to 1.0) below the line
             drawHorizontalBracket(ctxG, mapX(0, w), mapX(1.0, w), yPos + 8, '#ef4444', false);
             // Label 1 in red below the red bracket
@@ -1374,13 +1383,26 @@ function drawRightPanel() {
             ctxG.textAlign = 'center';
             ctxG.fillText('1', mapX(0.5, w), yPos + 36);
             
-            // Draw green horizontal bracket (0 to 2.0) above the line and labels
-            drawHorizontalBracket(ctxG, mapX(0, w), mapX(2.0, w), yPos - 24, '#10b981', true);
-            // Label 2 in green above the green bracket
+            // Green horizontal bracket (0 to 2.0) - moves downward in step 10
+            let greenY = yPos - 24;
+            let greenAlignTop = true;
+            let greenLabelY = yPos - 38;
+            
+            if (currentStep === 10) {
+                const t10 = easeInOutCubic(animProgress);
+                greenY = (yPos - 24) + ((yPos + 44) - (yPos - 24)) * t10;
+                greenAlignTop = (t10 < 0.5);
+                greenLabelY = (yPos - 38) + ((yPos + 72) - (yPos - 38)) * t10;
+            }
+            
+            // Draw green horizontal bracket
+            drawHorizontalBracket(ctxG, mapX(0, w), mapX(2.0, w), greenY, '#10b981', greenAlignTop);
+            // Label 2 in green
             ctxG.fillStyle = '#10b981';
             ctxG.font = 'bold 1.05rem sans-serif';
             ctxG.textAlign = 'center';
-            ctxG.fillText('2', mapX(1.0, w), yPos - 38);
+            ctxG.fillText('2', mapX(1.0, w), greenLabelY);
+            
             ctxG.restore();
         }
     }
