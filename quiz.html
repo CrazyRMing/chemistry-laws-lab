@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定比定律挑戰例題</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Force body to prevent horizontal scrollbars and ensure centering */
+        body {
+            overflow-x: hidden !important;
+        }
+        /* Force wobbly borders to be perfectly symmetric and centered */
+        .app-container {
+            border-radius: 12px !important;
+            margin: 0 auto !important; /* Ensure perfectly symmetrical left/right background margins */
+            max-width: 1200px !important; /* Lock the max width to ensure symmetry on high res screen */
+        }
+        .animation-container {
+            display: grid !important;
+            grid-template-columns: calc(50% - 1rem) calc(50% - 1rem) !important; /* Strictly 50/50 equal width split */
+            gap: 2rem !important;
+            align-items: stretch !important; /* Stretches columns to equal height */
+        }
+        /* Align content columns vertically with pixel-perfect bottom alignment */
+        .panel-box.left-panel {
+            display: grid !important;
+            grid-template-rows: auto 1fr !important; /* Label, Canvas wrapper stretches to 1fr */
+            gap: 0.75rem !important;
+        }
+        .panel-box.right-panel {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: stretch !important;
+            gap: 0.75rem !important;
+            height: 100% !important;
+        }
+        #quizContentPage1, #quizContentPage2 {
+            flex: 1 !important;
+        }
+        #quizContentPage1:not([style*="display: none"]), #quizContentPage2:not([style*="display: none"]) {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+        /* Prevent sub/sup tags from stretching the line-height of the panel labels */
+        sub, sup {
+            line-height: 0 !important;
+            position: relative !important;
+            vertical-align: baseline !important;
+        }
+        sub {
+            bottom: -0.2em !important;
+        }
+        /* Lock panel-label heights to eliminate any misalignment */
+        .panel-label {
+            height: 24px !important;
+            line-height: 24px !important;
+            margin: 0 0 0.5rem 0 !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        /* Ensure the canvas wrappers stretch exactly to their allocated grid heights */
+        .canvas-wrapper {
+            border-radius: 8px !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Unified math formula coloring: Numerator in Red, Denominator in Green */
+        .color-numerator {
+            color: #d32f2f !important;
+        }
+        .color-denominator {
+            color: #2e7d32 !important;
+        }
+
+        /* Dynamically paint unknown variable fractions (X/1, Y/8, Z/3) to Blue when hint is toggled active */
+        .hint-active-1 .color-var-x-fraction { color: #0288d1 !important; }
+        .hint-active-1 .color-var-x-fraction span { border-color: #0288d1 !important; }
+        
+        .hint-active-2 .color-var-y-fraction { color: #0288d1 !important; }
+        .hint-active-2 .color-var-y-fraction span { border-color: #0288d1 !important; }
+        
+        .hint-active-3 .color-var-z-fraction { color: #0288d1 !important; }
+        .hint-active-3 .color-var-z-fraction span { border-color: #0288d1 !important; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SOIL style page number and course header -->
+        <div class="soil-header">
+            <div class="soil-page-num" id="quiz-page-num">09</div>
+            <div class="soil-section-info">
+                <span class="soil-course-label">基礎化學 (定比定律) 例題</span>
+                <span class="soil-orange-line"></span>
+            </div>
+            <a href="index.html?step=8" class="nav-page-link" style="margin-left: auto;">👉 返回主探索頁面</a>
+        </div>
+
+        <!-- Explanatory Header Area -->
+        <div class="info-card" style="padding-bottom: 0.8rem;">
+            <h1 id="quiz-title">例題一：定比關係定量推導練習</h1>
+            <p id="quiz-desc">請根據左側關係圖，由已知的化學式與部分元素質量，依序推導出未知的元素質量 X、Y、Z，並在右側輸入進行驗證。</p>
+        </div>
+
+        <!-- Left/Right Panel Box -->
+        <div class="animation-container">
+            <!-- Left panel: wobbly sketch illustration -->
+            <div class="panel-box left-panel">
+                <div class="panel-label">例題</div>
+                <div class="canvas-wrapper" style="aspect-ratio: 16 / 13; margin-bottom: 0.5rem;">
+                    <canvas id="quizCanvas"></canvas>
+                </div>
+                <!-- Atomic weights card moved to left panel bottom under the canvas illustration -->
+                <div style="border: 3px dashed #ff7a00; padding: 0.6rem 1rem; border-radius: 8px; background: #ffffff; font-family: var(--font-ui); font-size: 1.0rem; text-align: center; font-weight: bold; color: #ff7a00; box-shadow: 3px 4px 0px rgba(255, 122, 0, 0.05); margin-top: 0.5rem; box-sizing: border-box; width: 100%;">
+                    💡 已知原子量：H = 1, C = 12, N = 14, O = 16, Si = 28
+                </div>
+            </div>
+
+            <!-- Right panel: Interactive challenge forms -->
+            <div class="panel-box right-panel" style="justify-content: center;">
+                <div class="panel-label" id="right-panel-title">定量推導挑戰</div>
+
+                <div id="quizContentPage1" style="background: rgba(255,255,255,0.95); border: 3px solid #2b2b2b; padding: 1.2rem; border-radius: 8px; box-sizing: border-box; min-height: 480px;">
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.95rem;">
+                        <!-- Question 1 -->
+                        <div id="q-wrapper-1">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 0.5rem;">
+                                <span><strong>1. 求 X (氮克數)</strong></span>
+                                <button class="hint-sub-btn" id="btn-hint-1" onclick="toggleSingleHint(1)" style="padding: 2px 8px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-size: 0.8rem; cursor: pointer; background: #ffffff; font-weight: bold;">💡 提示</button>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; flex-wrap: nowrap; line-height: 1.5; font-weight: bold; margin-bottom: 0.5rem; white-space: nowrap !important; overflow-x: auto;">
+                                <span style="color: #ff7a00; font-weight: bold; margin-right: 0.4rem;">NH₃ 中</span>
+                                <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">w<sub>N</sub></span>
+                                    <span>w<sub>H</sub></span>
+                                </span>
+                                
+                                <span style="margin: 0 0.2rem; color: #ff7a00;">=</span>
+                                <span class="color-var-x-fraction" style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">X</span>
+                                    <span>1</span>
+                                </span>
+                                
+                                <span class="quiz-hint-span id-hint-1" style="display: none; align-items: center; font-weight: bold; white-space: nowrap !important;">
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">14 × N原子個數</span>
+                                        <span class="color-denominator">1 × H原子個數</span>
+                                    </span>
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">14 × 1</span>
+                                        <span class="color-denominator">1 × 3</span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+                                <input type="text" id="quiz-x" placeholder="X" style="width: 90px; padding: 5px; border: 1.5px solid #2b2b2b; border-radius: 4px; text-align: center; font-weight: bold;">
+                                <strong style="font-size: 0.95rem; color: #1f1f1f;">克</strong>
+                            </div>
+                            
+                            <!-- Plot Canvas underneath the equation -->
+                            <div class="quiz-hint-plot id-hint-plot-1" style="display: none; margin-top: 0.6rem; width: 100%; border: 1.5px solid #2b2b2b; border-radius: 6px; overflow: hidden; box-shadow: 2px 3px 0px rgba(43,43,43,0.05); background: #ffffff; padding-bottom: 0.6rem;">
+                                <canvas id="hintCanvas1" style="width: 100%; height: 250px; display: block;"></canvas>
+                                <div class="hint-formula-text" id="hint-formula-1" style="opacity: 0; color: #ff7a00; font-weight: bold; font-size: 0.9rem; text-align: center; margin: 0.4rem 0.6rem; min-height: 1.2rem; transition: opacity 0.3s;">
+                                    由 NH₃ 定比關係：X / 1 = 14 / 3 ➡ X = 4.67 克
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; padding: 0 0.6rem;">
+                                    <button class="hint-step-btn" id="btn-hint-1-step-1" onclick="runHintStep(1, 1)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;">1. 畫藍線垂直虛線</button>
+                                    <button class="hint-step-btn" id="btn-hint-1-step-2" onclick="runHintStep(1, 2)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;" disabled>2. 畫橘斜線並交會標記 X</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 2 -->
+                        <div id="q-wrapper-2" style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 0.5rem;">
+                                <span><strong>2. 求 Y (碳克數)</strong></span>
+                                <button class="hint-sub-btn" id="btn-hint-2" onclick="toggleSingleHint(2)" style="padding: 2px 8px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-size: 0.8rem; cursor: pointer; background: #ffffff; font-weight: bold;">💡 提示</button>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; flex-wrap: nowrap; line-height: 1.5; font-weight: bold; margin-bottom: 0.5rem; white-space: nowrap !important; overflow-x: auto;">
+                                <span style="color: #ff7a00; font-weight: bold; margin-right: 0.4rem;">CO₂ 中</span>
+                                <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">w<sub>C</sub></span>
+                                    <span>w<sub>O</sub></span>
+                                </span>
+                                
+                                <span style="margin: 0 0.2rem; color: #ff7a00;">=</span>
+                                <span class="color-var-y-fraction" style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">Y</span>
+                                    <span>8</span>
+                                </span>
+                                
+                                <span class="quiz-hint-span id-hint-2" style="display: none; align-items: center; font-weight: bold; white-space: nowrap !important;">
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">12 × C原子個數</span>
+                                        <span class="color-denominator">16 × O原子個數</span>
+                                    </span>
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">12 × 1</span>
+                                        <span class="color-denominator">16 × 2</span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+                                <input type="text" id="quiz-y" placeholder="Y" style="width: 90px; padding: 5px; border: 1.5px solid #2b2b2b; border-radius: 4px; text-align: center; font-weight: bold;">
+                                <strong style="font-size: 0.95rem; color: #1f1f1f;">克</strong>
+                            </div>
+                            
+                            <!-- Plot Canvas underneath the equation -->
+                            <div class="quiz-hint-plot id-hint-plot-2" style="display: none; margin-top: 0.6rem; width: 100%; border: 1.5px solid #2b2b2b; border-radius: 6px; overflow: hidden; box-shadow: 2px 3px 0px rgba(43,43,43,0.05); background: #ffffff; padding-bottom: 0.6rem;">
+                                <canvas id="hintCanvas2" style="width: 100%; height: 250px; display: block;"></canvas>
+                                <div class="hint-formula-text" id="hint-formula-2" style="opacity: 0; color: #ff7a00; font-weight: bold; font-size: 0.9rem; text-align: center; margin: 0.4rem 0.6rem; min-height: 1.2rem; transition: opacity 0.3s;">
+                                    由 CO₂ 定比關係：Y / 8 = 12 / 32 ➡ Y = 3 克
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; padding: 0 0.6rem;">
+                                    <button class="hint-step-btn" id="btn-hint-2-step-1" onclick="runHintStep(2, 1)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;">1. 畫藍線垂直虛線</button>
+                                    <button class="hint-step-btn" id="btn-hint-2-step-2" onclick="runHintStep(2, 2)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;" disabled>2. 畫橘斜線並交會標記 Y</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Question 3 -->
+                        <div id="q-wrapper-3" style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 0.5rem;">
+                                <span><strong>3. 求 Z (矽克數)</strong></span>
+                                <button class="hint-sub-btn" id="btn-hint-3" onclick="toggleSingleHint(3)" style="padding: 2px 8px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-size: 0.8rem; cursor: pointer; background: #ffffff; font-weight: bold;">💡 提示</button>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; flex-wrap: nowrap; line-height: 1.5; font-weight: bold; margin-bottom: 0.5rem; white-space: nowrap !important; overflow-x: auto;">
+                                <span style="color: #ff7a00; font-weight: bold; margin-right: 0.4rem;">SiC 中</span>
+                                <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">w<sub>Si</sub></span>
+                                    <span>w<sub>C</sub></span>
+                                </span>
+                                
+                                <span style="margin: 0 0.2rem; color: #ff7a00;">=</span>
+                                <span class="color-var-z-fraction" style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; color: #ff7a00; white-space: nowrap !important;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">Z</span>
+                                    <span>3</span>
+                                </span>
+                                
+                                <span class="quiz-hint-span id-hint-3" style="display: none; align-items: center; font-weight: bold; white-space: nowrap !important;">
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">28 × Si原子個數</span>
+                                        <span class="color-denominator">12 × C原子個數</span>
+                                    </span>
+                                    <span style="margin: 0 0.2rem; color: #1f1f1f;">=</span>
+                                    <span style="display: inline-flex; flex-direction: column; align-items: center; font-size: 0.85em; white-space: nowrap !important;">
+                                        <span class="color-numerator" style="border-bottom: 1px solid #d32f2f; padding: 0 2px;">28 × 1</span>
+                                        <span class="color-denominator">12 × 1</span>
+                                    </span>
+                                </span>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+                                <input type="text" id="quiz-z" placeholder="Z" style="width: 90px; padding: 5px; border: 1.5px solid #2b2b2b; border-radius: 4px; text-align: center; font-weight: bold;">
+                                <strong style="font-size: 0.95rem; color: #1f1f1f;">克</strong>
+                            </div>
+                            
+                            <!-- Plot Canvas underneath the equation -->
+                            <div class="quiz-hint-plot id-hint-plot-3" style="display: none; margin-top: 0.6rem; width: 100%; border: 1.5px solid #2b2b2b; border-radius: 6px; overflow: hidden; box-shadow: 2px 3px 0px rgba(43,43,43,0.05); background: #ffffff; padding-bottom: 0.6rem;">
+                                <canvas id="hintCanvas3" style="width: 100%; height: 250px; display: block;"></canvas>
+                                <div class="hint-formula-text" id="hint-formula-3" style="opacity: 0; color: #ff7a00; font-weight: bold; font-size: 0.9rem; text-align: center; margin: 0.4rem 0.6rem; min-height: 1.2rem; transition: opacity 0.3s;">
+                                    由 SiC 定比關係：Z / 3 = 28 / 12 ➡ Z = 7 克
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; padding: 0 0.6rem;">
+                                    <button class="hint-step-btn" id="btn-hint-3-step-1" onclick="runHintStep(3, 1)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;">1. 畫藍線垂直虛線</button>
+                                    <button class="hint-step-btn" id="btn-hint-3-step-2" onclick="runHintStep(3, 2)" style="flex: 1; padding: 6px 10px; border: 1.5px solid #2b2b2b; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: all 0.2s;" disabled>2. 畫橘斜線並交會標記 Z</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2 Quiz: ABCD selections (Border thickened to 3px to match left canvas wrapper) -->
+                <div id="quizContentPage2" style="display: none; background: rgba(255,255,255,0.95); border: 3px solid #2b2b2b; padding: 1.2rem; border-radius: 8px; box-sizing: border-box; min-height: 480px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                        <div>
+                            <strong>A 氧 8g + 氫 1g</strong><br>
+                            <span style="font-size: 0.82em; color: #5f5f5f; display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.2rem; margin: 0.3rem 0; line-height: 1.45;">
+                                <span>設 H<sub>a</sub>O<sub>b</sub>，莫耳數比：</span>
+                                <span style="display: inline-flex; flex-direction: column; vertical-align: middle; align-items: center; line-height: 1.0; color: #ff7a00; font-weight: bold;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">a</span>
+                                    <span>b</span>
+                                </span>
+                                <span>=</span>
+                                <span style="display: inline-flex; flex-direction: column; vertical-align: middle; align-items: center; line-height: 1.0; color: #ff7a00; font-weight: bold;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px;">n<sub>H</sub></span>
+                                    <span>n<sub>O</sub></span>
+                                </span>
+                                <span>=</span>
+                                <span style="display: inline-flex; flex-direction: column; vertical-align: middle; align-items: center; line-height: 1.0; color: #ff7a00; font-weight: bold;">
+                                    <span style="border-bottom: 1px solid #ff7a00; padding: 0 2px; margin-bottom: 2px;">
+                                        <span style="font-size: 0.85em;">w<sub>H</sub></span>/1
+                                    </span>
+                                    <span>
+                                        <span style="font-size: 0.85em;">w<sub>O</sub></span>/16
+                                    </span>
+                                </span>
+                                <span>=</span>
+                                <span style="display: inline-flex; flex-direction: column; vertical-align: middle; align-items: center; line-height: 1.0;">
+                                    <span style="border-bottom: 1px solid #2b2b2b; padding: 0 2px; margin-bottom: 2px;">1/1</span>
+                                    <span>8/16</span>
+                                </span>
+                            </span>
+                            <select id="quiz-a" style="margin-top: 0.3rem; width: 100%; padding: 4px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-weight: bold;">
+                                <option value="">請選擇</option>
+                                <option value="H2O">H₂O</option>
+                                <option value="H2O2">H₂O₂</option>
+                                <option value="HO">HO</option>
+                            </select>
+                        </div>
+                        <div>
+                            <strong>B 氧 8g + 氮 Xg</strong><br><br>
+                            <select id="quiz-b" style="margin-top: 0.3rem; width: 100%; padding: 4px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-weight: bold;">
+                                <option value="">請選擇</option>
+                                <option value="NO">NO</option>
+                                <option value="NO2">NO₂</option>
+                                <option value="N2O3">N₂O₃</option>
+                            </select>
+                        </div>
+                        <div>
+                            <strong>C 碳 Yg + 氫 1g</strong><br><br>
+                            <select id="quiz-c" style="margin-top: 0.3rem; width: 100%; padding: 4px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-weight: bold;">
+                                <option value="">請選擇</option>
+                                <option value="CH4">CH₄</option>
+                                <option value="C2H2">C₂H₂</option>
+                                <option value="C2H4">C₂H₄</option>
+                            </select>
+                        </div>
+                        <div>
+                            <strong>D 矽 Zg + 氧 8g</strong><br><br>
+                            <select id="quiz-d" style="margin-top: 0.3rem; width: 100%; padding: 4px; border: 1.5px solid #2b2b2b; border-radius: 4px; font-weight: bold;">
+                                <option value="">請選擇</option>
+                                <option value="SiO">SiO</option>
+                                <option value="SiO2">SiO₂</option>
+                                <option value="SiC">SiC</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit & feedback area in the middle-bottom (Takeaway Box spot) -->
+        <div id="submit-wrapper" style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem; width: 100%;">
+            <button class="nav-btn btn-primary" id="btn-submit" onclick="verifyCurrentQuiz()" style="width: 100%; height: 44px; font-size: 1.1rem; box-shadow: 4px 5px 0px #2b2b2b;">驗證答案</button>
+            <div id="quizFeedback" style="display: none; padding: 1rem; border: 3px solid #2b2b2b; border-radius: 12px; font-family: var(--font-math); font-size: 1.1rem; line-height: 1.5; box-shadow: 4px 5px 0px rgba(43,43,43,0.08);"></div>
+        </div>
+
+        <!-- Footer Navigation Controller -->
+        <div class="nav-control-bar">
+            <button class="nav-btn" id="quiz-btn-back" onclick="navigateQuizBack()">⬅ 返回步驟 8</button>
+            <div class="step-indicator" id="quiz-indicator">例題 1 / 2</div>
+            <button class="nav-btn btn-primary" id="quiz-btn-next" onclick="navigateQuizNext()" disabled>下一題 ➡</button>
+        </div>
+    </div>
+
+    <script src="quiz.js?v=20260711_40"></script>
+</body>
+</html>

@@ -106,3 +106,21 @@
 - [ ] 考慮製作 B 版本（可編輯 PPTX，文字可改）。
 - [ ] 考慮部署至 GitHub Pages 供學生線上瀏覽互動動畫。
 
+## 2026-07-11 晚間完成事項 (quiz.html 詳解動畫收尾)
+
+### 完成
+- [x] **橘色公式文字移至 HTML（避免 canvas 重疊）**：將 `quiz.js` 中原本繪製在 canvas 上的解題說明文字（「由 NH₃ 定比關係：X / 1 = 14/3 ➡ X = 4.67 克」等三句）完全移除，改由 `quiz.html` 中獨立的 `<div id="hint-formula-{id}">` HTML 元素顯示。
+- [x] **公式淡入動畫**：步驟 2 動畫進行至 70% 後，JS 在 `animLoop` 中漸增 `hint-formula-${questionId}` 的 `opacity`（0 → 1），達到平滑橘色字淡入效果，不干擾 canvas 內容。
+- [x] **reset 時歸零 opacity**：`collapseAllHints()`、`toggleSingleHint(id)` 關閉提示及切換提示時，確保所有 `hint-formula-x` div 的 `opacity` 歸零。
+- [x] **步驟 1 啟動時強制隱藏公式**：`runHintStep(questionId, 1)` 執行時先將對應 formula div 的 opacity 設為 `'0'`，防止先前步驟 2 的殘留狀態。
+- [x] **修正多餘大括號 SyntaxError**：刪除 `drawWeightRatioDiagram` 中意外多加的 `}` 造成 JS 解析錯誤的問題（brace 計數腳本確認正常）。
+- [x] **canvas 高度一致性**：`drawWeightRatioDiagram` 的動態 resize 條件從 `220` 更新為 `250`，與 HTML 的 `height: 250px` 保持一致。
+- [x] **版本號累進**：`quiz.html` 的腳本 query string 從 `v=20260711_30` 累進至 `v=20260711_40` 以避免瀏覽器快取舊版 JS。
+
+### 踩坑筆記
+- Chrome 對 `file://` 協議的本地 JS 快取極為積極，每次修改 JS 必須同時更新 HTML `<script src="quiz.js?v=...">` 的版本號，否則舊 JS 依然被使用。
+- 移除 canvas 內的 `ctx.fillText` 後，需同時確認相關的 `if` 區塊關閉方式正確，避免留下孤立的 `}` 導致函式提前結束。
+- `formulaDiv.style.opacity` 的值需為字串型態 `'0'` 或數字均可，但在賦值時統一用數字（`formulaDiv.style.opacity = t_text`）在動畫中最直觀。
+
+### 本次未完成（留待下次）
+- [ ] Browser 驗證（因 API 配額暫時超出）：動畫流程尚需人工在瀏覽器開啟 `quiz.html?t=...` 手動點選確認：藍線到頂、橘線從右上往原點、橘色公式文字淡入無重疊。
