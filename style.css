@@ -204,6 +204,9 @@ canvas {
 }
 
 .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: #ffffff;
     border: 3px solid var(--border-color);
     border-radius: 12px 6px 12px 6px/6px 12px 6px 12px;

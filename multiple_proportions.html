@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,69 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Force body to prevent horizontal scrollbars and ensure centering */
+        body {
+            overflow-x: hidden !important;
+        }
+        /* Force asymmetrical wobbly borders to be perfectly symmetric and centered */
+        .app-container {
+            border-radius: 12px !important;
+            margin: 0 auto !important;
+        }
+        /* Lock description card height footprint to prevent vertical layout shifts */
+        .info-card p {
+            min-height: 120px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        /* Force panels to be mathematically symmetric and equal in width/height */
+        .animation-container {
+            display: grid !important;
+            grid-template-columns: calc(50% - 1rem) calc(50% - 1rem) !important;
+            gap: 2rem !important;
+            align-items: stretch !important;
+        }
+        /* Align content columns vertically with pixel-perfect bottom alignment */
+        .panel-box {
+            display: grid !important;
+            grid-template-rows: auto 1fr auto !important;
+            gap: 0.75rem !important;
+            height: 100% !important;
+        }
+        /* Prevent sub/sup tags from stretching the line-height of the panel labels */
+        sub, sup {
+            line-height: 0 !important;
+            position: relative !important;
+            vertical-align: baseline !important;
+        }
+        sub {
+            bottom: -0.2em !important;
+        }
+        /* Lock panel-label heights to eliminate any sub-pixel misalignment from script subscripts */
+        .panel-label {
+            height: 24px !important;
+            line-height: 24px !important;
+            margin: 0 0 0.5rem 0 !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        /* Ensure the canvas wrappers stretch exactly to their allocated grid heights */
+        .canvas-wrapper {
+            border-radius: 8px !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .graph-legend-html {
+            height: 112px !important;
+            box-sizing: border-box !important;
+            align-content: center !important;
+            border-radius: 8px !important;
+            font-size: 0.88rem !important;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -36,7 +99,7 @@
                 <div class="canvas-wrapper">
                     <canvas id="flaskCanvas"></canvas>
                 </div>
-                <div class="graph-legend-html" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem;">
+                <div class="graph-legend-html" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; justify-content: center;">
                     <div class="legend-item" id="left-legend-item-1" style="white-space: nowrap;">
                         <span class="legend-dot" style="background-color: #ff7a00;"></span>
                         <span>化合物 I (水): O=20.0g, H=2.5g</span>
