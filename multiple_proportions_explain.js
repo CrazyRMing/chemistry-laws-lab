@@ -483,45 +483,31 @@ function draw(p) {
 function drawVerticalBracket(ctx, x, y1, y2, label, color, isLeft) {
     ctx.save();
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
+    const ym = (y1 + y2) / 2;
+    const dir = isLeft ? -1 : 1;
+    // Draw top half arc
+    ctx.moveTo(x, y1);
+    ctx.quadraticCurveTo(x + dir * 6, y1 + (ym - y1) * 0.1, x + dir * 6, y1 + (ym - y1) * 0.5);
+    ctx.quadraticCurveTo(x + dir * 6, ym - 2, x + dir * 12, ym);
+    // Draw bottom half arc
+    ctx.moveTo(x, y2);
+    ctx.quadraticCurveTo(x + dir * 6, y2 - (y2 - ym) * 0.1, x + dir * 6, y2 - (y2 - ym) * 0.5);
+    ctx.quadraticCurveTo(x + dir * 6, ym + 2, x + dir * 12, ym);
+    ctx.stroke();
     
-    const topY = Math.min(y1, y2);
-    const bottomY = Math.max(y1, y2);
-    const midY = (topY + bottomY) / 2;
-    
+    // Label text
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px sans-serif';
     if (isLeft) {
-        // Bracket shape facing left: }
-        ctx.moveTo(x - 5, topY);
-        ctx.lineTo(x - 12, topY);
-        ctx.lineTo(x - 12, midY - 6);
-        ctx.lineTo(x - 18, midY);
-        ctx.lineTo(x - 12, midY + 6);
-        ctx.lineTo(x - 12, bottomY);
-        ctx.lineTo(x - 5, bottomY);
-        ctx.stroke();
-        
-        ctx.fillStyle = color;
-        ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
-        ctx.fillText(label, x - 24, midY);
+        ctx.fillText(label, x + dir * 12 - 8, ym);
     } else {
-        // Bracket shape facing right: {
-        ctx.moveTo(x + 5, topY);
-        ctx.lineTo(x + 12, topY);
-        ctx.lineTo(x + 12, midY - 6);
-        ctx.lineTo(x + 18, midY);
-        ctx.lineTo(x + 12, midY + 6);
-        ctx.lineTo(x + 12, bottomY);
-        ctx.lineTo(x + 5, bottomY);
-        ctx.stroke();
-        
-        ctx.fillStyle = color;
-        ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText(label, x + 24, midY);
+        ctx.fillText(label, x + dir * 12 + 8, ym);
     }
     ctx.restore();
 }
@@ -529,45 +515,30 @@ function drawVerticalBracket(ctx, x, y1, y2, label, color, isLeft) {
 function drawHorizontalBracket(ctx, x1, x2, y, label, color, isTop) {
     ctx.save();
     ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
+    const xm = (x1 + x2) / 2;
+    const dir = isTop ? -1 : 1;
+    // Left half
+    ctx.moveTo(x1, y);
+    ctx.quadraticCurveTo(x1 + (xm - x1) * 0.1, y + dir * 6, x1 + (xm - x1) * 0.5, y + dir * 6);
+    ctx.quadraticCurveTo(xm - 2, y + dir * 6, xm, y + dir * 12);
+    // Right half
+    ctx.moveTo(x2, y);
+    ctx.quadraticCurveTo(x2 - (x2 - xm) * 0.1, y + dir * 6, x2 - (x2 - xm) * 0.5, y + dir * 6);
+    ctx.quadraticCurveTo(xm + 2, y + dir * 6, xm, y + dir * 12);
+    ctx.stroke();
     
-    const leftX = Math.min(x1, x2);
-    const rightX = Math.max(x1, x2);
-    const midX = (leftX + rightX) / 2;
-    
+    // Label text
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
     if (isTop) {
-        // Bracket shape facing up
-        ctx.moveTo(leftX, y - 5);
-        ctx.lineTo(leftX, y - 12);
-        ctx.lineTo(midX - 6, y - 12);
-        ctx.lineTo(midX, y - 18);
-        ctx.lineTo(midX + 6, y - 12);
-        ctx.lineTo(rightX, y - 12);
-        ctx.lineTo(rightX, y - 5);
-        ctx.stroke();
-        
-        ctx.fillStyle = color;
-        ctx.font = 'bold 11px sans-serif';
-        ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText(label, midX, y - 23);
+        ctx.fillText(label, xm, y + dir * 12 - 5);
     } else {
-        // Bracket shape facing down
-        ctx.moveTo(leftX, y + 5);
-        ctx.lineTo(leftX, y + 12);
-        ctx.lineTo(midX - 6, y + 12);
-        ctx.lineTo(midX, y + 18);
-        ctx.lineTo(midX + 6, y + 12);
-        ctx.lineTo(rightX, y + 12);
-        ctx.lineTo(rightX, y + 5);
-        ctx.stroke();
-        
-        ctx.fillStyle = color;
-        ctx.font = 'bold 11px sans-serif';
-        ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        ctx.fillText(label, midX, y + 23);
+        ctx.fillText(label, xm, y + dir * 12 + 5);
     }
     ctx.restore();
 }
