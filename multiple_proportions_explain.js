@@ -391,11 +391,13 @@ function draw(p) {
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.font = 'bold 11px sans-serif';
-                ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
-                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix1_y) + 6);
+                if (currentStep === 2) {
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = '#0284c7';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix1_y) + 6);
+                }
                 
                 // Intersection II
                 ctx.beginPath();
@@ -406,10 +408,12 @@ function draw(p) {
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
-                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix2_y) + 6);
+                if (currentStep === 2) {
+                    ctx.fillStyle = '#0284c7';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix2_y) + 6);
+                }
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
@@ -423,11 +427,13 @@ function draw(p) {
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.font = 'bold 11px sans-serif';
-                ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
-                ctx.fillText(`(${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x) + 6, mY(activeMass) + 6);
+                if (currentStep === 2) {
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = '#0284c7';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`(${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x) + 6, mY(activeMass) + 6);
+                }
                 
                 // Intersection II
                 ctx.beginPath();
@@ -438,10 +444,12 @@ function draw(p) {
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
-                ctx.fillText(`(${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x) + 6, mY(activeMass) + 6);
+                if (currentStep === 2) {
+                    ctx.fillStyle = '#0284c7';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`(${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x) + 6, mY(activeMass) + 6);
+                }
             }
             ctx.restore();
         }
@@ -457,24 +465,30 @@ function draw(p) {
             if (fixedElement === 'X') {
                 const ix1_y = (2.00 / 9.34) * activeMass;
                 const ix2_y = (3.00 / 4.67) * activeMass;
-                const ratioY = ix2_y / ix1_y;
                 
-                drawVerticalBracket(ctx, mX(activeMass) + 70, mY(ix1_y), mY(ix2_y), `Y 質量比 = ${ix1_y.toFixed(2)} : ${ix2_y.toFixed(2)} = 1 : ${ratioY.toFixed(0)}`);
+                // Draw bracket 1 (orange, Compound I) on the left of vertical helper line
+                drawVerticalBracket(ctx, mX(activeMass) - 8, mY(0), mY(ix1_y), '1', '#ff7a00', true);
+                
+                // Draw bracket 2 (purple, Compound II) on the right of vertical helper line
+                drawVerticalBracket(ctx, mX(activeMass) + 8, mY(0), mY(ix2_y), '3', '#7c3aed', false);
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
-                const ratioX = ix1_x / ix2_x;
                 
-                drawHorizontalBracket(ctx, mX(ix2_x), mX(ix1_x), mY(activeMass) + 22, `X 質量比 = ${ix1_x.toFixed(2)} : ${ix2_x.toFixed(2)} = ${ratioX.toFixed(0)} : 1 ➡ a = 1/${ratioX.toFixed(0)}`);
+                // Draw bracket 1 (purple, Compound II) above horizontal helper line
+                drawHorizontalBracket(ctx, mX(0), mX(ix2_x), mY(activeMass) - 8, '1', '#7c3aed', true);
+                
+                // Draw bracket 2 (orange, Compound I) below horizontal helper line
+                drawHorizontalBracket(ctx, mX(0), mX(ix1_x), mY(activeMass) + 8, '3', '#ff7a00', false);
             }
             ctx.restore();
         }
     }
 }
 
-function drawVerticalBracket(ctx, x, y1, y2, label) {
+function drawVerticalBracket(ctx, x, y1, y2, label, color, isLeft) {
     ctx.save();
-    ctx.strokeStyle = '#2b2b2b';
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.beginPath();
     
@@ -482,28 +496,45 @@ function drawVerticalBracket(ctx, x, y1, y2, label) {
     const bottomY = Math.max(y1, y2);
     const midY = (topY + bottomY) / 2;
     
-    // Bracket shape facing right: {
-    ctx.moveTo(x + 5, topY);
-    ctx.lineTo(x + 12, topY);
-    ctx.lineTo(x + 12, midY - 6);
-    ctx.lineTo(x + 18, midY);
-    ctx.lineTo(x + 12, midY + 6);
-    ctx.lineTo(x + 12, bottomY);
-    ctx.lineTo(x + 5, bottomY);
-    ctx.stroke();
-    
-    // Label text
-    ctx.fillStyle = '#2b2b2b';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(label, x + 24, midY);
+    if (isLeft) {
+        // Bracket shape facing left: }
+        ctx.moveTo(x - 5, topY);
+        ctx.lineTo(x - 12, topY);
+        ctx.lineTo(x - 12, midY - 6);
+        ctx.lineTo(x - 18, midY);
+        ctx.lineTo(x - 12, midY + 6);
+        ctx.lineTo(x - 12, bottomY);
+        ctx.lineTo(x - 5, bottomY);
+        ctx.stroke();
+        
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, x - 24, midY);
+    } else {
+        // Bracket shape facing right: {
+        ctx.moveTo(x + 5, topY);
+        ctx.lineTo(x + 12, topY);
+        ctx.lineTo(x + 12, midY - 6);
+        ctx.lineTo(x + 18, midY);
+        ctx.lineTo(x + 12, midY + 6);
+        ctx.lineTo(x + 12, bottomY);
+        ctx.lineTo(x + 5, bottomY);
+        ctx.stroke();
+        
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, x + 24, midY);
+    }
     ctx.restore();
 }
 
-function drawHorizontalBracket(ctx, x1, x2, y, label) {
+function drawHorizontalBracket(ctx, x1, x2, y, label, color, isTop) {
     ctx.save();
-    ctx.strokeStyle = '#2b2b2b';
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.beginPath();
     
@@ -511,21 +542,39 @@ function drawHorizontalBracket(ctx, x1, x2, y, label) {
     const rightX = Math.max(x1, x2);
     const midX = (leftX + rightX) / 2;
     
-    // Bracket shape facing down: } rotated
-    ctx.moveTo(leftX, y + 5);
-    ctx.lineTo(leftX, y + 12);
-    ctx.lineTo(midX - 6, y + 12);
-    ctx.lineTo(midX, y + 18);
-    ctx.lineTo(midX + 6, y + 12);
-    ctx.lineTo(rightX, y + 12);
-    ctx.lineTo(rightX, y + 5);
-    ctx.stroke();
-    
-    ctx.fillStyle = '#2b2b2b';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText(label, midX, y + 23);
+    if (isTop) {
+        // Bracket shape facing up
+        ctx.moveTo(leftX, y - 5);
+        ctx.lineTo(leftX, y - 12);
+        ctx.lineTo(midX - 6, y - 12);
+        ctx.lineTo(midX, y - 18);
+        ctx.lineTo(midX + 6, y - 12);
+        ctx.lineTo(rightX, y - 12);
+        ctx.lineTo(rightX, y - 5);
+        ctx.stroke();
+        
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(label, midX, y - 23);
+    } else {
+        // Bracket shape facing down
+        ctx.moveTo(leftX, y + 5);
+        ctx.lineTo(leftX, y + 12);
+        ctx.lineTo(midX - 6, y + 12);
+        ctx.lineTo(midX, y + 18);
+        ctx.lineTo(midX + 6, y + 12);
+        ctx.lineTo(rightX, y + 12);
+        ctx.lineTo(rightX, y + 5);
+        ctx.stroke();
+        
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(label, midX, y + 23);
+    }
     ctx.restore();
 }
 
