@@ -407,3 +407,240 @@ window.addEventListener('resize', () => {
         draw(1.0); // redraw completed frame
     }
 });
+
+// ==========================================
+// Interactive Algebraic Step-by-Step Wizard
+// ==========================================
+
+let fixedElement = null;
+let tempMass = null;
+let selectedMass = null;
+
+function selectFixedElement(el) {
+    fixedElement = el;
+    tempMass = (el === 'X') ? 9.34 : 6.00; // default recommended values
+    selectedMass = null;
+    renderAlgebraicWizard();
+}
+
+function selectTargetMass(val) {
+    tempMass = val;
+    renderAlgebraicWizard();
+}
+
+function confirmCalculation() {
+    selectedMass = tempMass;
+    renderAlgebraicWizard();
+}
+
+function resetWizard() {
+    fixedElement = null;
+    tempMass = null;
+    selectedMass = null;
+    renderAlgebraicWizard();
+}
+
+function renderAlgebraicWizard() {
+    const tableBody = document.getElementById('alg-table-body');
+    const container = document.getElementById('alg-wizard-container');
+    if (!tableBody || !container) return;
+
+    if (fixedElement === null) {
+        // Step 1: Raw Table with no brackets, Compound II shows X_a Y_b
+        tableBody.innerHTML = `
+            <tr style="color: var(--color-orange); font-weight: 500;">
+                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td>9.34</td>
+                <td>2.00</td>
+            </tr>
+            <tr style="color: #7c3aed; font-weight: 500;">
+                <td style="font-weight: bold;">第二個化合物 (X<sub>a</sub>Y<sub>b</sub>)</td>
+                <td>4.67</td>
+                <td>3.00</td>
+            </tr>
+        `;
+        
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color);">
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 1：請選擇欲固定的元素</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">倍比定律的代數解法中，必須先將其中一個元素的質量調整至相同，才能觀察另一個元素的質量比例。</span>
+                <div style="margin-top: 0.6rem;">
+                    <button class="wizard-btn active" onclick="selectFixedElement('X')">固定 X 元素</button>
+                    <button class="wizard-btn active" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
+                </div>
+            </div>
+        `;
+    } else if (selectedMass === null) {
+        // Step 2: Choosing mass values
+        tableBody.innerHTML = `
+            <tr style="color: var(--color-orange); font-weight: 500;">
+                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td>9.34</td>
+                <td>2.00</td>
+            </tr>
+            <tr style="color: #7c3aed; font-weight: 500;">
+                <td style="font-weight: bold;">第二個化合物 (X<sub>a</sub>Y<sub>b</sub>)</td>
+                <td>4.67</td>
+                <td>3.00</td>
+            </tr>
+        `;
+
+        let massOptions = '';
+        if (fixedElement === 'X') {
+            massOptions = `
+                <button class="wizard-btn orange ${tempMass === 9.34 ? 'active' : ''}" onclick="selectTargetMass(9.34)">9.34 克 (推薦)</button>
+                <button class="wizard-btn orange ${tempMass === 4.67 ? 'active' : ''}" onclick="selectTargetMass(4.67)">4.67 克</button>
+            `;
+        } else {
+            massOptions = `
+                <button class="wizard-btn purple ${tempMass === 6.00 ? 'active' : ''}" onclick="selectTargetMass(6.00)">6.00 克 (推薦)</button>
+                <button class="wizard-btn purple ${tempMass === 3.00 ? 'active' : ''}" onclick="selectTargetMass(3.00)">3.00 克</button>
+                <button class="wizard-btn purple ${tempMass === 2.00 ? 'active' : ''}" onclick="selectTargetMass(2.00)">2.00 克</button>
+            `;
+        }
+
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color);">
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 2：設定固定後的 ${fixedElement} 元素目標質量</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">選擇您希望將 ${fixedElement} 質量固定為多少克：</span>
+                <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem;">
+                    ${massOptions}
+                </div>
+                <div style="margin-top: 0.8rem; display: flex; justify-content: space-between;">
+                    <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">返回步驟 1</button>
+                    <button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行計算 &rArr;</button>
+                </div>
+            </div>
+        `;
+    } else {
+        // Steps 3-6: Rendering scaling and results
+        const factor1 = (fixedElement === 'X') ? selectedMass / 9.34 : selectedMass / 2.00;
+        const factor2 = (fixedElement === 'X') ? selectedMass / 4.67 : selectedMass / 3.00;
+
+        const c1X_scaled = 9.34 * factor1;
+        const c1Y_scaled = 2.00 * factor1;
+        const c2X_scaled = 4.67 * factor2;
+        const c2Y_scaled = 3.00 * factor2;
+
+        let c2FormulaLabel = '';
+        if (fixedElement === 'X') {
+            c2FormulaLabel = `XY<sub>n</sub>`;
+        } else {
+            c2FormulaLabel = `X<sub>n</sub>Y`;
+        }
+
+        tableBody.innerHTML = `
+            <tr style="color: var(--color-orange); font-weight: 500;">
+                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td>
+                    9.34${factor1 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c1X_scaled.toFixed(2)} )</span>` : ''}
+                </td>
+                <td>
+                    2.00${factor1 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c1Y_scaled.toFixed(2)} )</span>` : ''}
+                </td>
+            </tr>
+            <tr style="color: #7c3aed; font-weight: 500;">
+                <td style="font-weight: bold;">第二個化合物 (${c2FormulaLabel})</td>
+                <td>
+                    4.67${factor2 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c2X_scaled.toFixed(2)} )</span>` : ''}
+                </td>
+                <td>
+                    3.00${factor2 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c2Y_scaled.toFixed(2)} )</span>` : ''}
+                </td>
+            </tr>
+        `;
+
+        let deductionText = '';
+        if (fixedElement === 'X') {
+            const ratioY = c2Y_scaled / c1Y_scaled;
+            deductionText = `
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 3-6：代數比例推導結果</strong><br>
+                <div style="margin-top: 0.4rem;">
+                    1. <strong>固定元素同質量</strong>：此時 X 的質量均固定為 <span style="font-weight: bold;">${selectedMass.toFixed(2)}g</span>。<br>
+                    2. <strong>重量相同代表原子數目相同</strong>：此時兩個化合物中的 X 原子數目被視為相同（代表 1 個 X 原子），故化合物 II 可表示為 <strong>XY<sub>n</sub></strong>。<br>
+                    3. <strong>觀察另一個元素的質量比</strong>：第一個化合物中 Y 的質量為 <span style="color: var(--color-orange); font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>，第二個化合物中 Y 的質量為 <span style="color: #7c3aed; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>。<br>
+                    4. <strong>求出原子個數比 (n值)</strong>：在 X 原子數相同時，Y 的原子個數比即為其質量比：
+                    <div style="text-align: center; margin: 0.4rem 0; font-size: 1.1rem; font-weight: bold; font-family: var(--font-heading);">
+                        Y 原子比 1 : n = <span style="color: var(--color-orange);">${c1Y_scaled.toFixed(2)}</span> : <span style="color: #7c3aed;">${c2Y_scaled.toFixed(2)}</span> = 1 : ${ratioY.toFixed(1)}
+                    </div>
+                </div>
+            `;
+
+            // Rule 6 check: Non-integer atom handling
+            if (Math.abs(ratioY - 3.0) < 0.01) {
+                if (Math.abs(factor1 - 0.5) < 0.01) {
+                    // Fixed to X = 4.67
+                    deductionText += `
+                        <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
+                            5. <strong>注意非整數原子個數的處理</strong>：此時 X 質量為 4.67g (相當於 0.5 個 X 原子)，求得 Y 原子數 n = 3，分子式寫為 <strong>X<sub>0.5</sub>Y<sub>1.5</sub></strong>。<br>
+                            6. <strong>化為最簡整數比</strong>：根據原子說，原子不能分割，個數必須為整數。我們將式子中的原子數同乘以 2，得到 1 : 3，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                        </div>
+                    `;
+                } else {
+                    // Fixed to X = 9.34
+                    deductionText += `
+                        <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
+                            5. <strong>確認整數比</strong>：n = ${ratioY.toFixed(0)} 為整數，符合原子說的整數原子假設。<br>
+                            6. 故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                        </div>
+                    `;
+                }
+            }
+        } else {
+            // Y is fixed
+            const ratioX = c1X_scaled / c2X_scaled; // Compound 1 : Compound 2
+            deductionText = `
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 3-6：代數比例推導結果</strong><br>
+                <div style="margin-top: 0.4rem;">
+                    1. <strong>固定元素同質量</strong>：此時 Y 的質量均固定為 <span style="font-weight: bold;">${selectedMass.toFixed(2)}g</span>。<br>
+                    2. <strong>重量相同代表原子數目相同</strong>：此時兩個化合物中的 Y 原子數目被視為相同，故化合物 II 可先表示為 <strong>X<sub>n</sub>Y</strong>。<br>
+                    3. <strong>觀察另一個元素的質量比</strong>：第一個化合物中 X 的質量為 <span style="color: var(--color-orange); font-weight: bold;">${c1X_scaled.toFixed(2)}g</span>，第二個化合物中 X 的質量為 <span style="color: #7c3aed; font-weight: bold;">${c2X_scaled.toFixed(2)}g</span>。<br>
+                    4. <strong>求出原子個數比 (n值)</strong>：第一個化合物與第二個化合物的 X 質量比為：
+                    <div style="text-align: center; margin: 0.4rem 0; font-size: 1.1rem; font-weight: bold; font-family: var(--font-heading);">
+                        X 質量比 = <span style="color: var(--color-orange);">${c1X_scaled.toFixed(2)}</span> : <span style="color: #7c3aed;">${c2X_scaled.toFixed(2)}</span> = ${ratioX.toFixed(1)} : 1
+                    </div>
+                </div>
+            `;
+
+            // Rule 6 check for Y fixed
+            if (selectedMass === 6.00) {
+                deductionText += `
+                    <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
+                        5. <strong>分析原子數目關係</strong>：此時第一個化合物中含有 3 個 Y 原子（式子擴大為 X₃Y₃），第二個化合物亦含有 3 個 Y 原子。由於兩者的 X 質量比為 3 : 1，故第二個化合物中的 X 原子數 n = 3 / 3 = 1 個，分子式為 <strong>X₁Y₃</strong>。<br>
+                        6. <strong>確認整數比</strong>：原子個數均為整數，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                    </div>
+                `;
+            } else if (selectedMass === 3.00) {
+                deductionText += `
+                    <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
+                        5. <strong>分析原子數目關係</strong>：此時第一個化合物含有 1.5 個 Y 原子（式子擴大為 X<sub>1.5</sub>Y<sub>1.5</sub>）。兩者 X 質量比為 3 : 1，故第二個化合物中的 X 原子數為 1.5 / 3 = 0.5 個，分子式寫為 <strong>X<sub>0.5</sub>Y<sub>1.5</sub></strong>。<br>
+                        6. <strong>注意非整數原子個數的處理</strong>：因為原子個數必須為整數，我們將式子同乘以 2，得到最簡整數比 1 : 3，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                    </div>
+                `;
+            } else {
+                // selectedMass === 2.00
+                deductionText += `
+                    <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
+                        5. <strong>分析原子數目關係</strong>：此時第一個化合物含有 1 個 Y 原子（式子為 XY）。兩者 X 質量比為 3 : 1，故第二個化合物中的 X 原子數為 1 / 3 = 1/3 個，分子式寫為 <strong>X<sub>1/3</sub>Y₁</strong>。<br>
+                        6. <strong>注意非整數原子個數的處理</strong>：因為原子個數必須為整數，我們將式子同乘以 3，得到最簡整數比 1 : 3，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                    </div>
+                `;
+            }
+        }
+
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color); max-height: 200px; overflow-y: auto;">
+                ${deductionText}
+                <div style="margin-top: 0.6rem; text-align: right; display: flex; justify-content: space-between;">
+                    <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">重新計算</button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', () => {
+    renderAlgebraicWizard();
+});
+
