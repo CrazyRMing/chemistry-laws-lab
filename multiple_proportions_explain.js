@@ -141,16 +141,35 @@ function mapY(yVal, h) {
     return h - margin - (yVal / 8.0) * (h - 2 * margin);
 }
 
+let resizeObserver = null;
+
 function initCanvas() {
     canvas = document.getElementById('explainCanvas');
     if (!canvas) return;
     
     ctx = canvas.getContext('2d');
     
-    // Resize to match parent wrapper bounds
-    const rect = canvas.closest('.canvas-wrapper').getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    const resize = () => {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+            canvas.width = w;
+            canvas.height = h;
+            if (!animationId) {
+                draw(1.0);
+            }
+        }
+    };
+    
+    resize();
+    
+    if (window.ResizeObserver) {
+        if (resizeObserver) resizeObserver.disconnect();
+        resizeObserver = new ResizeObserver(() => {
+            resize();
+        });
+        resizeObserver.observe(canvas.closest('.canvas-wrapper'));
+    }
 }
 
 function startAnimation() {
@@ -168,6 +187,14 @@ function stopAnimation() {
 
 function renderLoop(now) {
     if (!canvas || !ctx) return;
+    
+    // Ensure buffer size matches layout size dynamically during transition
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+        canvas.width = w;
+        canvas.height = h;
+    }
     
     const elapsed = now - startTime;
     let t = Math.min(elapsed / animDuration, 1.0); // 0.0 -> 1.0
