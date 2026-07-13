@@ -219,48 +219,40 @@ function draw(p) {
     const currentStep = (fixedElement === null) ? 1 : ((selectedMass === null) ? 2 : 3);
     const activeMass = (selectedMass !== null) ? selectedMass : tempMass;
 
-    // Define graph scale limits dynamically
-    let xMax = 12;
-    let yMax = 8;
-    let xStep = 3;
-    let yStep = 2;
-
-    if (fixedElement === 'Y' && activeMass !== null) {
-        if (activeMass >= 6.00) {
-            xMax = 30;
-            xStep = 6;
-        } else if (activeMass >= 3.00) {
-            xMax = 15;
-            xStep = 3;
-        }
-    }
+    // Define graph scale limits dynamically (morphing based on currentXMax and prevXMax)
+    const animatedXMax = prevXMax + (currentXMax - prevXMax) * p;
+    const xStep = (currentXMax >= 30) ? 6 : 3;
+    const yMax = 8;
+    const yStep = 2;
 
     // Coordinate mapping
-    const mX = (xVal) => margin + (xVal / xMax) * (w - 2 * margin);
+    const mX = (xVal) => margin + (xVal / animatedXMax) * (w - 2 * margin);
     const mY = (yVal) => h - margin - (yVal / yMax) * (h - 2 * margin);
 
     // 1. Draw Grid Lines
     ctx.save();
     ctx.strokeStyle = '#f3f4f6';
     ctx.lineWidth = 1;
-    for (let xVal = xStep; xVal <= xMax; xVal += xStep) {
+    for (let xVal = xStep; xVal <= currentXMax; xVal += xStep) {
         const tx = mX(xVal);
-        ctx.beginPath();
-        ctx.moveTo(tx, mY(0));
-        ctx.lineTo(tx, mY(yMax));
-        ctx.stroke();
+        if (tx >= mX(0) && tx <= mX(animatedXMax) + 1) {
+            ctx.beginPath();
+            ctx.moveTo(tx, mY(0));
+            ctx.lineTo(tx, mY(yMax));
+            ctx.stroke();
+        }
     }
     for (let yVal = yStep; yVal <= yMax; yVal += yStep) {
         const ty = mY(yVal);
         ctx.beginPath();
         ctx.moveTo(mX(0), ty);
-        ctx.lineTo(mX(xMax), ty);
+        ctx.lineTo(mX(animatedXMax), ty);
         ctx.stroke();
     }
     ctx.restore();
 
     // 2. Draw Axes
-    drawWobblyLine(ctx, mX(0), mY(0), mX(xMax), mY(0), '#2b2b2b', 2, 201); // X Axis
+    drawWobblyLine(ctx, mX(0), mY(0), mX(animatedXMax), mY(0), '#2b2b2b', 2, 201); // X Axis
     drawWobblyLine(ctx, mX(0), mY(0), mX(0), mY(yMax), '#2b2b2b', 2, 202); // Y Axis
 
     // Ticks & Numbers
@@ -268,10 +260,12 @@ function draw(p) {
     ctx.font = 'Outfit sans-serif';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    for (let xVal = xStep; xVal <= xMax; xVal += xStep) {
+    for (let xVal = xStep; xVal <= currentXMax; xVal += xStep) {
         const tx = mX(xVal);
-        drawWobblyLine(ctx, tx, mY(0), tx, mY(0) + 5, '#2b2b2b', 1.5, 300 + xVal);
-        ctx.fillText(xVal, tx, mY(0) + 18);
+        if (tx >= mX(0) && tx <= mX(animatedXMax) + 1) {
+            drawWobblyLine(ctx, tx, mY(0), tx, mY(0) + 5, '#2b2b2b', 1.5, 300 + xVal);
+            ctx.fillText(xVal, tx, mY(0) + 18);
+        }
     }
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
@@ -285,7 +279,7 @@ function draw(p) {
     ctx.fillStyle = '#2b2b2b';
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('X 元素質量 wX (g)', mX(xMax), mY(0) + 32);
+    ctx.fillText('X 元素質量 wX (g)', mX(animatedXMax), mY(0) + 32);
     ctx.textAlign = 'left';
     ctx.fillText('Y 元素質量 wY (g)', mX(0), mY(yMax) - 15);
 
@@ -294,11 +288,11 @@ function draw(p) {
 
     // 3. Draw constant-ratio wobbly lines from origin
     const ratioLineP = (currentStep === 1) ? clamp((p - 0.3) / 0.5) : 1.0;
-    const endX1 = mX(xMax * ratioLineP);
-    const endY1 = mY((2.00 / 9.34) * xMax * ratioLineP);
+    const endX1 = mX(animatedXMax * ratioLineP);
+    const endY1 = mY((2.00 / 9.34) * animatedXMax * ratioLineP);
     drawWobblyLine(ctx, mX(0), mY(0), endX1, endY1, '#ff7a00', 3, 501);
 
-    const limitX2 = Math.min(xMax, yMax * (4.67 / 3.00));
+    const limitX2 = Math.min(animatedXMax, yMax * (4.67 / 3.00));
     const endX2 = mX(limitX2 * ratioLineP);
     const endY2 = mY((3.00 / 4.67) * limitX2 * ratioLineP);
     drawWobblyLine(ctx, mX(0), mY(0), endX2, endY2, '#7c3aed', 3, 502);
@@ -594,6 +588,23 @@ let fixedElement = null;
 let tempMass = null;
 let selectedMass = null;
 
+let currentXMax = 12;
+let prevXMax = 12;
+
+function updateXMaxState() {
+    prevXMax = currentXMax;
+    let target = 12;
+    const activeMass = (selectedMass !== null) ? selectedMass : tempMass;
+    if (fixedElement === 'Y' && activeMass !== null) {
+        if (activeMass >= 6.00) {
+            target = 30;
+        } else if (activeMass >= 3.00) {
+            target = 15;
+        }
+    }
+    currentXMax = target;
+}
+
 function selectFixedElement(el) {
     fixedElement = el;
     tempMass = (el === 'X') ? 9.34 : 6.00; // default recommended values
@@ -619,6 +630,7 @@ function resetWizard() {
 }
 
 function renderAlgebraicWizard() {
+    updateXMaxState();
     const tableBody = document.getElementById('alg-table-body');
     const container = document.getElementById('alg-wizard-container');
     if (!tableBody || !container) return;
