@@ -320,13 +320,11 @@ function draw(p) {
         ctx.lineWidth = 1.5;
         ctx.stroke();
         
-        if (currentStep === 1) {
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillStyle = '#ff7a00';
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText('I (XY)  ', pAx - 6, pAy - 6);
-        }
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillStyle = '#ff7a00';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('I (XY)  ', pAx - 6, pAy - 6);
         
         // Point II
         const pBx = mX(4.67);
@@ -337,12 +335,10 @@ function draw(p) {
         ctx.fill();
         ctx.stroke();
         
-        if (currentStep === 1) {
-            ctx.fillStyle = '#7c3aed';
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText('II (XaYb)  ', pBx - 6, pBy - 6);
-        }
+        ctx.fillStyle = '#7c3aed';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('II (XaYb)  ', pBx - 6, pBy - 6);
         ctx.restore();
     }
 
@@ -386,56 +382,66 @@ function draw(p) {
                 const ix1_y = (2.00 / 9.34) * activeMass;
                 const ix2_y = (3.00 / 4.67) * activeMass;
                 
-                // Intersection I (XY)
+                // Intersection I
                 ctx.beginPath();
-                ctx.arc(mX(activeMass), mY(ix1_y), 7, 0, Math.PI * 2);
-                ctx.strokeStyle = '#ff7a00';
-                ctx.lineWidth = 2.5;
+                ctx.arc(mX(activeMass), mY(ix1_y), 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#0284c7';
+                ctx.fill();
+                ctx.strokeStyle = '#2b2b2b';
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
                 ctx.font = 'bold 11px sans-serif';
-                ctx.fillStyle = '#ff7a00';
+                ctx.fillStyle = '#0284c7';
                 ctx.textAlign = 'left';
-                ctx.fillText(`  I (XY) (${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass), mY(ix1_y) + 8);
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`  (${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass), mY(ix1_y));
                 
                 // Intersection II
                 ctx.beginPath();
-                ctx.arc(mX(activeMass), mY(ix2_y), 7, 0, Math.PI * 2);
-                ctx.strokeStyle = '#7c3aed';
-                ctx.lineWidth = 2.5;
+                ctx.arc(mX(activeMass), mY(ix2_y), 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#0284c7';
+                ctx.fill();
+                ctx.strokeStyle = '#2b2b2b';
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.fillStyle = '#7c3aed';
+                ctx.fillStyle = '#0284c7';
                 ctx.textAlign = 'left';
-                const formulaText = (currentStep === 3) ? 'XY₃' : 'XY_b';
-                ctx.fillText(`  II (${formulaText}) (${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass), mY(ix2_y) - 8);
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`  (${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass), mY(ix2_y));
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
                 
-                // Intersection I (XY)
+                // Intersection I
                 ctx.beginPath();
-                ctx.arc(mX(ix1_x), mY(activeMass), 7, 0, Math.PI * 2);
-                ctx.strokeStyle = '#ff7a00';
-                ctx.lineWidth = 2.5;
+                ctx.arc(mX(ix1_x), mY(activeMass), 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#0284c7';
+                ctx.fill();
+                ctx.strokeStyle = '#2b2b2b';
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
                 ctx.font = 'bold 11px sans-serif';
-                ctx.fillStyle = '#ff7a00';
+                ctx.fillStyle = '#0284c7';
                 ctx.textAlign = 'left';
-                ctx.fillText(`  I (XY) (${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x), mY(activeMass) + 15);
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`  (${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x), mY(activeMass));
                 
                 // Intersection II
                 ctx.beginPath();
-                ctx.arc(mX(ix2_x), mY(activeMass), 7, 0, Math.PI * 2);
-                ctx.strokeStyle = '#7c3aed';
-                ctx.lineWidth = 2.5;
+                ctx.arc(mX(ix2_x), mY(activeMass), 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#0284c7';
+                ctx.fill();
+                ctx.strokeStyle = '#2b2b2b';
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
                 
-                ctx.fillStyle = '#7c3aed';
-                ctx.textAlign = 'right';
-                const formulaText = (currentStep === 3) ? 'XY₃' : 'X_aY';
-                ctx.fillText(`II (${formulaText}) (${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})  `, mX(ix2_x), mY(activeMass) - 15);
+                ctx.fillStyle = '#0284c7';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`  (${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x), mY(activeMass));
             }
             ctx.restore();
         }
