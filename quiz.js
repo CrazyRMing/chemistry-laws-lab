@@ -543,15 +543,21 @@ function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2, seed 
     }
 }
 
-function drawWobblyRect(ctx, x, y, w, h, color = '#2b2b2b', fill = false, fillColor = '#ffffff', width = 2, seed = 42) {
+function drawWobblyRect(ctx, x, y, w, h, color = '#2b2b2b', fill = false, fillColor = '#ffffff', width = 2, seed = 42, strokeAlpha = 1.0) {
     if (fill) {
+        ctx.save();
+        ctx.globalAlpha = 1.0;
         ctx.fillStyle = fillColor;
         ctx.fillRect(x, y, w, h);
+        ctx.restore();
     }
+    ctx.save();
+    ctx.globalAlpha = strokeAlpha;
     drawWobblyLine(ctx, x, y, x + w, y, color, width, seed);
     drawWobblyLine(ctx, x + w, y, x + w, y + h, color, width, seed + 1);
     drawWobblyLine(ctx, x + w, y + h, x, y + h, color, width, seed + 2);
     drawWobblyLine(ctx, x, y + h, x, y, color, width, seed + 3);
+    ctx.restore();
 }
 
 function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width = 2, seed = 100) {
@@ -582,8 +588,11 @@ function drawWobblyCircle(ctx, cx, cy, r, color = '#2b2b2b', fill = false, width
     }
 }
 
-function drawDiamond(ctx, cx, cy, r, color, border) {
+function drawDiamond(ctx, cx, cy, r, color, border, borderAlpha = 1.0) {
     ctx.save();
+    
+    // Fill with solid opacity to block underlying lines
+    ctx.globalAlpha = 1.0;
     ctx.beginPath();
     ctx.moveTo(cx, cy - r);
     ctx.lineTo(cx + r, cy);
@@ -592,9 +601,13 @@ function drawDiamond(ctx, cx, cy, r, color, border) {
     ctx.closePath();
     ctx.fillStyle = color;
     ctx.fill();
+    
+    // Draw border with target alpha
+    ctx.globalAlpha = borderAlpha;
     ctx.strokeStyle = border;
     ctx.lineWidth = 2;
     ctx.stroke();
+    
     ctx.restore();
 }
 
@@ -631,20 +644,48 @@ function drawQuizDiagram() {
     const lineWidth = 1.2;
 
     // Define opacity based on current quiz page & sub-question
-    let alphaSiC = 1.0;
-    let alphaCO2 = 1.0;
-    let alphaNH3 = 1.0;
+    let aSi = 1.0, aO = 1.0, aC = 1.0, aN = 1.0, aH = 1.0;
+    let aSiC = 1.0, aCO2 = 1.0, aNH3 = 1.0;
+    let aA = 1.0, aB = 1.0, aC_diam = 1.0, aD = 1.0;
+
+    let aLineSi_D = 1.0, aLineSi_SiC = 1.0, aLineD_O = 1.0, aLineSiC_C = 1.0;
+    let aLineO_CO2 = 1.0, aLineC_CO2 = 1.0;
+    let aLineO_B = 1.0, aLineO_A = 1.0, aLineC_C_diam = 1.0;
+    let aLineB_N = 1.0, aLineC_diam_H = 1.0, aLineA_H = 1.0;
+    let aLineN_NH3 = 1.0, aLineH_NH3 = 1.0;
 
     if (quizPage === 1) {
         if (subPage === 1) {
-            alphaSiC = 0.2;
-            alphaCO2 = 0.2;
+            // Only Nitrogen, Hydrogen, NH3 and N->NH3, H->NH3 lines are active
+            aSi = 0.2; aO = 0.2; aC = 0.2;
+            aSiC = 0.2; aCO2 = 0.2;
+            aA = 0.2; aB = 0.2; aC_diam = 0.2; aD = 0.2;
+
+            aLineSi_D = 0.2; aLineSi_SiC = 0.2; aLineD_O = 0.2; aLineSiC_C = 0.2;
+            aLineO_CO2 = 0.2; aLineC_CO2 = 0.2;
+            aLineO_B = 0.2; aLineO_A = 0.2; aLineC_C_diam = 0.2;
+            aLineB_N = 0.2; aLineC_diam_H = 0.2; aLineA_H = 0.2;
         } else if (subPage === 2) {
-            alphaSiC = 0.2;
-            alphaNH3 = 0.2;
+            // Only Oxygen, Carbon, CO2 and O->CO2, C->CO2 lines are active
+            aSi = 0.2; aN = 0.2; aH = 0.2;
+            aSiC = 0.2; aNH3 = 0.2;
+            aA = 0.2; aB = 0.2; aC_diam = 0.2; aD = 0.2;
+
+            aLineSi_D = 0.2; aLineSi_SiC = 0.2; aLineD_O = 0.2; aLineSiC_C = 0.2;
+            aLineO_B = 0.2; aLineO_A = 0.2; aLineC_C_diam = 0.2;
+            aLineB_N = 0.2; aLineC_diam_H = 0.2; aLineA_H = 0.2;
+            aLineN_NH3 = 0.2; aLineH_NH3 = 0.2;
         } else if (subPage === 3) {
-            alphaCO2 = 0.2;
-            alphaNH3 = 0.2;
+            // Only Silicon, Carbon, SiC and Si->SiC, C->SiC lines are active
+            aO = 0.2; aN = 0.2; aH = 0.2;
+            aCO2 = 0.2; aNH3 = 0.2;
+            aA = 0.2; aB = 0.2; aC_diam = 0.2; aD = 0.2;
+
+            aLineSi_D = 0.2; aLineD_O = 0.2;
+            aLineO_CO2 = 0.2; aLineC_CO2 = 0.2;
+            aLineO_B = 0.2; aLineO_A = 0.2; aLineC_C_diam = 0.2;
+            aLineB_N = 0.2; aLineC_diam_H = 0.2; aLineA_H = 0.2;
+            aLineN_NH3 = 0.2; aLineH_NH3 = 0.2;
         }
     }
 
@@ -688,91 +729,207 @@ function drawQuizDiagram() {
         colLineC_SiC  = '#2e7d32'; wLineC_SiC  = 2.0;
     }
 
-    // DRAW BLOCK 1: SiC components (Silicon, Circle D, SiC lines)
+    // DRAW LAYER 1: Lines (Background)
+    
+    // SiC lines
     ctx.save();
-    ctx.globalAlpha = alphaSiC;
+    ctx.globalAlpha = aLineSi_D;
     drawWobblyLine(ctx, x1 + 45, yMid - 5, w * 0.22, yMid - 50, lineColor, lineWidth, 901);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineSi_SiC;
     drawWobblyLine(ctx, x1 + 45, yMid + 5, w * 0.22, yMid + 50, colLineSi_SiC, wLineSi_SiC, 902);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineD_O;
     drawWobblyLine(ctx, w * 0.22, yMid - 50, x2 - 45, yTop + 10, lineColor, lineWidth, 903);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineSiC_C;
     drawWobblyLine(ctx, w * 0.22, yMid + 50, x2 - 45, yBottom - 10, colLineC_SiC, wLineC_SiC, 904);
-    
-    drawWobblyRect(ctx, x1 - 45, yMid - 18, 90, 36, cSi, true, '#ffffff', 1.5, 915);
-    
+    ctx.restore();
+
+    // CO2 lines
+    ctx.save();
+    ctx.globalAlpha = aLineO_CO2;
+    drawWobblyLine(ctx, x2, yTop + 18, x2, yMid - 24, colLineO_CO2, wLineO_CO2, 905);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineC_CO2;
+    drawWobblyLine(ctx, x2, yMid + 24, x2, yBottom - 18, colLineC_CO2, wLineC_CO2, 906);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineO_B;
+    drawWobblyLine(ctx, x2 + 45, yTop, w * 0.65, yTop, lineColor, lineWidth, 907);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineO_A;
+    drawWobblyLine(ctx, x2 + 45, yTop + 5, w * 0.65, yMid - 5, lineColor, lineWidth, 908);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineC_C_diam;
+    drawWobblyLine(ctx, x2 + 45, yBottom, w * 0.65, yBottom, lineColor, lineWidth, 909);
+    ctx.restore();
+
+    // NH3 lines
+    ctx.save();
+    ctx.globalAlpha = aLineB_N;
+    drawWobblyLine(ctx, w * 0.65, yTop, x3 - 45, yTop, lineColor, lineWidth, 910);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineC_diam_H;
+    drawWobblyLine(ctx, w * 0.65, yBottom, x3 - 45, yBottom, lineColor, lineWidth, 911);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineA_H;
+    drawWobblyLine(ctx, w * 0.65, yMid + 5, x3 - 45, yBottom - 5, lineColor, lineWidth, 912);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineN_NH3;
+    drawWobblyLine(ctx, x3, yTop + 18, x3, yMid - 24, colLineN_NH3, wLineN_NH3, 913);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = aLineH_NH3;
+    drawWobblyLine(ctx, x3, yMid + 24, x3, yBottom - 18, colLineH_NH3, wLineH_NH3, 914);
+    ctx.restore();
+
+
+    // DRAW LAYER 2: Nodes & Labels (Foreground)
+
+    // Silicon node (Si)
+    ctx.save();
+    drawWobblyRect(ctx, x1 - 45, yMid - 18, 90, 36, cSi, true, '#ffffff', 1.5, 915, aSi);
+    ctx.globalAlpha = aSi;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textSi;
     ctx.fillText(quizPage === 2 ? '矽 7 克' : '矽 Z 克', x1, yMid);
-
-    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, '#f3f4f6', true, 1.2, 920);
-    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, circSiC, false, 1.2, 920);
-    drawColoredFormula(ctx, 'SiC', w * 0.22, yMid + 50, activeHints[3]);
-
-    drawDiamond(ctx, w * 0.22, yMid - 50, 18, '#ffffff', '#2b2b2b');
-    ctx.font = 'bold 1.05rem sans-serif';
-    ctx.fillStyle = '#1f1f1f';
-    ctx.fillText('D', w * 0.22, yMid - 50);
     ctx.restore();
 
-    // DRAW BLOCK 2: CO2 components (Oxygen, Carbon, Circle A, CO2 lines)
+    // Oxygen node (O)
     ctx.save();
-    ctx.globalAlpha = alphaCO2;
-    drawWobblyLine(ctx, x2, yTop + 18, x2, yMid - 24, colLineO_CO2, wLineO_CO2, 905);
-    drawWobblyLine(ctx, x2, yMid + 24, x2, yBottom - 18, colLineC_CO2, wLineC_CO2, 906);
-    drawWobblyLine(ctx, x2 + 45, yTop, w * 0.65, yTop, lineColor, lineWidth, 907);
-    drawWobblyLine(ctx, x2 + 45, yTop + 5, w * 0.65, yMid - 5, lineColor, lineWidth, 908);
-    drawWobblyLine(ctx, x2 + 45, yBottom, w * 0.65, yBottom, lineColor, lineWidth, 909);
-
-    drawWobblyRect(ctx, x2 - 45, yTop - 18, 90, 36, cO, true, '#ffffff', 1.5, 916);
-    drawWobblyRect(ctx, x2 - 45, yBottom - 18, 90, 36, cC, true, '#ffffff', 1.5, 917);
-
+    drawWobblyRect(ctx, x2 - 45, yTop - 18, 90, 36, cO, true, '#ffffff', 1.5, 916, aO);
+    ctx.globalAlpha = aO;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textO;
     ctx.fillText('氧 8 克', x2, yTop);
-    ctx.fillStyle = textC;
-    ctx.fillText(quizPage === 2 ? '碳 3 克' : '碳 Y 克', x2, yBottom);
-
-    drawWobblyCircle(ctx, x2, yMid, 24, '#f3f4f6', true, 1.2, 921);
-    drawWobblyCircle(ctx, x2, yMid, 24, circCO2, false, 1.2, 921);
-    drawColoredFormula(ctx, 'CO₂', x2, yMid, activeHints[2]);
-
-    drawDiamond(ctx, w * 0.65, yMid, 18, '#ffffff', '#2b2b2b');
-    ctx.font = 'bold 1.05rem sans-serif';
-    ctx.fillStyle = '#1f1f1f';
-    ctx.fillText('A', w * 0.65, yMid);
     ctx.restore();
 
-    // DRAW BLOCK 3: NH3 components (Nitrogen, Hydrogen, Circle B/C, NH3 lines)
+    // Carbon node (C)
     ctx.save();
-    ctx.globalAlpha = alphaNH3;
-    drawWobblyLine(ctx, w * 0.65, yTop, x3 - 45, yTop, lineColor, lineWidth, 910);
-    drawWobblyLine(ctx, w * 0.65, yBottom, x3 - 45, yBottom, lineColor, lineWidth, 911);
-    drawWobblyLine(ctx, w * 0.65, yMid + 5, x3 - 45, yBottom - 5, lineColor, lineWidth, 912);
-    drawWobblyLine(ctx, x3, yTop + 18, x3, yMid - 24, colLineN_NH3, wLineN_NH3, 913);
-    drawWobblyLine(ctx, x3, yMid + 24, x3, yBottom - 18, colLineH_NH3, wLineH_NH3, 914);
+    drawWobblyRect(ctx, x2 - 45, yBottom - 18, 90, 36, cC, true, '#ffffff', 1.5, 917, aC);
+    ctx.globalAlpha = aC;
+    ctx.font = 'bold 1.0rem sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = textC;
+    ctx.fillText(quizPage === 2 ? '碳 3 克' : '碳 Y 克', x2, yBottom);
+    ctx.restore();
 
-    drawWobblyRect(ctx, x3 - 45, yTop - 18, 90, 36, cN, true, '#ffffff', 1.5, 918);
-    drawWobblyRect(ctx, x3 - 45, yBottom - 18, 90, 36, cH, true, '#ffffff', 1.5, 919);
-
+    // Nitrogen node (N)
+    ctx.save();
+    drawWobblyRect(ctx, x3 - 45, yTop - 18, 90, 36, cN, true, '#ffffff', 1.5, 918, aN);
+    ctx.globalAlpha = aN;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textN;
     ctx.fillText(quizPage === 2 ? '氮 4.67 克' : '氮 X 克', x3, yTop);
+    ctx.restore();
+
+    // Hydrogen node (H)
+    ctx.save();
+    drawWobblyRect(ctx, x3 - 45, yBottom - 18, 90, 36, cH, true, '#ffffff', 1.5, 919, aH);
+    ctx.globalAlpha = aH;
+    ctx.font = 'bold 1.0rem sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = textH;
     ctx.fillText('氫 1 克', x3, yBottom);
+    ctx.restore();
 
+    // Circle SiC
+    ctx.save();
+    ctx.globalAlpha = 1.0;
+    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, '#f3f4f6', true, 1.2, 920);
+    ctx.globalAlpha = aSiC;
+    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, circSiC, false, 1.2, 920);
+    drawColoredFormula(ctx, 'SiC', w * 0.22, yMid + 50, activeHints[3]);
+    ctx.restore();
+
+    // Circle CO2
+    ctx.save();
+    ctx.globalAlpha = 1.0;
+    drawWobblyCircle(ctx, x2, yMid, 24, '#f3f4f6', true, 1.2, 921);
+    ctx.globalAlpha = aCO2;
+    drawWobblyCircle(ctx, x2, yMid, 24, circCO2, false, 1.2, 921);
+    drawColoredFormula(ctx, 'CO₂', x2, yMid, activeHints[2]);
+    ctx.restore();
+
+    // Circle NH3
+    ctx.save();
+    ctx.globalAlpha = 1.0;
     drawWobblyCircle(ctx, x3, yMid, 24, '#f3f4f6', true, 1.2, 922);
+    ctx.globalAlpha = aNH3;
     drawWobblyCircle(ctx, x3, yMid, 24, circNH3, false, 1.2, 922);
     drawColoredFormula(ctx, 'NH₃', x3, yMid, activeHints[1]);
+    ctx.restore();
 
-    drawDiamond(ctx, w * 0.65, yTop, 18, '#ffffff', '#2b2b2b');
-    drawDiamond(ctx, w * 0.65, yBottom, 18, '#ffffff', '#2b2b2b');
+    // Diamond D
+    ctx.save();
+    drawDiamond(ctx, w * 0.22, yMid - 50, 18, '#ffffff', '#2b2b2b', aD);
+    ctx.globalAlpha = aD;
     ctx.font = 'bold 1.05rem sans-serif';
     ctx.fillStyle = '#1f1f1f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('D', w * 0.22, yMid - 50);
+    ctx.restore();
+
+    // Diamond A
+    ctx.save();
+    drawDiamond(ctx, w * 0.65, yMid, 18, '#ffffff', '#2b2b2b', aA);
+    ctx.globalAlpha = aA;
+    ctx.font = 'bold 1.05rem sans-serif';
+    ctx.fillStyle = '#1f1f1f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('A', w * 0.65, yMid);
+    ctx.restore();
+
+    // Diamond B
+    ctx.save();
+    drawDiamond(ctx, w * 0.65, yTop, 18, '#ffffff', '#2b2b2b', aB);
+    ctx.globalAlpha = aB;
+    ctx.font = 'bold 1.05rem sans-serif';
+    ctx.fillStyle = '#1f1f1f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText('B', w * 0.65, yTop);
+    ctx.restore();
+
+    // Diamond C
+    ctx.save();
+    drawDiamond(ctx, w * 0.65, yBottom, 18, '#ffffff', '#2b2b2b', aC_diam);
+    ctx.globalAlpha = aC_diam;
+    ctx.font = 'bold 1.05rem sans-serif';
+    ctx.fillStyle = '#1f1f1f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText('C', w * 0.65, yBottom);
     ctx.restore();
 

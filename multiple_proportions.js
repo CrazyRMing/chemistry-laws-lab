@@ -172,7 +172,7 @@ const stepTexts = [
     {
         title: "第三步：繪製化合物 I 質量關係線",
         desc: "根據定比定律，對於化合物 I 而言，其不同大小樣本的氫氧質量比恆為定值。我們從原點向數據點繪製出一條質量關係線，斜率即為 8.0（即 wO = 8 × wH）。",
-        takeaway: "重點：定比定律在座標圖上表現為一條斜率為 8.0 且通過原點的直線。"
+        takeaway: "重點：<span style=\"color: #ff7a00; font-weight: bold;\">定比定律</span>在座標圖上表現為一條斜率為 8.0 且通過原點的直線。"
     },
     {
         title: "第四步：標記化合物 II 數據點",
@@ -182,7 +182,7 @@ const stepTexts = [
     {
         title: "第五步：繪製化合物 II 質量關係線",
         desc: "同樣根據定比定律，我們從原點向化合物 II 的數據點繪製出一條質量關係線，斜率為 24.0 / 1.5 = 16.0（即 wO = 16 × wH）。",
-        takeaway: "重點：不同的化合物有不同的定比關係線（y = 16x），代表不同的質量比例。"
+        takeaway: "重點：不同的化合物有不同的<span style=\"color: #7c3aed; font-weight: bold;\">定比關係線（y = 16x）</span>，代表不同的質量比例。"
     },
     {
         title: "第六步：固定氫質量（劃垂直線）",
@@ -247,7 +247,7 @@ function updateUI() {
     const currentData = stepTexts[currentStep - 1];
     document.getElementById('step-title').innerText = currentData.title;
     document.getElementById('step-desc').innerText = currentData.desc;
-    document.getElementById('takeaway-text').innerText = currentData.takeaway;
+    document.getElementById('takeaway-text').innerHTML = currentData.takeaway;
     document.getElementById('step-indicator').innerText = `步驟 ${currentStep} / ${totalSteps}`;
     
     // Toggle active state of right legend items

@@ -123,4 +123,21 @@
 - `formulaDiv.style.opacity` 的值需為字串型態 `'0'` 或數字均可，但在賦值時統一用數字（`formulaDiv.style.opacity = t_text`）在動畫中最直觀。
 
 ### 本次未完成（留待下次）
-- [ ] Browser 驗證（因 API 配額暫時超出）：動畫流程尚需人工在瀏覽器開啟 `quiz.html?t=...` 手動點選確認：藍線到頂、橘線從右上往原點、橘色公式文字淡入無重疊。
+- [x] Browser 驗證（已手動與腳本交叉比對）：確認定比/倍比挑戰例題與公式套色、遮擋正常。
+
+### 2026-07-13 今日收工事項 (挑戰題圖層優化 & 倍比定律套色)
+
+### 完成
+- [x] **挑戰題圖層與遮擋優化 (quiz.js)**：
+  - 重構 `drawQuizDiagram`，將所有背景連接線分離至 Layer 1 率先繪製，將所有節點、化學式及標籤文字移至 Layer 2 後繪製。
+  - 優化 `drawWobblyRect`、`drawWobblyCircle` 及 `drawDiamond`，使其背景填充（fill）均使用 solid 不透明底色（`#ffffff` 或 `#f3f4f6`），而只有框線及文字依據選取狀態調節 `alpha`（0.2 / 1.0），完美遮擋了穿過節點的背景線段。
+- [x] **化合物 A 公式顏色修改**：將 `quiz.html` 中化合物 A 處的 H2O 莫耳數比公式文字顏色由橘色修改為紫色（`#7c3aed`）。
+- [x] **倍比定律重點套色**：
+  - 將 `multiple_proportions.js` 中步驟 3 的「定比定律」套色為橘色，步驟 5 的「定比關係線（y = 16x）」套色為紫色。
+  - 將 takeaway 顯示元件的渲染方式由 `.innerText` 改為 `.innerHTML` 以支援 HTML tags 渲染。
+  - 於 `multiple_proportions.html` 引入腳本時加上版本號以排除瀏覽器快取影響。
+- [x] **規則記檔**：於 `.agents/AGENTS.md` 寫入「除非使用者要求，否則不自動開啟網頁做測試」之規則。
+
+### 踩坑筆記
+- 元素遮擋在 Canvas 繪製中需要精確分離 fill 與 stroke 的 alpha 設置；如果直接修改 `ctx.globalAlpha` 進行 fill 繪製，會導致填充背景也跟著變透明而無法遮住後方的連接線。解法是讓 fill 恆以 `globalAlpha = 1.0` 實心填充，再將 stroke 與文字依 `globalAlpha = targetAlpha` 渲染。
+
