@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倍比定律經典解析 - 雙重表徵對比</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            overflow-x: hidden !important;
+        }
+        .app-container {
+            border-radius: 12px !important;
+            margin: 0 auto !important;
+        }
+        .question-card {
+            background: #ffffff;
+            border: 3px solid #2b2b2b;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 4px 5px 0px rgba(43, 43, 43, 0.08);
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .question-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .question-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .badge-exam {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            border: 1.5px solid #0369a1;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 640px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #2b2b2b;
+            border-radius: 8px;
+            padding: 0.6rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 0px #2b2b2b;
+        }
+        .option-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0px #2b2b2b;
+            background: #f9fafb;
+        }
+        .option-btn.correct {
+            background: #10b981 !important;
+            color: #ffffff !important;
+            border-color: #064e3b !important;
+            box-shadow: 2px 2px 0px #064e3b !important;
+        }
+        .option-btn.incorrect {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #7f1d1d !important;
+            box-shadow: 2px 2px 0px #7f1d1d !important;
+        }
+        .feedback-box {
+            min-height: 50px;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: none;
+            border: 2px solid #2b2b2b;
+            box-shadow: 2px 3px 0px rgba(0,0,0,0.05);
+        }
+        .animation-container {
+            align-items: stretch !important;
+        }
+        .panel-box {
+            opacity: 0.25;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: scale(0.99);
+        }
+        .panel-box.active {
+            opacity: 1;
+            transform: scale(1.0);
+        }
+        .panel-box.active .placeholder-text {
+            display: none !important;
+        }
+        .panel-box.active .real-content {
+            display: flex !important;
+        }
+        .placeholder-text {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed rgba(43,43,43,0.3);
+            border-radius: 12px;
+            font-family: var(--font-math);
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 2rem;
+            background: #fafafa;
+        }
+        .real-content {
+            display: none;
+            height: 100%;
+        }
+        .canvas-wrapper {
+            position: relative;
+        }
+        .algebraic-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-family: var(--font-math);
+            font-size: 1.05rem;
+            border: 2.5px solid var(--border-color);
+        }
+        .algebraic-table th, .algebraic-table td {
+            padding: 0.5rem;
+            border: 1.5px solid var(--border-color);
+        }
+        .algebraic-table th {
+            background: #f9fafb;
+            font-weight: bold;
+        }
+        .algebraic-formula-card {
+            font-family: var(--font-math);
+            font-size: 1.0rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            border-top: 1.5px dashed rgba(43,43,43,0.2);
+            padding-top: 0.75rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SOIL Header -->
+        <div class="soil-header">
+            <div class="soil-page-num">挑戰</div>
+            <div class="soil-section-info">
+                <span class="soil-course-label">基礎化學 (倍比定律解析)</span>
+                <span class="soil-orange-line"></span>
+            </div>
+            <a href="multiple_proportions.html" class="nav-page-link">👈 返回倍比定律</a>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-card">
+            <div class="question-title-row">
+                <span class="question-title">學測經典挑戰題</span>
+                <span class="badge-exam">96. 學測 | 答對率 45%</span>
+            </div>
+            <div class="question-text">
+                今有二種不同元素 <strong>X</strong> 及 <strong>Y</strong>，化合為兩個含此二種元素的化合物。第一個化合物是由 <strong>9.34 克</strong> 的 X 和 <strong>2.00 克</strong> 的 Y 化合而成；而第二個化合物是由 <strong>4.67 克</strong> 的 X 和 <strong>3.00 克</strong> 的 Y 化合而成。如果第一個化合物的分子式是 <strong>XY</strong>，那麼第二個化合物的分子式為下列何者？
+            </div>
+            <div class="options-container">
+                <button class="option-btn" onclick="selectOption('A', this)">(A) X₂Y</button>
+                <button class="option-btn" onclick="selectOption('B', this)">(B) XY₂</button>
+                <button class="option-btn" onclick="selectOption('C', this)">(C) X₃Y</button>
+                <button class="option-btn" onclick="selectOption('D', this)">(D) XY₃</button>
+                <button class="option-btn" onclick="selectOption('E', this)">(E) X₂Y₂</button>
+            </div>
+            <div id="feedback-box" class="feedback-box"></div>
+        </div>
+
+        <!-- Split Columns Comparison Panel -->
+        <div class="animation-container">
+            <!-- Left: Algebraic Representation -->
+            <div class="panel-box" id="algebraic-panel">
+                <div class="panel-label" style="color: var(--color-orange);">代數表徵 (傳統表格式作法)</div>
+                <div class="canvas-wrapper" style="background: #ffffff; height: 350px;">
+                    <div class="placeholder-text" id="alg-placeholder">
+                        點擊下方「顯示代數表徵」按鈕<br>開啟代數比例計算與推導過程
+                    </div>
+                    <div class="real-content" style="padding: 1.2rem; flex-direction: column; justify-content: center; height: 100%; overflow-y: auto;">
+                        <table class="algebraic-table">
+                            <thead>
+                                <tr>
+                                    <th>化合物</th>
+                                    <th style="color: var(--color-orange);">X 元素質量 (g)</th>
+                                    <th style="color: #7c3aed;">Y 元素質量 (g)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                                    <td>9.34</td>
+                                    <td>2.00</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">第二個化合物 (XY<sub>n</sub>)</td>
+                                    <td style="background: rgba(255, 122, 0, 0.05);">
+                                        4.67<br>
+                                        <span style="color: var(--color-orange); font-weight: bold; font-size: 0.9em;">( 9.34 )</span>
+                                    </td>
+                                    <td style="background: rgba(124, 58, 237, 0.05);">
+                                        3.00<br>
+                                        <span style="color: #7c3aed; font-weight: bold; font-size: 0.9em;">( 6.00 )</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="algebraic-formula-card">
+                            <strong>代數推導步驟：</strong><br>
+                            1. 設第一個化合物為 <span style="font-weight: bold;">XY</span>，第二個為 <span style="color: #7c3aed; font-weight: bold;">XY<sub>n</sub></span>。<br>
+                            2. 固定 X 元素質量相同：將第二個化合物的所有數據<strong>同乘以 2</strong>。<br>
+                            3. 此時 X 的質量均為 <span style="color: var(--color-orange); font-weight: bold;">9.34g</span>，對應的 Y 元素質量比為：<br>
+                            <div style="text-align: center; margin: 0.4rem 0; font-size: 1.15rem; font-weight: bold; color: #7c3aed; font-family: var(--font-heading);">
+                                2.00 : 6.00 = 1 : n &rArr; n = 3
+                            </div>
+                            故第二個化合物為 <span style="color: #7c3aed; font-weight: bold;">XY₃</span>。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Geometric Representation -->
+            <div class="panel-box" id="geometric-panel">
+                <div class="panel-label" style="color: #7c3aed;">幾何表徵 (圖形座標解析)</div>
+                <div class="canvas-wrapper" style="background: #ffffff; height: 350px;">
+                    <div class="placeholder-text" id="geom-placeholder">
+                        點擊下方「顯示幾何表徵」按鈕<br>開啟圖表斜率與輔助線動畫
+                    </div>
+                    <div class="real-content" style="height: 100%; position: relative;">
+                        <canvas id="explainCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls button bar -->
+        <div class="nav-control-bar">
+            <button class="nav-btn" id="btn-show-algebraic" onclick="toggleAlgebraic()" style="border-color: var(--color-orange); box-shadow: 3px 4px 0px var(--color-orange);">顯示代數表徵</button>
+            <div class="step-indicator">雙重表徵對比</div>
+            <button class="nav-btn btn-primary" id="btn-show-geometric" onclick="toggleGeometric()" style="background: #7c3aed; border-color: #2b2b2b; box-shadow: 3px 4px 0px #7c3aed;">顯示幾何表徵</button>
+        </div>
+    </div>
+
+    <!-- Script references -->
+    <script src="multiple_proportions_explain.js?v=20260713_01"></script>
+</body>
+</html>
