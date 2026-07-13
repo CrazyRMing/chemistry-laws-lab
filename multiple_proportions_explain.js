@@ -637,7 +637,7 @@ function renderAlgebraicWizard() {
         }
 
         container.innerHTML = `
-            <div class="step-card" style="border-color: var(--border-color); max-height: 200px; overflow-y: auto;">
+            <div class="step-card" style="border-color: var(--border-color);">
                 ${deductionText}
                 <div style="margin-top: 0.6rem; text-align: right; display: flex; justify-content: space-between;">
                     <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">重新計算</button>

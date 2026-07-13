@@ -247,11 +247,11 @@
             <!-- Left: Algebraic Representation -->
             <div class="panel-box" id="algebraic-panel">
                 <div class="panel-label" style="color: var(--color-orange);">代數表徵 (傳統表格式作法)</div>
-                <div class="canvas-wrapper" style="background: #ffffff; height: 350px;">
+                <div class="canvas-wrapper" style="background: #ffffff; flex-grow: 1; display: flex; flex-direction: column; aspect-ratio: auto;">
                     <div class="placeholder-text" id="alg-placeholder">
                         點擊下方「顯示代數表徵」按鈕<br>開啟代數比例計算與推導過程
                     </div>
-                    <div class="real-content" style="padding: 1rem; flex-direction: column; justify-content: flex-start; height: 100%; overflow-y: auto;">
+                    <div class="real-content" style="padding: 1.2rem; flex-direction: column; justify-content: flex-start; flex-grow: 1;">
                         <table class="algebraic-table">
                             <thead>
                                 <tr>
@@ -274,12 +274,12 @@
             <!-- Right: Geometric Representation -->
             <div class="panel-box" id="geometric-panel">
                 <div class="panel-label" style="color: #7c3aed;">幾何表徵 (圖形座標解析)</div>
-                <div class="canvas-wrapper" style="background: #ffffff; height: 350px;">
+                <div class="canvas-wrapper" style="background: #ffffff; flex-grow: 1; display: flex; flex-direction: column; aspect-ratio: auto;">
                     <div class="placeholder-text" id="geom-placeholder">
                         點擊下方「顯示幾何表徵」按鈕<br>開啟圖表斜率與輔助線動畫
                     </div>
-                    <div class="real-content" style="height: 100%; position: relative;">
-                        <canvas id="explainCanvas"></canvas>
+                    <div class="real-content" style="flex-grow: 1; position: relative; display: flex; flex-direction: column;">
+                        <canvas id="explainCanvas" style="flex-grow: 1; width: 100%; height: 100%;"></canvas>
                     </div>
                 </div>
             </div>
