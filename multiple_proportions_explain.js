@@ -761,7 +761,7 @@ function renderAlgebraicWizard() {
                 deductionText += `
                     <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
                         5. <strong>分析原子數目關係</strong>：因為兩者中的 <span style="color: #0284c7; font-weight: bold;">X</span> 質量相同，且第一個化合物已知為 <span style="color: #0284c7; font-weight: bold;">X</span>Y（含有 1 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子），故第二個化合物亦含有 1 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子。<br>
-                        6. <strong>得出分子式</strong>：此時第二個化合物中的 Y 質量（<span style="color: #10b981; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>）是第一個化合物中 Y 質量（<span style="color: #ef4444; font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>）的 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 倍，表示其 Y 原子數為 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 個，故第二個化合物的分子式為 <strong style="color: #10b981;">XY₃</strong>。
+                        6. <strong>得出分子式</strong>：此時第二個化合物中的 Y 質量（<span style="color: #10b981; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>）是第一個化合物中 Y 質量（<span style="color: #ef4444; font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>）的 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 倍，表示其 Y 原子數為 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 個，故第二個化合物的分子式為 <strong><span style="color: #0284c7;">X</span><span style="color: #10b981;">Y₃</span></strong>。
                     </div>
                 `;
             }
@@ -780,7 +780,7 @@ function renderAlgebraicWizard() {
                     </div>
                     5. <strong>推導暫時分子式</strong>：第一個化合物為 X<span style="color: #0284c7; font-weight: bold;">Y</span>（X 與 <span style="color: #0284c7; font-weight: bold;">Y</span> 的個數比為 1 : 1）。在<span style="color: #0284c7; font-weight: bold;">相同</span> <span style="color: #0284c7; font-weight: bold;">Y</span> 質量下，因為 X 的質量比為 <span style="color: #10b981; font-weight: bold;">3</span> : <span style="color: #ef4444; font-weight: bold;">1</span>，所以第二個化合物中的 X 原子數只有第一個的 1/3 倍，此時分子式寫為 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span></strong>。<br>
                     <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
-                        6. <strong>化為整數比（符合原子說）</strong>：根據原子說，原子不能分割，個數必須為整數。我們將 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>1</sub></strong> 的下標同乘以 3，得到最簡整數比，故第二個化合物的分子式為 <strong style="color: #10b981;">XY₃</strong>。
+                        6. <strong>化為整數比（符合原子說）</strong>：根據原子說，原子不能分割，個數必須為整數。我們將 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>1</sub></strong> 的下標同乘以 3，得到最簡整數比，故第二個化合物的分子式為 <strong><span style="color: #10b981;">X</span><span style="color: #0284c7;">Y₃</span></strong>。
                     </div>
                 </div>
             `;
