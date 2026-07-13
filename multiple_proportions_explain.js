@@ -393,9 +393,9 @@ function draw(p) {
                 
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'right';
+                ctx.textAlign = 'left';
                 ctx.textBaseline = 'top';
-                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})  `, mX(activeMass) - 6, mY(ix1_y) + 6);
+                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix1_y) + 6);
                 
                 // Intersection II
                 ctx.beginPath();
@@ -407,9 +407,9 @@ function draw(p) {
                 ctx.stroke();
                 
                 ctx.fillStyle = '#0284c7';
-                ctx.textAlign = 'right';
+                ctx.textAlign = 'left';
                 ctx.textBaseline = 'top';
-                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})  `, mX(activeMass) - 6, mY(ix2_y) + 6);
+                ctx.fillText(`(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix2_y) + 6);
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
@@ -426,8 +426,8 @@ function draw(p) {
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillStyle = '#0284c7';
                 ctx.textAlign = 'left';
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(`  (${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x) + 6, mY(activeMass) - 6);
+                ctx.textBaseline = 'top';
+                ctx.fillText(`(${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x) + 6, mY(activeMass) + 6);
                 
                 // Intersection II
                 ctx.beginPath();
@@ -440,8 +440,8 @@ function draw(p) {
                 
                 ctx.fillStyle = '#0284c7';
                 ctx.textAlign = 'left';
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(`  (${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x) + 6, mY(activeMass) - 6);
+                ctx.textBaseline = 'top';
+                ctx.fillText(`(${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x) + 6, mY(activeMass) + 6);
             }
             ctx.restore();
         }
@@ -459,13 +459,13 @@ function draw(p) {
                 const ix2_y = (3.00 / 4.67) * activeMass;
                 const ratioY = ix2_y / ix1_y;
                 
-                drawVerticalBracket(ctx, mX(activeMass) + 8, mY(ix1_y), mY(ix2_y), `Y 質量比 = ${ix1_y.toFixed(2)} : ${ix2_y.toFixed(2)} = 1 : ${ratioY.toFixed(0)}`);
+                drawVerticalBracket(ctx, mX(activeMass) + 70, mY(ix1_y), mY(ix2_y), `Y 質量比 = ${ix1_y.toFixed(2)} : ${ix2_y.toFixed(2)} = 1 : ${ratioY.toFixed(0)}`);
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
                 const ratioX = ix1_x / ix2_x;
                 
-                drawHorizontalBracket(ctx, mX(ix2_x), mX(ix1_x), mY(activeMass) + 5, `X 質量比 = ${ix1_x.toFixed(2)} : ${ix2_x.toFixed(2)} = ${ratioX.toFixed(0)} : 1 ➡ a = 1/${ratioX.toFixed(0)}`);
+                drawHorizontalBracket(ctx, mX(ix2_x), mX(ix1_x), mY(activeMass) + 22, `X 質量比 = ${ix1_x.toFixed(2)} : ${ix2_x.toFixed(2)} = ${ratioX.toFixed(0)} : 1 ➡ a = 1/${ratioX.toFixed(0)}`);
             }
             ctx.restore();
         }
