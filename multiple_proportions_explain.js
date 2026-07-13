@@ -653,10 +653,10 @@ function renderAlgebraicWizard() {
         let c2Formula = '';
         if (fixedElement === 'X') {
             c1Formula = `<span style="color: #0284c7; font-weight: bold;">X</span>Y`;
-            c2Formula = `<span style="color: #0284c7; font-weight: bold;">X</span><sub>a</sub>Y<sub>b</sub>`;
+            c2Formula = `<span style="color: #0284c7; font-weight: bold;">X</span>Y<sub>b</sub>`;
         } else {
             c1Formula = `X<span style="color: #0284c7; font-weight: bold;">Y</span>`;
-            c2Formula = `X<sub>a</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>b</sub>`;
+            c2Formula = `X<sub>a</sub><span style="color: #0284c7; font-weight: bold;">Y</span>`;
         }
 
         tableBody.innerHTML = `
