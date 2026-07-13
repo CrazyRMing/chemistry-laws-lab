@@ -488,14 +488,24 @@ function renderAlgebraicWizard() {
         `;
     } else if (selectedMass === null) {
         // Step 2: Choosing mass values
+        let c1Formula = '';
+        let c2Formula = '';
+        if (fixedElement === 'X') {
+            c1Formula = `<span style="color: #0284c7; font-weight: bold;">X</span>Y`;
+            c2Formula = `<span style="color: #0284c7; font-weight: bold;">X</span><sub>a</sub>Y<sub>b</sub>`;
+        } else {
+            c1Formula = `X<span style="color: #0284c7; font-weight: bold;">Y</span>`;
+            c2Formula = `X<sub>a</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>b</sub>`;
+        }
+
         tableBody.innerHTML = `
             <tr style="color: var(--color-orange); font-weight: 500;">
-                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td style="font-weight: bold;">第一個化合物 (${c1Formula})</td>
                 <td>9.34</td>
                 <td>2.00</td>
             </tr>
             <tr style="color: #7c3aed; font-weight: 500;">
-                <td style="font-weight: bold;">第二個化合物 (X<sub>a</sub>Y<sub>b</sub>)</td>
+                <td style="font-weight: bold;">第二個化合物 (${c2Formula})</td>
                 <td>4.67</td>
                 <td>3.00</td>
             </tr>
@@ -538,16 +548,19 @@ function renderAlgebraicWizard() {
         const c2X_scaled = 4.67 * factor2;
         const c2Y_scaled = 3.00 * factor2;
 
+        let c1FormulaLabel = '';
         let c2FormulaLabel = '';
         if (fixedElement === 'X') {
-            c2FormulaLabel = `XY<sub>n</sub>`;
+            c1FormulaLabel = `<span style="color: #0284c7; font-weight: bold;">X</span>Y`;
+            c2FormulaLabel = `<span style="color: #0284c7; font-weight: bold;">X</span>Y<sub>n</sub>`;
         } else {
-            c2FormulaLabel = `X<sub>n</sub>Y`;
+            c1FormulaLabel = `X<span style="color: #0284c7; font-weight: bold;">Y</span>`;
+            c2FormulaLabel = `X<sub>n</sub><span style="color: #0284c7; font-weight: bold;">Y</span>`;
         }
 
         tableBody.innerHTML = `
             <tr style="color: var(--color-orange); font-weight: 500;">
-                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td style="font-weight: bold;">第一個化合物 (${c1FormulaLabel})</td>
                 <td>
                     9.34${factor1 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c1X_scaled.toFixed(2)} )</span>` : ''}
                 </td>
