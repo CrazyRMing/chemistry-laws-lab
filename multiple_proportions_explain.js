@@ -445,6 +445,22 @@ function renderAlgebraicWizard() {
     const container = document.getElementById('alg-wizard-container');
     if (!tableBody || !container) return;
 
+    // Update table header colors to indicate fixed element
+    const thX = document.getElementById('th-x-header');
+    const thY = document.getElementById('th-y-header');
+    if (thX && thY) {
+        if (fixedElement === null) {
+            thX.style.color = '';
+            thY.style.color = '';
+        } else if (fixedElement === 'X') {
+            thX.style.color = '#0284c7';
+            thY.style.color = '';
+        } else if (fixedElement === 'Y') {
+            thX.style.color = '';
+            thY.style.color = '#0284c7';
+        }
+    }
+
     if (fixedElement === null) {
         // Step 1: Raw Table with no brackets, Compound II shows X_a Y_b
         tableBody.innerHTML = `
