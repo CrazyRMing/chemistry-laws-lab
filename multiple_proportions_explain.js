@@ -605,6 +605,7 @@ function renderAlgebraicWizard() {
                     </div>
                 </div>
             `;
+        }
 
         container.innerHTML = `
             <div class="step-card" style="border-color: var(--border-color); max-height: 200px; overflow-y: auto;">
