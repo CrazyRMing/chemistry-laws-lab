@@ -293,7 +293,7 @@ function draw(p) {
     const clamp = (val) => Math.max(0.0, Math.min(val, 1.0));
 
     // 3. Draw constant-ratio wobbly lines from origin
-    const ratioLineP = (currentStep === 1) ? clamp(p / 0.5) : 1.0;
+    const ratioLineP = (currentStep === 1) ? clamp((p - 0.4) / 0.4) : 1.0;
     const endX1 = mX(xMax * ratioLineP);
     const endY1 = mY((2.00 / 9.34) * xMax * ratioLineP);
     drawWobblyLine(ctx, mX(0), mY(0), endX1, endY1, '#ff7a00', 3, 501);
@@ -304,7 +304,7 @@ function draw(p) {
     drawWobblyLine(ctx, mX(0), mY(0), endX2, endY2, '#7c3aed', 3, 502);
 
     // 4. Draw original sample points (Point I: (9.34, 2.00), Point II: (4.67, 3.00))
-    const ptP = (currentStep === 1) ? clamp((p - 0.4) / 0.3) : 1.0;
+    const ptP = (currentStep === 1) ? clamp(p / 0.4) : 1.0;
     if (ptP > 0) {
         ctx.save();
         ctx.globalAlpha = ptP;
@@ -323,8 +323,9 @@ function draw(p) {
         if (currentStep === 1) {
             ctx.font = 'bold 11px sans-serif';
             ctx.fillStyle = '#ff7a00';
-            ctx.textAlign = 'left';
-            ctx.fillText('  I (XY)', pAx, pAy + 8);
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('I (XY)  ', pAx - 6, pAy - 6);
         }
         
         // Point II
@@ -339,7 +340,8 @@ function draw(p) {
         if (currentStep === 1) {
             ctx.fillStyle = '#7c3aed';
             ctx.textAlign = 'right';
-            ctx.fillText('II (XaYb)  ', pBx, pBy - 8);
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('II (XaYb)  ', pBx - 6, pBy - 6);
         }
         ctx.restore();
     }
