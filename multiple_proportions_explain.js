@@ -289,8 +289,11 @@ function draw(p) {
     ctx.textAlign = 'left';
     ctx.fillText('Y 元素質量 wY (g)', mX(0), mY(yMax) - 15);
 
+    // Clamp helper to keep progress between 0 and 1
+    const clamp = (val) => Math.max(0.0, Math.min(val, 1.0));
+
     // 3. Draw constant-ratio wobbly lines from origin
-    const ratioLineP = (currentStep === 1) ? Math.min(p / 0.5, 1.0) : 1.0;
+    const ratioLineP = (currentStep === 1) ? clamp(p / 0.5) : 1.0;
     const endX1 = mX(xMax * ratioLineP);
     const endY1 = mY((2.00 / 9.34) * xMax * ratioLineP);
     drawWobblyLine(ctx, mX(0), mY(0), endX1, endY1, '#ff7a00', 3, 501);
@@ -301,7 +304,7 @@ function draw(p) {
     drawWobblyLine(ctx, mX(0), mY(0), endX2, endY2, '#7c3aed', 3, 502);
 
     // 4. Draw original sample points (Point I: (9.34, 2.00), Point II: (4.67, 3.00))
-    const ptP = (currentStep === 1) ? Math.min((p - 0.4) / 0.3, 1.0) : 1.0;
+    const ptP = (currentStep === 1) ? clamp((p - 0.4) / 0.3) : 1.0;
     if (ptP > 0) {
         ctx.save();
         ctx.globalAlpha = ptP;
@@ -343,7 +346,7 @@ function draw(p) {
 
     // 5. Draw Blue Dashed Line and intersection points (Step 2+)
     if (currentStep >= 2 && activeMass !== null) {
-        const helperP = (currentStep === 2) ? Math.min((p - 0.3) / 0.4, 1.0) : 1.0;
+        const helperP = (currentStep === 2) ? clamp((p - 0.3) / 0.4) : 1.0;
         
         ctx.save();
         ctx.strokeStyle = '#0284c7'; // fixed-element blue
@@ -372,7 +375,7 @@ function draw(p) {
         ctx.restore();
 
         // Draw intersection markers
-        const ixP = (currentStep === 2) ? Math.min((p - 0.7) / 0.3, 1.0) : 1.0;
+        const ixP = (currentStep === 2) ? clamp((p - 0.7) / 0.3) : 1.0;
         if (ixP > 0) {
             ctx.save();
             ctx.globalAlpha = ixP;
@@ -438,7 +441,7 @@ function draw(p) {
 
     // 6. Draw comparison bracket and ratio labels (Step 3)
     if (currentStep === 3 && activeMass !== null) {
-        const brP = Math.min((p - 0.6) / 0.4, 1.0);
+        const brP = clamp((p - 0.6) / 0.4);
         if (brP > 0) {
             ctx.save();
             ctx.globalAlpha = brP;
