@@ -488,12 +488,12 @@ function renderAlgebraicWizard() {
         let massOptions = '';
         if (fixedElement === 'X') {
             massOptions = `
-                <button class="wizard-btn orange ${tempMass === 9.34 ? 'active' : ''}" onclick="selectTargetMass(9.34)">9.34 克 (推薦)</button>
+                <button class="wizard-btn orange ${tempMass === 9.34 ? 'active' : ''}" onclick="selectTargetMass(9.34)">9.34 克</button>
                 <button class="wizard-btn orange ${tempMass === 4.67 ? 'active' : ''}" onclick="selectTargetMass(4.67)">4.67 克</button>
             `;
         } else {
             massOptions = `
-                <button class="wizard-btn purple ${tempMass === 6.00 ? 'active' : ''}" onclick="selectTargetMass(6.00)">6.00 克 (推薦)</button>
+                <button class="wizard-btn purple ${tempMass === 6.00 ? 'active' : ''}" onclick="selectTargetMass(6.00)">6.00 克</button>
                 <button class="wizard-btn purple ${tempMass === 3.00 ? 'active' : ''}" onclick="selectTargetMass(3.00)">3.00 克</button>
                 <button class="wizard-btn purple ${tempMass === 2.00 ? 'active' : ''}" onclick="selectTargetMass(2.00)">2.00 克</button>
             `;
