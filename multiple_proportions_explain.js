@@ -214,99 +214,117 @@ function draw(p) {
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
     
-    // 1. Draw Grid Lines (straight lines, light gray)
+    // Determine step and mass parameters
+    const currentStep = (fixedElement === null) ? 1 : ((selectedMass === null) ? 2 : 3);
+    const activeMass = (selectedMass !== null) ? selectedMass : tempMass;
+
+    // Define graph scale limits dynamically
+    let xMax = 12;
+    let yMax = 8;
+    let xStep = 3;
+    let yStep = 2;
+
+    if (fixedElement === 'Y' && activeMass !== null) {
+        if (activeMass >= 6.00) {
+            xMax = 30;
+            xStep = 6;
+        } else if (activeMass >= 3.00) {
+            xMax = 15;
+            xStep = 3;
+        }
+    }
+
+    // Coordinate mapping
+    const mX = (xVal) => margin + (xVal / xMax) * (w - 2 * margin);
+    const mY = (yVal) => h - margin - (yVal / yMax) * (h - 2 * margin);
+
+    // 1. Draw Grid Lines
     ctx.save();
     ctx.strokeStyle = '#f3f4f6';
     ctx.lineWidth = 1;
-    
-    // X ticks grid (every 3 units)
-    for (let xVal = 3; xVal <= 12; xVal += 3) {
-        const tx = mapX(xVal, w);
+    for (let xVal = xStep; xVal <= xMax; xVal += xStep) {
+        const tx = mX(xVal);
         ctx.beginPath();
-        ctx.moveTo(tx, mapY(0, h));
-        ctx.lineTo(tx, mapY(8, h));
+        ctx.moveTo(tx, mY(0));
+        ctx.lineTo(tx, mY(yMax));
         ctx.stroke();
     }
-    // Y ticks grid (every 2 units)
-    for (let yVal = 2; yVal <= 8; yVal += 2) {
-        const ty = mapY(yVal, h);
+    for (let yVal = yStep; yVal <= yMax; yVal += yStep) {
+        const ty = mY(yVal);
         ctx.beginPath();
-        ctx.moveTo(mapX(0, w), ty);
-        ctx.lineTo(mapX(12, w), ty);
+        ctx.moveTo(mX(0), ty);
+        ctx.lineTo(mX(xMax), ty);
         ctx.stroke();
     }
     ctx.restore();
-    
-    // 2. Draw Axes (Wobbly)
-    drawWobblyLine(ctx, mapX(0, w), mapY(0, h), mapX(12, w), mapY(0, h), '#2b2b2b', 2, 201); // X Axis
-    drawWobblyLine(ctx, mapX(0, w), mapY(0, h), mapX(0, w), mapY(8, h), '#2b2b2b', 2, 202); // Y Axis
-    
+
+    // 2. Draw Axes
+    drawWobblyLine(ctx, mX(0), mY(0), mX(xMax), mY(0), '#2b2b2b', 2, 201); // X Axis
+    drawWobblyLine(ctx, mX(0), mY(0), mX(0), mY(yMax), '#2b2b2b', 2, 202); // Y Axis
+
     // Ticks & Numbers
     ctx.fillStyle = '#5f5f5f';
     ctx.font = 'Outfit sans-serif';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    
-    // X ticks
-    for (let xVal = 3; xVal <= 12; xVal += 3) {
-        const tx = mapX(xVal, w);
-        drawWobblyLine(ctx, tx, mapY(0, h), tx, mapY(0, h) + 5, '#2b2b2b', 1.5, 300 + xVal);
-        ctx.fillText(xVal, tx, mapY(0, h) + 18);
+    for (let xVal = xStep; xVal <= xMax; xVal += xStep) {
+        const tx = mX(xVal);
+        drawWobblyLine(ctx, tx, mY(0), tx, mY(0) + 5, '#2b2b2b', 1.5, 300 + xVal);
+        ctx.fillText(xVal, tx, mY(0) + 18);
     }
-    // Y ticks
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    for (let yVal = 2; yVal <= 8; yVal += 2) {
-        const ty = mapY(yVal, h);
-        drawWobblyLine(ctx, mapX(0, w), ty, mapX(0, w) - 5, ty, '#2b2b2b', 1.5, 400 + yVal);
-        ctx.fillText(yVal, mapX(0, w) - 10, ty);
+    for (let yVal = yStep; yVal <= yMax; yVal += yStep) {
+        const ty = mY(yVal);
+        drawWobblyLine(ctx, mX(0), ty, mX(0) - 5, ty, '#2b2b2b', 1.5, 400 + yVal);
+        ctx.fillText(yVal, mX(0) - 10, ty);
     }
-    
+
     // Axis labels
     ctx.fillStyle = '#2b2b2b';
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText('X 元素質量 wX (g)', mapX(12, w), mapY(0, h) + 32);
+    ctx.fillText('X 元素質量 wX (g)', mX(xMax), mY(0) + 32);
     ctx.textAlign = 'left';
-    ctx.fillText('Y 元素質量 wY (g)', mapX(0, w), mapY(8, h) - 15);
-    
-    // 3. Draw Relationship Lines (0.0 -> 0.6 timeline)
-    const lineP = Math.min(p / 0.6, 1.0);
-    const lineXLimit = 12.0 * lineP;
-    
-    // Compound 1 (XY): w_Y = (2.00 / 9.34) * w_X
-    // At w_X = 12.0, w_Y = 2.57
-    const endX1 = mapX(lineXLimit, w);
-    const endY1 = mapY((2.00 / 9.34) * lineXLimit, h);
-    drawWobblyLine(ctx, mapX(0, w), mapY(0, h), endX1, endY1, '#ff7a00', 3, 501);
-    
-    // Compound 2 (XYn): w_Y = (3.00 / 4.67) * w_X
-    // At w_X = 11.0, w_Y = 7.06
-    const limitX2 = Math.min(lineXLimit, 11.0);
-    const endX2 = mapX(limitX2, w);
-    const endY2 = mapY((3.00 / 4.67) * limitX2, h);
-    drawWobblyLine(ctx, mapX(0, w), mapY(0, h), endX2, endY2, '#7c3aed', 3, 502);
-    
-    // Labels for lines (drawn when lines finished)
-    if (p >= 0.5) {
+    ctx.fillText('Y 元素質量 wY (g)', mX(0), mY(yMax) - 15);
+
+    // 3. Draw constant-ratio wobbly lines from origin
+    const ratioLineP = (currentStep === 1) ? Math.min(p / 0.5, 1.0) : 1.0;
+    const endX1 = mX(xMax * ratioLineP);
+    const endY1 = mY((2.00 / 9.34) * xMax * ratioLineP);
+    drawWobblyLine(ctx, mX(0), mY(0), endX1, endY1, '#ff7a00', 3, 501);
+
+    const limitX2 = Math.min(xMax, yMax * (4.67 / 3.00));
+    const endX2 = mX(limitX2 * ratioLineP);
+    const endY2 = mY((3.00 / 4.67) * limitX2 * ratioLineP);
+    drawWobblyLine(ctx, mX(0), mY(0), endX2, endY2, '#7c3aed', 3, 502);
+
+    // Labels for ratio lines (drawn when lines are complete)
+    if (p >= 0.4) {
         ctx.font = 'bold 11px sans-serif';
         ctx.fillStyle = '#ff7a00';
         ctx.textAlign = 'left';
-        ctx.fillText('第一個化合物 XY', mapX(10, w), mapY((2.00 / 9.34) * 10, h) + 15);
-        
+        ctx.fillText('第一個化合物 XY', mX(xMax * 0.8), mY((2.00 / 9.34) * xMax * 0.8) + 15);
         ctx.fillStyle = '#7c3aed';
-        ctx.fillText('第二個化合物 XYn', mapX(9.2, w), mapY((3.00 / 4.67) * 9.2, h) - 15);
+        
+        let c2RatioLabel = 'XaYb';
+        if (currentStep === 2) {
+            c2RatioLabel = (fixedElement === 'X') ? 'XY_b' : 'X_aY';
+        } else if (currentStep === 3) {
+            c2RatioLabel = 'XY₃';
+        }
+        ctx.fillText(`第二個化合物 ${c2RatioLabel}`, mX(limitX2 * 0.8), mY((3.00 / 4.67) * limitX2 * 0.8) - 15);
     }
-    
-    // 4. Plot points and highlight original samples (0.5 -> 0.8 timeline)
-    if (p >= 0.4) {
-        const ptP = Math.min((p - 0.4) / 0.3, 1.0);
+
+    // 4. Draw original sample points (Point I: (9.34, 2.00), Point II: (4.67, 3.00))
+    const ptP = (currentStep === 1) ? Math.min((p - 0.4) / 0.3, 1.0) : 1.0;
+    if (ptP > 0) {
         ctx.save();
         ctx.globalAlpha = ptP;
         
-        // Point A (9.34, 2.00)
-        const pAx = mapX(9.34, w);
-        const pAy = mapY(2.00, h);
+        // Point I
+        const pAx = mX(9.34);
+        const pAy = mY(2.00);
         ctx.beginPath();
         ctx.arc(pAx, pAy, 5, 0, Math.PI * 2);
         ctx.fillStyle = '#ff7a00';
@@ -318,11 +336,11 @@ function draw(p) {
         ctx.font = 'bold 11px sans-serif';
         ctx.fillStyle = '#ff7a00';
         ctx.textAlign = 'left';
-        ctx.fillText('  (9.34, 2.00)', pAx, pAy + 8);
+        ctx.fillText('  I (XY)', pAx, pAy + 8);
         
-        // Point B (4.67, 3.00)
-        const pBx = mapX(4.67, w);
-        const pBy = mapY(3.00, h);
+        // Point II
+        const pBx = mX(4.67);
+        const pBy = mY(3.00);
         ctx.beginPath();
         ctx.arc(pBx, pBy, 5, 0, Math.PI * 2);
         ctx.fillStyle = '#7c3aed';
@@ -331,100 +349,185 @@ function draw(p) {
         
         ctx.fillStyle = '#7c3aed';
         ctx.textAlign = 'right';
-        ctx.fillText('(4.67, 3.00)  ', pBx, pBy - 8);
+        ctx.fillText('II (XaYb)  ', pBx, pBy - 8);
         ctx.restore();
     }
-    
-    // 5. Draw Vertical dashed helper line at w_X = 9.34 (0.7 -> 0.9 timeline)
-    if (p >= 0.7) {
-        const helperP = Math.min((p - 0.7) / 0.2, 1.0);
-        const targetHeight = 6.2; // slightly above intersection at Y=6.00
-        const startY = mapY(0, h);
-        const endY = mapY(targetHeight * helperP, h);
-        const refX = mapX(9.34, w);
+
+    // 5. Draw Blue Dashed Line and intersection points (Step 2+)
+    if (currentStep >= 2 && activeMass !== null) {
+        const helperP = (currentStep === 2) ? Math.min((p - 0.3) / 0.4, 1.0) : 1.0;
         
-        // Draw dashed wobbly-like straight vertical line
         ctx.save();
-        ctx.strokeStyle = '#4b5563';
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#0284c7'; // fixed-element blue
+        ctx.lineWidth = 2;
         ctx.setLineDash([5, 4]);
-        ctx.beginPath();
-        ctx.moveTo(refX, startY);
-        ctx.lineTo(refX, endY);
-        ctx.stroke();
+
+        if (fixedElement === 'X') {
+            const ix1_y = (2.00 / 9.34) * activeMass;
+            const ix2_y = (3.00 / 4.67) * activeMass;
+            const targetY = Math.max(ix1_y, ix2_y) + 0.5;
+            
+            ctx.beginPath();
+            ctx.moveTo(mX(activeMass), mY(0));
+            ctx.lineTo(mX(activeMass), mY(targetY * helperP));
+            ctx.stroke();
+        } else {
+            const ix1_x = (9.34 / 2.00) * activeMass;
+            const ix2_x = (4.67 / 3.00) * activeMass;
+            const targetX = Math.max(ix1_x, ix2_x) + 1.0;
+            
+            ctx.beginPath();
+            ctx.moveTo(mX(0), mY(activeMass));
+            ctx.lineTo(mX(targetX * helperP), mY(activeMass));
+            ctx.stroke();
+        }
         ctx.restore();
-        
-        // Intersection markers
-        if (p >= 0.8) {
-            const ixP = Math.min((p - 0.8) / 0.1, 1.0);
+
+        // Draw intersection markers
+        const ixP = (currentStep === 2) ? Math.min((p - 0.7) / 0.3, 1.0) : 1.0;
+        if (ixP > 0) {
             ctx.save();
             ctx.globalAlpha = ixP;
-            
-            // Marker 1: XY at (9.34, 2.00)
-            ctx.beginPath();
-            ctx.arc(refX, mapY(2.00, h), 7, 0, Math.PI * 2);
-            ctx.strokeStyle = '#ff7a00';
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-            
-            // Marker 2: XY_n at (9.34, 6.00)
-            ctx.beginPath();
-            ctx.arc(refX, mapY(6.00, h), 7, 0, Math.PI * 2);
-            ctx.strokeStyle = '#7c3aed';
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-            
-            ctx.font = 'bold 11px sans-serif';
-            ctx.fillStyle = '#7c3aed';
-            ctx.textAlign = 'right';
-            ctx.fillText('(9.34, 6.00)  ', refX - 8, mapY(6.00, h));
-            
+
+            if (fixedElement === 'X') {
+                const ix1_y = (2.00 / 9.34) * activeMass;
+                const ix2_y = (3.00 / 4.67) * activeMass;
+                
+                // Intersection I (XY)
+                ctx.beginPath();
+                ctx.arc(mX(activeMass), mY(ix1_y), 7, 0, Math.PI * 2);
+                ctx.strokeStyle = '#ff7a00';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillStyle = '#ff7a00';
+                ctx.textAlign = 'left';
+                ctx.fillText(`  I (XY) [${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)}]`, mX(activeMass), mY(ix1_y) + 8);
+                
+                // Intersection II
+                ctx.beginPath();
+                ctx.arc(mX(activeMass), mY(ix2_y), 7, 0, Math.PI * 2);
+                ctx.strokeStyle = '#7c3aed';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#7c3aed';
+                ctx.textAlign = 'left';
+                const formulaText = (currentStep === 3) ? 'XY₃' : 'XY_b';
+                ctx.fillText(`  II (${formulaText}) [${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)}]`, mX(activeMass), mY(ix2_y) - 8);
+            } else {
+                const ix1_x = (9.34 / 2.00) * activeMass;
+                const ix2_x = (4.67 / 3.00) * activeMass;
+                
+                // Intersection I (XY)
+                ctx.beginPath();
+                ctx.arc(mX(ix1_x), mY(activeMass), 7, 0, Math.PI * 2);
+                ctx.strokeStyle = '#ff7a00';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillStyle = '#ff7a00';
+                ctx.textAlign = 'left';
+                ctx.fillText(`  I (XY) [${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)}]`, mX(ix1_x), mY(activeMass) + 15);
+                
+                // Intersection II
+                ctx.beginPath();
+                ctx.arc(mX(ix2_x), mY(activeMass), 7, 0, Math.PI * 2);
+                ctx.strokeStyle = '#7c3aed';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#7c3aed';
+                ctx.textAlign = 'right';
+                const formulaText = (currentStep === 3) ? 'XY₃' : 'X_aY';
+                ctx.fillText(`II (${formulaText}) [${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)}]  `, mX(ix2_x), mY(activeMass) - 15);
+            }
             ctx.restore();
         }
     }
-    
-    // 6. Draw vertical comparison bracket and ratio labels (0.85 -> 1.0 timeline)
-    if (p >= 0.85) {
-        const brP = Math.min((p - 0.85) / 0.15, 1.0);
-        ctx.save();
-        ctx.globalAlpha = brP;
-        
-        const refX = mapX(9.34, w);
-        const yA = mapY(2.00, h);
-        const yC = mapY(6.00, h);
-        
-        // Draw bracket on the right of the vertical line
-        drawBracket(ctx, refX + 8, yA, yC, 'Y 質量比 = 2 : 6 = 1 : 3');
-        ctx.restore();
+
+    // 6. Draw comparison bracket and ratio labels (Step 3)
+    if (currentStep === 3 && activeMass !== null) {
+        const brP = Math.min((p - 0.6) / 0.4, 1.0);
+        if (brP > 0) {
+            ctx.save();
+            ctx.globalAlpha = brP;
+            
+            if (fixedElement === 'X') {
+                const ix1_y = (2.00 / 9.34) * activeMass;
+                const ix2_y = (3.00 / 4.67) * activeMass;
+                const ratioY = ix2_y / ix1_y;
+                
+                drawVerticalBracket(ctx, mX(activeMass) + 8, mY(ix1_y), mY(ix2_y), `Y 質量比 = ${ix1_y.toFixed(2)} : ${ix2_y.toFixed(2)} = 1 : ${ratioY.toFixed(0)}`);
+            } else {
+                const ix1_x = (9.34 / 2.00) * activeMass;
+                const ix2_x = (4.67 / 3.00) * activeMass;
+                const ratioX = ix1_x / ix2_x;
+                
+                drawHorizontalBracket(ctx, mX(ix2_x), mX(ix1_x), mY(activeMass) + 5, `X 質量比 = ${ix1_x.toFixed(2)} : ${ix2_x.toFixed(2)} = ${ratioX.toFixed(0)} : 1 ➡ a = 1/${ratioX.toFixed(0)}`);
+            }
+            ctx.restore();
+        }
     }
 }
 
-function drawBracket(ctx, x, y1, y2, label) {
-    ctx.strokeStyle = '#1f1f1f';
+function drawVerticalBracket(ctx, x, y1, y2, label) {
+    ctx.save();
+    ctx.strokeStyle = '#2b2b2b';
     ctx.lineWidth = 2;
     ctx.beginPath();
     
-    // A bracket shape facing right: {
-    // y1 (bottom) is larger y-pixel coordinate, y2 (top) is smaller y-pixel coordinate
     const topY = Math.min(y1, y2);
     const bottomY = Math.max(y1, y2);
     const midY = (topY + bottomY) / 2;
     
+    // Bracket shape facing right: {
     ctx.moveTo(x + 5, topY);
     ctx.lineTo(x + 12, topY);
     ctx.lineTo(x + 12, midY - 6);
-    ctx.lineTo(x + 19, midY);
+    ctx.lineTo(x + 18, midY);
     ctx.lineTo(x + 12, midY + 6);
     ctx.lineTo(x + 12, bottomY);
     ctx.lineTo(x + 5, bottomY);
     ctx.stroke();
     
     // Label text
-    ctx.fillStyle = '#1f1f1f';
-    ctx.font = 'bold 13px sans-serif';
+    ctx.fillStyle = '#2b2b2b';
+    ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(label, x + 24, midY);
+    ctx.restore();
+}
+
+function drawHorizontalBracket(ctx, x1, x2, y, label) {
+    ctx.save();
+    ctx.strokeStyle = '#2b2b2b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    const leftX = Math.min(x1, x2);
+    const rightX = Math.max(x1, x2);
+    const midX = (leftX + rightX) / 2;
+    
+    // Bracket shape facing down: } rotated
+    ctx.moveTo(leftX, y + 5);
+    ctx.lineTo(leftX, y + 12);
+    ctx.lineTo(midX - 6, y + 12);
+    ctx.lineTo(midX, y + 18);
+    ctx.lineTo(midX + 6, y + 12);
+    ctx.lineTo(rightX, y + 12);
+    ctx.lineTo(rightX, y + 5);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#2b2b2b';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(label, midX, y + 23);
+    ctx.restore();
 }
 
 // Window resizing
@@ -660,6 +763,12 @@ function renderAlgebraicWizard() {
                 </div>
             </div>
         `;
+    }
+
+    // Auto restart canvas animation on step transitions
+    if (geometricActive && typeof startAnimation === 'function') {
+        initCanvas();
+        startAnimation();
     }
 }
 
