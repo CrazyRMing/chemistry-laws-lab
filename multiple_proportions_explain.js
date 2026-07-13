@@ -501,8 +501,8 @@ function renderAlgebraicWizard() {
 
         container.innerHTML = `
             <div class="step-card" style="border-color: var(--border-color);">
-                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 2：設定固定後的 ${fixedElement} 元素目標質量</strong><br>
-                <span style="color: var(--text-secondary); font-size: 0.85rem;">選擇您希望將 ${fixedElement} 質量固定為多少克：</span>
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 2：設定固定後的 <span style="color: #0284c7; font-weight: bold;">${fixedElement}</span> 元素目標質量</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">選擇您希望將 <span style="color: #0284c7; font-weight: bold;">${fixedElement}</span> 質量固定為多少克：</span>
                 <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem;">
                     ${massOptions}
                 </div>
