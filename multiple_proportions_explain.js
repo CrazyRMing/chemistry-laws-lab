@@ -777,10 +777,10 @@ function renderAlgebraicWizard() {
                 <div style="margin-top: 0.4rem;">
                     1. <strong>固定元素同質量</strong>：此時 <span style="color: #0284c7; font-weight: bold;">X</span> 的質量均<span style="color: #0284c7; font-weight: bold;">固定</span>為 <span style="font-weight: bold;">${selectedMass.toFixed(2)}g</span>。<br>
                     2. <strong>重量相同代表原子數目相同</strong>：此時兩個化合物中的 <span style="color: #0284c7; font-weight: bold;">X</span> 原子數目被視為<span style="color: #0284c7; font-weight: bold;">相同</span>（代表 1 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子），故化合物 II 可表示為 <strong><span style="color: #0284c7; font-weight: bold;">X</span>Y<sub>b</sub></strong>。<br>
-                    3. <strong>觀察另一個元素的質量比</strong>：第一個化合物中 Y 的質量為 <span style="color: var(--color-orange); font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>，第二個化合物中 Y 的質量為 <span style="color: #7c3aed; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>。<br>
+                    3. <strong>觀察另一個元素的質量比</strong>：第一個化合物中 Y 的質量為 <span style="color: #ef4444; font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>，第二個化合物中 Y 的質量為 <span style="color: #10b981; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>。<br>
                     4. <strong>求出原子個數比 (b值)</strong>：在 <span style="color: #0284c7; font-weight: bold;">X</span> 原子數<span style="color: #0284c7; font-weight: bold;">相同</span>時，Y 的原子個數比即為其質量比：
                     <div style="text-align: center; margin: 0.4rem 0; font-size: 1.1rem; font-weight: bold; font-family: var(--font-heading);">
-                        Y 原子比 1 : b = <span style="color: var(--color-orange);">${c1Y_scaled.toFixed(2)}</span> : <span style="color: #7c3aed;">${c2Y_scaled.toFixed(2)}</span> = 1 : ${ratioY.toFixed(1)}
+                        Y 原子比 1 : b = <span style="color: #ef4444;">${c1Y_scaled.toFixed(2)}</span> : <span style="color: #10b981;">${c2Y_scaled.toFixed(2)}</span> = <span style="color: #ef4444;">1</span> : <span style="color: #10b981;">${ratioY.toFixed(0)}</span>
                     </div>
                 </div>
             `;
@@ -790,7 +790,7 @@ function renderAlgebraicWizard() {
                 deductionText += `
                     <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
                         5. <strong>分析原子數目關係</strong>：因為兩者中的 <span style="color: #0284c7; font-weight: bold;">X</span> 質量相同，且第一個化合物已知為 <span style="color: #0284c7; font-weight: bold;">X</span>Y（含有 1 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子），故第二個化合物亦含有 1 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子。<br>
-                        6. <strong>得出分子式</strong>：此時第二個化合物中的 Y 質量（${c2Y_scaled.toFixed(2)}g）是第一個化合物中 Y 質量（${c1Y_scaled.toFixed(2)}g）的 ${ratioY.toFixed(0)} 倍，表示其 Y 原子數為 ${ratioY.toFixed(0)} 個，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                        6. <strong>得出分子式</strong>：此時第二個化合物中的 Y 質量（<span style="color: #10b981; font-weight: bold;">${c2Y_scaled.toFixed(2)}g</span>）是第一個化合物中 Y 質量（<span style="color: #ef4444; font-weight: bold;">${c1Y_scaled.toFixed(2)}g</span>）的 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 倍，表示其 Y 原子數為 <span style="color: #10b981; font-weight: bold;">${ratioY.toFixed(0)}</span> 個，故第二個化合物的分子式為 <strong style="color: #10b981;">XY₃</strong>。
                     </div>
                 `;
             }
@@ -802,14 +802,14 @@ function renderAlgebraicWizard() {
                 <div style="margin-top: 0.4rem;">
                     1. <strong>固定元素同質量</strong>：此時 <span style="color: #0284c7; font-weight: bold;">Y</span> 的質量均<span style="color: #0284c7; font-weight: bold;">固定</span>為 <span style="font-weight: bold;">${selectedMass.toFixed(2)}g</span>。<br>
                     2. <strong>重量相同代表原子數目相同</strong>：此時兩個化合物中的 <span style="color: #0284c7; font-weight: bold;">Y</span> 原子數目視為<span style="color: #0284c7; font-weight: bold;">相同</span>，故化合物 II 可以表示為 <strong>X<sub>a</sub><span style="color: #0284c7; font-weight: bold;">Y</span></strong>（a 代表 X 相對於 1 個 <span style="color: #0284c7; font-weight: bold;">Y</span> 原子的比例）。<br>
-                    3. <strong>觀察另一個元素 X 的質量比</strong>：第一個化合物中 X 的質量為 <span style="color: var(--color-orange); font-weight: bold;">${c1X_scaled.toFixed(2)}g</span>，第二個化合物中 X 的質量為 <span style="color: #7c3aed; font-weight: bold;">${c2X_scaled.toFixed(2)}g</span>。<br>
+                    3. <strong>觀察另一個元素 X 的質量比</strong>：第一個化合物中 X 的質量為 <span style="color: #10b981; font-weight: bold;">${c1X_scaled.toFixed(2)}g</span>，第二個化合物中 X 的質量為 <span style="color: #ef4444; font-weight: bold;">${c2X_scaled.toFixed(2)}g</span>。<br>
                     4. <strong>求出 X 的質量比</strong>：在<span style="color: #0284c7; font-weight: bold;">固定</span><span style="color: #0284c7; font-weight: bold;">相同</span> <span style="color: #0284c7; font-weight: bold;">Y</span> 質量下，第一個與第二個化合物的 X 質量比為：
                     <div style="text-align: center; margin: 0.4rem 0; font-size: 1.1rem; font-weight: bold; font-family: var(--font-heading);">
-                        X 質量比 = <span style="color: var(--color-orange);">${c1X_scaled.toFixed(2)}</span> : <span style="color: #7c3aed;">${c2X_scaled.toFixed(2)}</span> = 3 : 1
+                        X 質量比 = <span style="color: #10b981;">${c1X_scaled.toFixed(2)}</span> : <span style="color: #ef4444;">${c2X_scaled.toFixed(2)}</span> = <span style="color: #10b981;">3</span> : <span style="color: #ef4444;">1</span>
                     </div>
-                    5. <strong>推導暫時分子式</strong>：第一個化合物為 X<span style="color: #0284c7; font-weight: bold;">Y</span>（X 與 <span style="color: #0284c7; font-weight: bold;">Y</span> 的個數比為 1 : 1）。在<span style="color: #0284c7; font-weight: bold;">相同</span> <span style="color: #0284c7; font-weight: bold;">Y</span> 質量下，因為 X 的質量比為 3 : 1，所以第二個化合物中的 X 原子數只有第一個的 1/3 倍，此時分子式寫為 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span></strong>。<br>
+                    5. <strong>推導暫時分子式</strong>：第一個化合物為 X<span style="color: #0284c7; font-weight: bold;">Y</span>（X 與 <span style="color: #0284c7; font-weight: bold;">Y</span> 的個數比為 1 : 1）。在<span style="color: #0284c7; font-weight: bold;">相同</span> <span style="color: #0284c7; font-weight: bold;">Y</span> 質量下，因為 X 的質量比為 <span style="color: #10b981; font-weight: bold;">3</span> : <span style="color: #ef4444; font-weight: bold;">1</span>，所以第二個化合物中的 X 原子數只有第一個的 1/3 倍，此時分子式寫為 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span></strong>。<br>
                     <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
-                        6. <strong>化為整數比（符合原子說）</strong>：根據原子說，原子不能分割，個數必須為整數。我們將 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>1</sub></strong> 的下標同乘以 3，得到最簡整數比，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                        6. <strong>化為整數比（符合原子說）</strong>：根據原子說，原子不能分割，個數必須為整數。我們將 <strong>X<sub>1/3</sub><span style="color: #0284c7; font-weight: bold;">Y</span><sub>1</sub></strong> 的下標同乘以 3，得到最簡整數比，故第二個化合物的分子式為 <strong style="color: #10b981;">XY₃</strong>。
                     </div>
                 </div>
             `;
