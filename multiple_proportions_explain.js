@@ -460,20 +460,20 @@ function draw(p) {
                 const ix1_y = (2.00 / 9.34) * activeMass;
                 const ix2_y = (3.00 / 4.67) * activeMass;
                 
-                // Draw bracket 1 (orange, Compound I) on the left of vertical helper line
-                drawVerticalBracket(ctx, mX(activeMass) - 8, mY(0), mY(ix1_y), '1', '#ff7a00', true);
+                // Draw bracket 1 (red, Compound I) on the left of vertical helper line
+                drawVerticalBracket(ctx, mX(activeMass) - 8, mY(0), mY(ix1_y), '1', '#ef4444', true);
                 
-                // Draw bracket 2 (purple, Compound II) on the right of vertical helper line
-                drawVerticalBracket(ctx, mX(activeMass) + 8, mY(0), mY(ix2_y), '3', '#7c3aed', false);
+                // Draw bracket 2 (green, Compound II) on the right of vertical helper line
+                drawVerticalBracket(ctx, mX(activeMass) + 8, mY(0), mY(ix2_y), '3', '#10b981', false);
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
                 
-                // Draw bracket 1 (purple, Compound II) above horizontal helper line
-                drawHorizontalBracket(ctx, mX(0), mX(ix2_x), mY(activeMass) - 8, '1', '#7c3aed', true);
+                // Draw bracket 1 (red, Compound II) below horizontal helper line
+                drawHorizontalBracket(ctx, mX(0), mX(ix2_x), mY(activeMass) + 8, '1', '#ef4444', false);
                 
-                // Draw bracket 2 (orange, Compound I) below horizontal helper line
-                drawHorizontalBracket(ctx, mX(0), mX(ix1_x), mY(activeMass) + 8, '3', '#ff7a00', false);
+                // Draw bracket 2 (green, Compound I) above horizontal helper line
+                drawHorizontalBracket(ctx, mX(0), mX(ix1_x), mY(activeMass) - 8, '3', '#10b981', true);
             }
             ctx.restore();
         }
