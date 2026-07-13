@@ -628,8 +628,8 @@ function renderAlgebraicWizard() {
                     // Fixed to X = 4.67
                     deductionText += `
                         <div style="border-top: 1.5px dashed rgba(43,43,43,0.15); padding-top: 0.4rem; margin-top: 0.4rem;">
-                            5. <strong>注意非整數原子個數的處理</strong>：此時 <span style="color: #0284c7; font-weight: bold;">X</span> 質量為 4.67g (相當於 0.5 個 <span style="color: #0284c7; font-weight: bold;">X</span> 原子)，求得 Y 原子數 b = 3，分子式寫為 <strong><span style="color: #0284c7; font-weight: bold;">X</span><sub>0.5</sub>Y<sub>1.5</sub></strong>。<br>
-                            6. <strong>化為最簡整數比</strong>：根據原子說，原子不能分割，個數必須為整數。我們將式子中的原子數同乘以 2，得到 1 : 3，故第二個化合物的分子式為 <strong style="color: #7c3aed;">XY₃</strong>。
+                            5. <strong>注意非整數原子個數的處理</strong>：此時兩個化合物中的 <span style="color: #0284c7; font-weight: bold;">X</span> 質量相同（皆為 4.67g，代表對應比例數相同），第一個化合物原子比例為 <span style="color: #0284c7; font-weight: bold;">X</span><sub>0.5</sub>Y<sub>0.5</sub>，而第二個化合物則為 <strong><span style="color: #0284c7; font-weight: bold;">X</span><sub>0.5</sub>Y<sub>1.5</sub></strong>。<br>
+                            6. <strong>化為最簡整數比</strong>：根據原子說，原子不能分割，個數必須為整數。我們將下標同乘以 2，第一個化合物化為 XY，第二個化合物則化為 <strong style="color: #7c3aed;">XY₃</strong>。
                         </div>
                     `;
                 } else {
