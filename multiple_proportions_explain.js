@@ -393,7 +393,7 @@ function drawBracket(ctx, x, y1, y2, label) {
     ctx.stroke();
     
     // Label text
-    ctx.fillStyle = '#7c3aed';
+    ctx.fillStyle = '#1f1f1f';
     ctx.font = 'bold 13px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
