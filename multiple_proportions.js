@@ -8,7 +8,7 @@ const ctxG = graphCanvas.getContext('2d');
 const FONT_UI = 'bold 1.15rem sans-serif';
 const FONT_TITLE = 'bold 1.35rem sans-serif';
 const FONT_SMALL = '0.95rem sans-serif';
-const FONT_MATH = 'bold italic 1.15rem "EB Garamond", serif';
+const FONT_MATH = 'bold 1.15rem sans-serif';
 
 // Navigation State
 let currentStep = 1;
@@ -1035,7 +1035,7 @@ function drawLeftPanel() {
         drawWobblyRect(ctxF, w / 4 - cw / 2, h / 2 - 30, cw, ch, '#ff7a00', false, '#ffffff', 2, 131);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 I', w / 4, h / 2 - 5);
-        ctxF.font = 'bold italic 1.45rem "EB Garamond", serif';
+        ctxF.font = 'bold 1.45rem sans-serif';
         ctxF.fillStyle = '#ff7a00';
         ctxF.fillText('HₓO₁', w / 4, h / 2 + 40);
         
@@ -1044,7 +1044,7 @@ function drawLeftPanel() {
         drawWobblyRect(ctxF, (w * 3) / 4 - cw / 2, h / 2 - 30, cw, ch, '#7c3aed', false, '#ffffff', 2, 132);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 II', (w * 3) / 4, h / 2 - 5);
-        ctxF.font = 'bold italic 1.45rem "EB Garamond", serif';
+        ctxF.font = 'bold 1.45rem sans-serif';
         ctxF.fillStyle = '#7c3aed';
         ctxF.fillText('H_yO₁', (w * 3) / 4, h / 2 + 40);
         
@@ -1061,7 +1061,7 @@ function drawLeftPanel() {
         ctxF.fillText('等氧質量時，氫之質量比為 2 : 1。', 50, 110);
         ctxF.fillText('因此，分子中 H 原子數之比應為：', 50, 140);
         
-        ctxF.font = 'bold italic 1.35rem "EB Garamond", serif';
+        ctxF.font = 'bold 1.35rem sans-serif';
         ctxF.fillStyle = '#ff7a00';
         ctxF.fillText('x : y = 2 : 1', w / 2 - 40, h / 2 + 30);
         
@@ -1083,7 +1083,7 @@ function drawLeftPanel() {
         drawWobblyRect(ctxF, w / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#ffffff', 2.5, 151);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 I (水)', w / 4, h / 2 - 10);
-        ctxF.font = 'bold italic 1.65rem "EB Garamond", serif';
+        ctxF.font = 'bold 1.65rem sans-serif';
         ctxF.fillStyle = '#ff7a00';
         ctxF.fillText('H₂O', w / 4, h / 2 + 35);
         
@@ -1092,7 +1092,7 @@ function drawLeftPanel() {
         drawWobblyRect(ctxF, (w * 3) / 4 - cw / 2, h / 2 - 35, cw, ch, '#2b2b2b', true, '#ffffff', 2.5, 152);
         ctxF.font = FONT_UI;
         ctxF.fillText('化合物 II (雙氧水)', (w * 3) / 4, h / 2 - 10);
-        ctxF.font = 'bold italic 1.65rem "EB Garamond", serif';
+        ctxF.font = 'bold 1.65rem sans-serif';
         ctxF.fillStyle = '#7c3aed';
         ctxF.fillText('H₂O₂', (w * 3) / 4, h / 2 + 35);
         

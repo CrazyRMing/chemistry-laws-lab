@@ -210,6 +210,44 @@ function renderLoop(now) {
     }
 }
 
+function drawHighlightedText(ctx, x, y, parts, align = 'right') {
+    ctx.save();
+    
+    // Calculate total width using correct font per segment
+    let totalWidth = 0;
+    parts.forEach(p => {
+        if (p.sub) {
+            ctx.font = 'bold 8px sans-serif';
+        } else {
+            ctx.font = 'bold 11px sans-serif';
+        }
+        totalWidth += ctx.measureText(p.text).width;
+    });
+    
+    let currentX = x;
+    if (align === 'right') {
+        currentX = x - totalWidth;
+    } else if (align === 'center') {
+        currentX = x - totalWidth / 2;
+    }
+    
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    parts.forEach(p => {
+        if (p.sub) {
+            ctx.font = 'bold 8px sans-serif';
+            ctx.fillStyle = p.color;
+            ctx.fillText(p.text, currentX, y + 2); // lower subscript vertically
+        } else {
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = p.color;
+            ctx.fillText(p.text, currentX, y);
+        }
+        currentX += ctx.measureText(p.text).width;
+    });
+    ctx.restore();
+}
+
 function draw(p) {
     const w = canvas.width;
     const h = canvas.height;
@@ -314,11 +352,50 @@ function draw(p) {
         ctx.lineWidth = 1.5;
         ctx.stroke();
         
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillStyle = '#ff7a00';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('I (XY)  ', pAx - 6, pAy - 6);
+        // Point I label parts
+        let partsI = [];
+        if (selectedMass !== null) {
+            // Step 3: Highlight compared element as red to match bracket 1
+            if (fixedElement === 'X') {
+                partsI = [
+                    { text: 'I (', color: '#ff7a00' },
+                    { text: 'X', color: '#0284c7' },     // Fixed element X is blue
+                    { text: 'Y', color: '#ef4444' },     // Compared element Y is red
+                    { text: ')  ', color: '#ff7a00' }
+                ];
+            } else if (fixedElement === 'Y') {
+                partsI = [
+                    { text: 'I (', color: '#ff7a00' },
+                    { text: 'X', color: '#ef4444' },     // Compared element X is red
+                    { text: 'Y', color: '#0284c7' },     // Fixed element Y is blue
+                    { text: ')  ', color: '#ff7a00' }
+                ];
+            } else {
+                partsI = [
+                    { text: 'I (XY)  ', color: '#ff7a00' }
+                ];
+            }
+        } else {
+            // Step 1 or 2: Normal label coloring
+            if (fixedElement === 'X') {
+                partsI = [
+                    { text: 'I (', color: '#ff7a00' },
+                    { text: 'X', color: '#0284c7' },
+                    { text: 'Y)  ', color: '#ff7a00' }
+                ];
+            } else if (fixedElement === 'Y') {
+                partsI = [
+                    { text: 'I (X', color: '#ff7a00' },
+                    { text: 'Y', color: '#0284c7' },
+                    { text: ')  ', color: '#ff7a00' }
+                ];
+            } else {
+                partsI = [
+                    { text: 'I (XY)  ', color: '#ff7a00' }
+                ];
+            }
+        }
+        drawHighlightedText(ctx, pAx - 6, pAy - 6, partsI, 'right');
         
         // Point II
         const pBx = mX(4.67);
@@ -329,10 +406,55 @@ function draw(p) {
         ctx.fill();
         ctx.stroke();
         
-        ctx.fillStyle = '#7c3aed';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText('II (XaYb)  ', pBx - 6, pBy - 6);
+        // Point II label parts
+        let partsII = [];
+        if (selectedMass !== null) {
+            // Step 3: Molecular formula is determined as XY3
+            if (fixedElement === 'X') {
+                partsII = [
+                    { text: 'II (', color: '#7c3aed' },
+                    { text: 'X', color: '#0284c7' },     // Fixed element X is blue
+                    { text: 'Y', color: '#10b981' },     // Y3 is green
+                    { text: '3', color: '#10b981', sub: true },
+                    { text: ')  ', color: '#7c3aed' }
+                ];
+            } else {
+                partsII = [
+                    { text: 'II (', color: '#7c3aed' },
+                    { text: 'X', color: '#10b981' },     // X is green
+                    { text: 'Y', color: '#0284c7' },     // Fixed element Y is blue
+                    { text: '3', color: '#0284c7', sub: true },
+                    { text: ')  ', color: '#7c3aed' }
+                ];
+            }
+        } else {
+            // Step 1 or 2: Molecular formula is not determined yet
+            if (fixedElement === 'X') {
+                partsII = [
+                    { text: 'II (', color: '#7c3aed' },
+                    { text: 'X', color: '#0284c7' },
+                    { text: 'Y', color: '#7c3aed' },
+                    { text: 'b', color: '#7c3aed', sub: true },
+                    { text: ')  ', color: '#7c3aed' }
+                ];
+            } else if (fixedElement === 'Y') {
+                partsII = [
+                    { text: 'II (X', color: '#7c3aed' },
+                    { text: 'a', color: '#7c3aed', sub: true },
+                    { text: 'Y', color: '#0284c7' },
+                    { text: ')  ', color: '#7c3aed' }
+                ];
+            } else {
+                partsII = [
+                    { text: 'II (X', color: '#7c3aed' },
+                    { text: 'a', color: '#7c3aed', sub: true },
+                    { text: 'Y', color: '#7c3aed' },
+                    { text: 'b', color: '#7c3aed', sub: true },
+                    { text: ')  ', color: '#7c3aed' }
+                ];
+            }
+        }
+        drawHighlightedText(ctx, pBx - 6, pBy - 6, partsII, 'right');
         ctx.restore();
     }
 
@@ -626,12 +748,12 @@ function renderAlgebraicWizard() {
         // Step 1: Raw Table with no brackets, Compound II shows X_a Y_b
         tableBody.innerHTML = `
             <tr style="color: var(--color-orange); font-weight: 500;">
-                <td style="font-weight: bold;">第一個化合物 (XY)</td>
+                <td style="font-weight: bold;">化合物 I (XY)</td>
                 <td>9.34</td>
                 <td>2.00</td>
             </tr>
             <tr style="color: #7c3aed; font-weight: 500;">
-                <td style="font-weight: bold;">第二個化合物 (X<sub>a</sub>Y<sub>b</sub>)</td>
+                <td style="font-weight: bold;">化合物 II (X<sub>a</sub>Y<sub>b</sub>)</td>
                 <td>4.67</td>
                 <td>3.00</td>
             </tr>
@@ -661,12 +783,12 @@ function renderAlgebraicWizard() {
 
         tableBody.innerHTML = `
             <tr style="color: var(--color-orange); font-weight: 500;">
-                <td style="font-weight: bold;">第一個化合物 (${c1Formula})</td>
+                <td style="font-weight: bold;">化合物 I (${c1Formula})</td>
                 <td>9.34</td>
                 <td>2.00</td>
             </tr>
             <tr style="color: #7c3aed; font-weight: 500;">
-                <td style="font-weight: bold;">第二個化合物 (${c2Formula})</td>
+                <td style="font-weight: bold;">化合物 II (${c2Formula})</td>
                 <td>4.67</td>
                 <td>3.00</td>
             </tr>
@@ -721,7 +843,7 @@ function renderAlgebraicWizard() {
 
         tableBody.innerHTML = `
             <tr style="color: var(--color-orange); font-weight: 500;">
-                <td style="font-weight: bold;">第一個化合物 (${c1FormulaLabel})</td>
+                <td style="font-weight: bold;">化合物 I (${c1FormulaLabel})</td>
                 <td>
                     9.34${factor1 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c1X_scaled.toFixed(2)} )</span>` : ''}
                 </td>
@@ -730,7 +852,7 @@ function renderAlgebraicWizard() {
                 </td>
             </tr>
             <tr style="color: #7c3aed; font-weight: 500;">
-                <td style="font-weight: bold;">第二個化合物 (${c2FormulaLabel})</td>
+                <td style="font-weight: bold;">化合物 II (${c2FormulaLabel})</td>
                 <td>
                     4.67${factor2 !== 1 ? `<br><span style="font-size: 0.88em; font-weight: bold;">( ${c2X_scaled.toFixed(2)} )</span>` : ''}
                 </td>
