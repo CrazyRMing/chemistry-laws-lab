@@ -300,23 +300,6 @@ function draw(p) {
     const endY2 = mY((3.00 / 4.67) * limitX2 * ratioLineP);
     drawWobblyLine(ctx, mX(0), mY(0), endX2, endY2, '#7c3aed', 3, 502);
 
-    // Labels for ratio lines (drawn when lines are complete)
-    if (p >= 0.4) {
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillStyle = '#ff7a00';
-        ctx.textAlign = 'left';
-        ctx.fillText('第一個化合物 XY', mX(xMax * 0.8), mY((2.00 / 9.34) * xMax * 0.8) + 15);
-        ctx.fillStyle = '#7c3aed';
-        
-        let c2RatioLabel = 'XaYb';
-        if (currentStep === 2) {
-            c2RatioLabel = (fixedElement === 'X') ? 'XY_b' : 'X_aY';
-        } else if (currentStep === 3) {
-            c2RatioLabel = 'XY₃';
-        }
-        ctx.fillText(`第二個化合物 ${c2RatioLabel}`, mX(limitX2 * 0.8), mY((3.00 / 4.67) * limitX2 * 0.8) - 15);
-    }
-
     // 4. Draw original sample points (Point I: (9.34, 2.00), Point II: (4.67, 3.00))
     const ptP = (currentStep === 1) ? Math.min((p - 0.4) / 0.3, 1.0) : 1.0;
     if (ptP > 0) {
@@ -334,10 +317,12 @@ function draw(p) {
         ctx.lineWidth = 1.5;
         ctx.stroke();
         
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillStyle = '#ff7a00';
-        ctx.textAlign = 'left';
-        ctx.fillText('  I (XY)', pAx, pAy + 8);
+        if (currentStep === 1) {
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = '#ff7a00';
+            ctx.textAlign = 'left';
+            ctx.fillText('  I (XY)', pAx, pAy + 8);
+        }
         
         // Point II
         const pBx = mX(4.67);
@@ -348,9 +333,11 @@ function draw(p) {
         ctx.fill();
         ctx.stroke();
         
-        ctx.fillStyle = '#7c3aed';
-        ctx.textAlign = 'right';
-        ctx.fillText('II (XaYb)  ', pBx, pBy - 8);
+        if (currentStep === 1) {
+            ctx.fillStyle = '#7c3aed';
+            ctx.textAlign = 'right';
+            ctx.fillText('II (XaYb)  ', pBx, pBy - 8);
+        }
         ctx.restore();
     }
 
@@ -404,7 +391,7 @@ function draw(p) {
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillStyle = '#ff7a00';
                 ctx.textAlign = 'left';
-                ctx.fillText(`  I (XY) [${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)}]`, mX(activeMass), mY(ix1_y) + 8);
+                ctx.fillText(`  I (XY) (${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass), mY(ix1_y) + 8);
                 
                 // Intersection II
                 ctx.beginPath();
@@ -416,7 +403,7 @@ function draw(p) {
                 ctx.fillStyle = '#7c3aed';
                 ctx.textAlign = 'left';
                 const formulaText = (currentStep === 3) ? 'XY₃' : 'XY_b';
-                ctx.fillText(`  II (${formulaText}) [${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)}]`, mX(activeMass), mY(ix2_y) - 8);
+                ctx.fillText(`  II (${formulaText}) (${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass), mY(ix2_y) - 8);
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
                 const ix2_x = (4.67 / 3.00) * activeMass;
@@ -431,7 +418,7 @@ function draw(p) {
                 ctx.font = 'bold 11px sans-serif';
                 ctx.fillStyle = '#ff7a00';
                 ctx.textAlign = 'left';
-                ctx.fillText(`  I (XY) [${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)}]`, mX(ix1_x), mY(activeMass) + 15);
+                ctx.fillText(`  I (XY) (${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x), mY(activeMass) + 15);
                 
                 // Intersection II
                 ctx.beginPath();
@@ -443,7 +430,7 @@ function draw(p) {
                 ctx.fillStyle = '#7c3aed';
                 ctx.textAlign = 'right';
                 const formulaText = (currentStep === 3) ? 'XY₃' : 'X_aY';
-                ctx.fillText(`II (${formulaText}) [${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)}]  `, mX(ix2_x), mY(activeMass) - 15);
+                ctx.fillText(`II (${formulaText}) (${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})  `, mX(ix2_x), mY(activeMass) - 15);
             }
             ctx.restore();
         }
