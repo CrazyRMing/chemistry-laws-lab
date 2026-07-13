@@ -61,7 +61,8 @@ function toggleGeometric() {
         btn.style.background = '#7c3aed';
         btn.style.color = '#ffffff';
         
-        // Init Canvas and play animation
+        // Render step buttons and play animation
+        renderGeometricWizard();
         initCanvas();
         startAnimation();
     } else {
@@ -765,10 +766,86 @@ function renderAlgebraicWizard() {
         `;
     }
 
+    // Sync geometric wizard container UI
+    renderGeometricWizard();
+
     // Auto restart canvas animation on step transitions
     if (geometricActive && typeof startAnimation === 'function') {
         initCanvas();
         startAnimation();
+    }
+}
+
+function renderGeometricWizard() {
+    const container = document.getElementById('geom-wizard-container');
+    if (!container) return;
+
+    if (fixedElement === null) {
+        // Step 1: Raw state, choose element to fix
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color);">
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">幾何步驟 1：顯示原始數據點與等比線</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">已繪製化合物 I (XY) 與 II (XaYb) 的比例斜率線。請選擇在圖表上固定哪一個元素的重量相同：</span>
+                <div style="margin-top: 0.6rem;">
+                    <button class="wizard-btn active" onclick="selectFixedElement('X')">固定 X 元素</button>
+                    <button class="wizard-btn active" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
+                </div>
+            </div>
+        `;
+    } else if (selectedMass === null) {
+        // Step 2: Selecting mass/position
+        let massOptions = '';
+        if (fixedElement === 'X') {
+            massOptions = `
+                <button class="wizard-btn orange ${tempMass === 9.34 ? 'active' : ''}" onclick="selectTargetMass(9.34)">9.34 克</button>
+                <button class="wizard-btn orange ${tempMass === 4.67 ? 'active' : ''}" onclick="selectTargetMass(4.67)">4.67 克</button>
+            `;
+        } else {
+            massOptions = `
+                <button class="wizard-btn purple ${tempMass === 6.00 ? 'active' : ''}" onclick="selectTargetMass(6.00)">6.00 克</button>
+                <button class="wizard-btn purple ${tempMass === 3.00 ? 'active' : ''}" onclick="selectTargetMass(3.00)">3.00 克</button>
+                <button class="wizard-btn purple ${tempMass === 2.00 ? 'active' : ''}" onclick="selectTargetMass(2.00)">2.00 克</button>
+            `;
+        }
+
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color);">
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">幾何步驟 2：繪製同質量藍色虛線</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">選擇將 <span style="color: #0284c7; font-weight: bold;">固定</span> 的 <span style="color: #0284c7; font-weight: bold;">${fixedElement}</span> 軸藍色虛線設定在多少克：</span>
+                <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem;">
+                    ${massOptions}
+                </div>
+                <div style="margin-top: 0.8rem; display: flex; justify-content: space-between;">
+                    <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">返回步驟 1</button>
+                    <button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行推導 &rArr;</button>
+                </div>
+            </div>
+        `;
+    } else {
+        // Step 3: Confirmed / Deduction
+        const factor1 = (fixedElement === 'X') ? selectedMass / 9.34 : selectedMass / 2.00;
+        const factor2 = (fixedElement === 'X') ? selectedMass / 4.67 : selectedMass / 3.00;
+        const c1Val = (fixedElement === 'X') ? 2.00 * factor1 : 9.34 * factor1;
+        const c2Val = (fixedElement === 'X') ? 3.00 * factor2 : 4.67 * factor2;
+        const ratio = c2Val / c1Val;
+
+        let ratioText = '';
+        if (fixedElement === 'X') {
+            ratioText = `Y 質量比 = ${c1Val.toFixed(2)} : ${c2Val.toFixed(2)} = 1 : ${ratio.toFixed(0)}`;
+        } else {
+            const invRatio = c1Val / c2Val;
+            ratioText = `X 質量比 = ${c1Val.toFixed(2)} : ${c2Val.toFixed(2)} = ${invRatio.toFixed(0)} : 1`;
+        }
+
+        container.innerHTML = `
+            <div class="step-card" style="border-color: var(--border-color);">
+                <strong style="font-size: 0.95rem; color: #2b2b2b;">幾何步驟 3：繪製比例括號與得出分子式</strong><br>
+                <span style="color: var(--text-secondary); font-size: 0.85rem;">已在藍色虛線上繪製比較括號並得出比例（${ratioText}），這時化合物另一個元素的係數對應改變，化合物 II 分子式即為 <strong style="color: #7c3aed;">XY₃</strong>。</span>
+                <div style="margin-top: 0.8rem; text-align: right;">
+                    <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">重新開始</button>
+                </div>
+            </div>
+        `;
     }
 }
 
