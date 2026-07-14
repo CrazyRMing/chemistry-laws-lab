@@ -1,3 +1,37 @@
+# AI 真實尺寸單一 iframe 巡航預覽器 (Diagnostic Cruiser) 實作計畫
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** 將「預覽檢視看板 (preview_dashboard.html)」從多個 iframe 平鋪網格，重構為「單一真實尺寸（Desktop 寬度）iframe 巡航器」，提供自動化巡航與手動狀態清單切換，使 AI 代理與開發者能夠在百分之百真實排版尺寸下快速檢視全站 19 個狀態。
+
+**Architecture:** 
+- 左側為 `control-panel`，展示 19 個核心步驟與狀態的分支連結按鈕，並提供「自動巡航」開關。
+- 右側為 100% 寬高填充的 `main-iframe`（保持電腦大螢幕寬度，無 CSS scale 縮放，不觸發手機版 RWD）。
+- JavaScript 定義 `states` 陣列，控制自動巡航間隔切換 iframe `src`。
+
+**Tech Stack:** HTML5, Vanilla JavaScript, CSS Flexbox
+
+## Global Constraints
+- 零外部庫依賴，維持 Vanilla JS 離線可用。
+- iframe 寬高比必須呈現真實的電腦版視窗（如寬 100%，或限定真實大尺寸寬度，避免縮小）。
+- 專案內部測試，不需要推送到 GitHub Pages 上。
+
+---
+
+### Task 1: 重構預覽檢視看板 (`preview_dashboard.html`)
+
+**Files:**
+- Modify: `preview_dashboard.html`
+
+**Interfaces:**
+- Consumes: `states` 陣列中的 19 個狀態 URL。
+- Produces: 真實寬度 iframe 巡航渲染介面。
+
+- [ ] **Step 1: 重寫 preview_dashboard.html**
+
+覆寫 `preview_dashboard.html` 的 HTML 結構與 CSS 樣式，重構為巡航器版面：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -313,3 +347,15 @@
     </script>
 </body>
 </html>
+```
+
+- [ ] **Step 2: 手動驗證預覽畫布**
+
+開啟 `preview_dashboard.html`，點選各個狀態連結，確認右側 iframe 能以 100% 電腦解析度真實渲染各步驟，且沒有任何版面壓縮；再點選「開始自動巡航」，確認能平滑且依序地輪播所有狀態。
+
+- [ ] **Step 3: Git Commit**
+
+```bash
+git add preview_dashboard.html
+git commit -m "feat(preview): 重構看板為大螢幕單一 iframe 巡航診斷器"
+```
