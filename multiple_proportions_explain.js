@@ -764,8 +764,8 @@ function renderAlgebraicWizard() {
                 <strong style="font-size: 0.95rem; color: #2b2b2b;">步驟 1：請選擇欲固定的元素</strong><br>
                 <span style="color: var(--text-secondary); font-size: 0.85rem;">倍比定律的代數解法中，必須先將其中一個元素的質量調整至相同，才能觀察另一個元素的質量比例。</span>
                 <div style="margin-top: 0.6rem;">
-                    <button class="wizard-btn active" onclick="selectFixedElement('X')">固定 X 元素</button>
-                    <button class="wizard-btn active" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
+                    <button class="wizard-btn" onclick="selectFixedElement('X')" style="border-color: #0284c7; color: #0284c7; background: #ffffff;">固定 X 元素</button>
+                    <button class="wizard-btn" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
                 </div>
             </div>
         `;
@@ -939,8 +939,8 @@ function renderGeometricWizard() {
                 <strong style="font-size: 0.95rem; color: #2b2b2b;">幾何步驟 1：顯示原始數據點與等比線</strong><br>
                 <span style="color: var(--text-secondary); font-size: 0.85rem;">已繪製化合物 I (XY) 與 II (XaYb) 的比例斜率線。請選擇在圖表上固定哪一個元素的重量相同：</span>
                 <div style="margin-top: 0.6rem;">
-                    <button class="wizard-btn active" onclick="selectFixedElement('X')">固定 X 元素</button>
-                    <button class="wizard-btn active" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
+                    <button class="wizard-btn" onclick="selectFixedElement('X')" style="border-color: #0284c7; color: #0284c7; background: #ffffff;">固定 X 元素</button>
+                    <button class="wizard-btn" onclick="selectFixedElement('Y')" style="border-color: #7c3aed; color: #7c3aed; background: #ffffff;">固定 Y 元素</button>
                 </div>
             </div>
         `;
