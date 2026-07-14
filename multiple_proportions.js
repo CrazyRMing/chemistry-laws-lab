@@ -223,6 +223,14 @@ function resizeCanvases() {
 }
 
 window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const stepParam = urlParams.get('step');
+    if (stepParam) {
+        const step = parseInt(stepParam, 10);
+        if (step >= 1 && step <= totalSteps) {
+            currentStep = step;
+        }
+    }
     resizeCanvases();
     updateUI();
     if (document.fonts) {
