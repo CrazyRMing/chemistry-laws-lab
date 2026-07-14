@@ -374,3 +374,4 @@
   - 清理本地無效 token 環境變數干擾，成功將當前所有代碼提交與 RWD、傳統詳解卡片成果推送到遠端 `CrazyRMing/chemistry-laws-lab` 主分支。
   - 使用 GitHub CLI 將專案倉庫的 Visibility 屬性更改為公開（Public）。
   - 呼叫 GitHub Pages 服務創建 API，將專案的 `main` 分支根目錄（`/`）設為 Pages 部署源。部署網址為：`https://crazyrming.github.io/chemistry-laws-lab/`。
+- [x] **新增 AI 渲染檢視預覽畫布 (preview_dashboard.html)**：為了方便 AI 代理及開發者快速檢視全站各網頁的動態排版、RWD 適應性與渲染成果，新建了預覽看板。整合 `index.html`、`multiple_proportions.html`、`multiple_proportions_explain.html` 與 `quiz.html` 的 iframe，並支援極速切換 RWD 模式（全部並排、手機📱、平板📟、原始💻），極速提高 AI 迴圈修正與成果檢視效率。
