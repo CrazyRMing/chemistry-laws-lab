@@ -275,6 +275,17 @@ function updateUI() {
     // Toggle active state of left legend items
     document.getElementById('left-legend-item-1').classList.toggle('visible', currentStep >= 2);
     document.getElementById('left-legend-item-2').classList.toggle('visible', currentStep >= 4);
+
+    const btnNext = document.getElementById('btn-next');
+    if (btnNext) {
+        if (currentStep === totalSteps) {
+            btnNext.textContent = "挑戰例題";
+            btnNext.classList.add('highlight-btn');
+        } else {
+            btnNext.textContent = "下一步";
+            btnNext.classList.remove('highlight-btn');
+        }
+    }
 }
 
 function nextStep() {
@@ -283,6 +294,8 @@ function nextStep() {
         animProgress = 0;
         updateUI();
         startAnimLoop();
+    } else if (currentStep === totalSteps) {
+        location.href = "multiple_proportions_explain.html?v=20260711_02";
     }
 }
 

@@ -237,6 +237,41 @@ canvas {
     box-shadow: 2px 2px 0px var(--border-color);
 }
 
+}
+
+.nav-btn.highlight-btn {
+    background: #ff7a00 !important;
+    color: #ffffff !important;
+    border-color: #2b2b2b !important;
+    box-shadow: 3px 4px 0px #2b2b2b !important;
+    animation: buttonWiggle 2.5s infinite ease-in-out;
+}
+
+.nav-btn.highlight-btn:hover {
+    background: #e66e00 !important;
+    transform: translate(-1px, -2px) !important;
+    box-shadow: 4px 6px 0px #2b2b2b !important;
+    animation: none !important;
+}
+
+@keyframes buttonWiggle {
+    0%, 90%, 100% {
+        transform: rotate(0deg) scale(1);
+    }
+    92% {
+        transform: rotate(-3deg) scale(1.02);
+    }
+    94% {
+        transform: rotate(3deg) scale(1.02);
+    }
+    96% {
+        transform: rotate(-2deg) scale(1.02);
+    }
+    98% {
+        transform: rotate(2deg) scale(1.02);
+    }
+}
+
 .btn-primary {
     background: var(--color-orange);
     color: #ffffff;

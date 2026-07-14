@@ -235,8 +235,10 @@ function updateUI() {
 
     if (currentStep === totalSteps) {
         document.getElementById('btn-next').textContent = "挑戰例題";
+        document.getElementById('btn-next').classList.add('highlight-btn');
     } else {
         document.getElementById('btn-next').textContent = "下一步";
+        document.getElementById('btn-next').classList.remove('highlight-btn');
     }
 
     document.getElementById('step-indicator').textContent = `步驟 ${currentStep} / ${totalSteps}`;
