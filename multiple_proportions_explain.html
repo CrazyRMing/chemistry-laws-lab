@@ -2,6 +2,13 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <script>
+        // 如果是外部直接點擊無參數連結進入，自動重定向至首頁 index.html
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('v') && !urlParams.has('from')) {
+            window.location.replace("index.html");
+        }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>倍比定律經典解析 - 雙重表徵對比</title>
     <!-- Google Fonts -->
