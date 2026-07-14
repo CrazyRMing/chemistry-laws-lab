@@ -246,6 +246,55 @@
             <div id="feedback-box" class="feedback-box"></div>
         </div>
 
+        <!-- Traditional Solution Collapsible Card -->
+        <div class="question-card" style="border-color: #db2777; background: #fff1f2; margin-top: -0.5rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleTraditionalSolution()">
+                <strong style="color: #db2777; font-size: 1.05rem; display: flex; align-items: center; gap: 0.4rem;">
+                    📖 觀看傳統課本詳解寫法 (對比步驟化引導的優點)
+                </strong>
+                <span id="trad-toggle-icon" style="color: #db2777; font-weight: bold; font-size: 1.1rem;">▼</span>
+            </div>
+            <div id="traditional-solution-content" style="display: none; border-top: 1.5px dashed rgba(219, 39, 119, 0.3); margin-top: 0.8rem; padding-top: 0.8rem; line-height: 1.6; color: #db2777; font-family: var(--font-math);">
+                <div style="font-weight: bold; margin-bottom: 0.5rem;">答：(D)</div>
+                <div style="font-weight: bold; margin-bottom: 0.8rem;">解：假設第二化合物為 XY<sub>n</sub>，固定 X 元素質量：</div>
+                
+                <table style="width: 100%; max-width: 300px; border-collapse: collapse; margin-bottom: 1rem; border: 2px solid #db2777; text-align: center; background: #ffffff;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #db2777;">
+                            <th style="padding: 6px; border-right: 1.5px solid #db2777;"></th>
+                            <th style="padding: 6px; border-right: 1.5px solid #db2777; color: #db2777; font-weight: bold;">X</th>
+                            <th style="padding: 6px; color: #db2777; font-weight: bold;">Y</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1.5px solid #db2777;">
+                            <td style="padding: 6px; border-right: 1.5px solid #db2777; font-weight: bold;">XY</td>
+                            <td style="padding: 6px; border-right: 1.5px solid #db2777;">9.34</td>
+                            <td style="padding: 6px;">2</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border-right: 1.5px solid #db2777; font-weight: bold;">XY<sub>n</sub></td>
+                            <td style="padding: 6px; border-right: 1.5px solid #db2777; line-height: 1.3;">
+                                4.67<br><span style="font-size: 0.9rem; font-weight: bold;">( 9.34 )</span>
+                            </td>
+                            <td style="padding: 6px; line-height: 1.3;">
+                                3<br><span style="font-size: 0.9rem; font-weight: bold;">( 6 )</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="font-weight: bold;">
+                    則 Y 質量比 = Y 原子數比，2 : 6 = 1 : n &rArr; n = 3，故化合物為 XY₃。<br>
+                    故選 (D)。
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.6rem; border-left: 3px solid #db2777; background: rgba(219, 39, 119, 0.05); font-size: 0.9rem; color: #9d174d;">
+                    💡 <strong>對比思考</strong>：傳統詳解直接給出縮放後的數字 <code>(9.34)</code> 與 <code>(6)</code>，但對初學者而言，缺乏「為什麼要放大/固定？」、「這些比例在幾何圖表上代表什麼意義？」的漸進式引導。而下方的「步驟化雙重表徵引導」能引領學生自主探索、動態比較，讓抽象的倍比概念具象化！
+                </div>
+            </div>
+        </div>
+
         <!-- Split Columns Comparison Panel -->
         <div class="animation-container">
             <!-- Left: Algebraic Representation -->
@@ -342,6 +391,18 @@
     </style>
 
     <script>
+    function toggleTraditionalSolution() {
+        const content = document.getElementById('traditional-solution-content');
+        const icon = document.getElementById('trad-toggle-icon');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            icon.textContent = '▲';
+        } else {
+            content.style.display = 'none';
+            icon.textContent = '▼';
+        }
+    }
+    
     function showCopyrightModal() {
         document.getElementById('copyrightModal').style.display = 'flex';
     }
