@@ -175,7 +175,7 @@
   - 在四個網頁的 `</body>` 結尾處嵌入版權 Modal。該 Modal 包含 Line 社群、Portaly 支持、Email 聯絡資訊，並支援 `z-index: 9999` 頂層覆蓋與點擊外圍空白自動關閉。
 - [x] **毛玻璃與動態彈出設計**：設定全網頁通用 CSS 動畫 `@keyframes modalFadeIn` 讓 Modal 以淡入微縮放展現，並利用 `backdrop-filter: blur(4px)` 設定背景磨砂透明遮罩，視覺質感極佳。
 - [x] **移除多餘的版本探索標籤**：從 <code>index.html</code> 中移除 <code>🧪 [動態探索版]</code> 標籤與 Title 尾碼（因為已無舊版，此版本為唯一穩定版）。
-- [x] **個人開發者 Logo 嵌入**：將使用者提供的專屬圖案存為 <code>assets/logo.png</code>，並將其以 <code><img></code> 標記（高度 20px、垂直置中對齊）緊隨四個網頁 Modal 版權頁內的「超狂阿明 (CrazyRM)」姓名後方，提昇整體視覺品牌質感。
+- [x] **個人開發者 Logo 嵌入與排版精修**：將使用者提供的專屬圖案存為 <code>assets/logo.png</code>，並將其以 <code><img></code> 標記（高度 20px / 16px、垂直置中對齊）嵌入至四個網頁 Modal 的兩處姓名中，且精確置於中文「超狂阿明」與英文「(CrazyRM)」中英文括弧之間，提昇整體視覺品牌質感與一致性。
 
 ### 踩坑筆記
 - 由於多個 HTML 中原本導覽列的排版有些是 Flex 靠右、有些是單純靠右。在加入 `© 版權資訊` 按鈕時，統一將其與鄰近 of `nav-page-link` 放入一個帶有 `display: flex; gap: 0.8rem; margin-left: auto;` 的容器中，可保證在各種解析度下按鈕均完美垂直置中且整齊靠右，避免了按鈕換行重疊的 Bug。
