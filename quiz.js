@@ -59,56 +59,25 @@ function runHintStep(questionId, stepNum) {
     activeHintStep[questionId] = stepNum;
     
     // Style update:
-    const btn1 = document.getElementById(`btn-hint-${questionId}-step-1`);
     const btn2 = document.getElementById(`btn-hint-${questionId}-step-2`);
     
-    if (stepNum === 1) {
-        // Step 1 Active (Blue highlight)
-        btn1.style.background = '#0288d1';
-        btn1.style.color = '#ffffff';
-        btn1.style.borderColor = '#0288d1';
-        btn1.disabled = true;
-        
-        btn2.disabled = true;
-        btn2.style.background = '#f5f5f5';
-        btn2.style.color = '#a0a0a0';
-        btn2.style.borderColor = '#d3d3d3';
-        
-        // Hide formula text during Step 1
-        const formulaDiv = document.getElementById(`hint-formula-${questionId}`);
-        if (formulaDiv) {
-            formulaDiv.style.opacity = '0';
-        }
-        
-        startHintStepAnimation('hintCanvas' + questionId, questionId, 1, () => {
-            // Step 1 Completed (Light blue background)
-            btn1.style.background = '#e3f2fd';
-            btn1.style.color = '#0288d1';
-            btn1.style.borderColor = '#0288d1';
-            btn1.disabled = false;
-            
-            // Enable Step 2
-            btn2.disabled = false;
-            btn2.style.background = '#ffffff';
-            btn2.style.color = '#2b2b2b';
-            btn2.style.borderColor = '#2b2b2b';
-        });
-    } else if (stepNum === 2) {
+    if (stepNum === 2) {
         // Step 2 Active (Orange highlight)
-        btn2.style.background = '#ff7a00';
-        btn2.style.color = '#ffffff';
-        btn2.style.borderColor = '#ff7a00';
-        btn2.disabled = true;
-        
-        btn1.disabled = true; // disable step 1 while step 2 is running/completed
+        if (btn2) {
+            btn2.style.background = '#ff7a00';
+            btn2.style.color = '#ffffff';
+            btn2.style.borderColor = '#ff7a00';
+            btn2.disabled = true;
+        }
         
         startHintStepAnimation('hintCanvas' + questionId, questionId, 2, () => {
             // Step 2 Completed (Light orange background)
-            btn2.style.background = '#fff5ea';
-            btn2.style.color = '#ff7a00';
-            btn2.style.borderColor = '#ff7a00';
-            btn2.disabled = false;
-            btn1.disabled = false; // re-enable step 1 to let user replay
+            if (btn2) {
+                btn2.style.background = '#fff5ea';
+                btn2.style.color = '#ff7a00';
+                btn2.style.borderColor = '#ff7a00';
+                btn2.disabled = false;
+            }
         });
     }
 }
@@ -182,18 +151,11 @@ function toggleSingleHint(id) {
         if (plot) plot.style.display = 'block';
         wrapper.classList.add('hint-active-' + id);
         
-        // Reset steps for this question
-        activeHintStep[id] = 0;
+        // Reset steps for this question and AUTO run step 1 (draw blue vertical line)
+        activeHintStep[id] = 1;
         
-        // Style initial button states and formulas
-        const btn1 = document.getElementById(`btn-hint-${id}-step-1`);
         const btn2 = document.getElementById(`btn-hint-${id}-step-2`);
-        if (btn1 && btn2) {
-            btn1.disabled = false;
-            btn1.style.background = '#ffffff';
-            btn1.style.color = '#2b2b2b';
-            btn1.style.borderColor = '#2b2b2b';
-            
+        if (btn2) {
             btn2.disabled = true;
             btn2.style.background = '#f5f5f5';
             btn2.style.color = '#a0a0a0';
@@ -204,10 +166,18 @@ function toggleSingleHint(id) {
             formulaDiv.style.opacity = '0';
         }
         
-        // Draw initial state (axes only)
+        // Auto play Step 1 animation
         setTimeout(() => {
-            drawWeightRatioDiagram('hintCanvas' + id, id, 0, 0);
-        }, 30);
+            startHintStepAnimation('hintCanvas' + id, id, 1, () => {
+                // Step 1 completed: Enable step 2 (draw-slope-line button)
+                if (btn2) {
+                    btn2.disabled = false;
+                    btn2.style.background = '#ffffff';
+                    btn2.style.color = '#2b2b2b';
+                    btn2.style.borderColor = '#2b2b2b';
+                }
+            });
+        }, 50);
     } else {
         btn.innerHTML = '💡 提示';
         btn.style.background = '#ffffff';
@@ -619,95 +589,6 @@ function drawDiamond(ctx, cx, cy, r, color, border, borderAlpha = 1.0) {
 const canvas = document.getElementById('quizCanvas');
 const ctx = canvas.getContext('2d');
 
-let quizNodes = [];
-let nodesScale = {
-    Si: 1.0, O: 1.0, C: 1.0, N: 1.0, H: 1.0,
-    SiC: 1.0, CO2: 1.0, NH3: 1.0, D: 1.0, A: 1.0, B: 1.0, C_diam: 1.0
-};
-let nodesScaleTarget = { ...nodesScale };
-let quizAnimId = null;
-let hoveredNodeId = null;
-
-function animateQuizNodes() {
-    let needsRepaint = false;
-    for (let key in nodesScale) {
-        const diff = nodesScaleTarget[key] - nodesScale[key];
-        if (Math.abs(diff) > 0.005) {
-            nodesScale[key] += diff * 0.25; // Smooth Easing interpolation
-            needsRepaint = true;
-        } else {
-            nodesScale[key] = nodesScaleTarget[key];
-        }
-    }
-    if (needsRepaint) {
-        drawQuizDiagram();
-        quizAnimId = requestAnimationFrame(animateQuizNodes);
-    } else {
-        quizAnimId = null;
-    }
-}
-
-function handleCanvasMouseMove(e) {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const cssW = rect.width;
-    const cssH = rect.height;
-    
-    // Scale coords to internal logical canvas dimensions
-    const w = canvas.width / (window.devicePixelRatio || 1);
-    const h = canvas.height / (window.devicePixelRatio || 1);
-    
-    if (cssW <= 0 || cssH <= 0) return;
-    const mappedX = (mouseX / cssW) * w;
-    const mappedY = (mouseY / cssH) * h;
-
-    let foundId = null;
-    for (let node of quizNodes) {
-        if (node.type === 'rect') {
-            if (mappedX >= node.cx - node.w / 2 && mappedX <= node.cx + node.w / 2 &&
-                mappedY >= node.cy - node.h / 2 && mappedY <= node.cy + node.h / 2) {
-                foundId = node.id;
-                break;
-            }
-        } else if (node.type === 'circle') {
-            const dist = Math.sqrt((mappedX - node.cx) ** 2 + (mappedY - node.cy) ** 2);
-            if (dist <= node.r) {
-                foundId = node.id;
-                break;
-            }
-        }
-    }
-
-    if (foundId !== hoveredNodeId) {
-        if (hoveredNodeId) {
-            nodesScaleTarget[hoveredNodeId] = 1.0;
-        }
-        if (foundId) {
-            nodesScaleTarget[foundId] = 1.06; // Hover spring animation scale 1.06
-        }
-        canvas.style.cursor = 'default';
-        hoveredNodeId = foundId;
-        
-        if (!quizAnimId) {
-            quizAnimId = requestAnimationFrame(animateQuizNodes);
-        }
-    }
-}
-
-function handleCanvasMouseLeave() {
-    if (hoveredNodeId) {
-        nodesScaleTarget[hoveredNodeId] = 1.0;
-        hoveredNodeId = null;
-        if (canvas) canvas.style.cursor = 'default';
-        if (!quizAnimId) {
-            quizAnimId = requestAnimationFrame(animateQuizNodes);
-        }
-    }
-}
-
 function resizeCanvas() {
     const wrapper = canvas.parentElement;
     const dpr = window.devicePixelRatio || 1;
@@ -725,9 +606,8 @@ function resizeCanvas() {
 
 // Render network diagram with dynamic color overrides on Hint toggled
 function drawQuizDiagram() {
-    const dpr = window.devicePixelRatio || 1;
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
+    const w = canvas.width;
+    const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
@@ -741,22 +621,6 @@ function drawQuizDiagram() {
     const yTop = h * 0.23;
     const yBottom = h * 0.77;
     const yMid = h * 0.5;
-
-    // Update logical node coordinates for Hit Test
-    quizNodes = [
-        { id: 'Si', type: 'rect', cx: x1, cy: yMid, w: 90, h: 36 },
-        { id: 'O', type: 'rect', cx: x2, cy: yTop, w: 90, h: 36 },
-        { id: 'C', type: 'rect', cx: x2, cy: yBottom, w: 90, h: 36 },
-        { id: 'N', type: 'rect', cx: x3, cy: yTop, w: 90, h: 36 },
-        { id: 'H', type: 'rect', cx: x3, cy: yBottom, w: 90, h: 36 },
-        { id: 'SiC', type: 'circle', cx: w * 0.22, cy: yMid + 50, r: 24 },
-        { id: 'CO2', type: 'circle', cx: x2, cy: yMid, r: 24 },
-        { id: 'NH3', type: 'circle', cx: x3, cy: yMid, r: 24 },
-        { id: 'D', type: 'circle', cx: w * 0.22, cy: yMid - 50, r: 18 },
-        { id: 'A', type: 'circle', cx: w * 0.65, cy: yMid, r: 18 },
-        { id: 'B', type: 'circle', cx: w * 0.65, cy: yTop, r: 18 },
-        { id: 'C_diam', type: 'circle', cx: w * 0.65, cy: yBottom, r: 18 }
-    ];
 
     const lineColor = '#777777';
     const lineWidth = 1.2;
@@ -927,164 +791,128 @@ function drawQuizDiagram() {
 
     // Silicon node (Si)
     ctx.save();
-    const sSi = nodesScale['Si'] || 1.0;
-    ctx.translate(x1, yMid);
-    ctx.scale(sSi, sSi);
-    drawWobblyRect(ctx, -45, -18, 90, 36, cSi, true, '#ffffff', 1.5, 915, aSi);
+    drawWobblyRect(ctx, x1 - 45, yMid - 18, 90, 36, cSi, true, '#ffffff', 1.5, 915, aSi);
     ctx.globalAlpha = aSi;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textSi;
-    ctx.fillText(quizPage === 2 ? '矽 7 克' : '矽 Z 克', 0, 0);
+    ctx.fillText(quizPage === 2 ? '矽 7 克' : '矽 Z 克', x1, yMid);
     ctx.restore();
 
     // Oxygen node (O)
     ctx.save();
-    const sO = nodesScale['O'] || 1.0;
-    ctx.translate(x2, yTop);
-    ctx.scale(sO, sO);
-    drawWobblyRect(ctx, -45, -18, 90, 36, cO, true, '#ffffff', 1.5, 916, aO);
+    drawWobblyRect(ctx, x2 - 45, yTop - 18, 90, 36, cO, true, '#ffffff', 1.5, 916, aO);
     ctx.globalAlpha = aO;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textO;
-    ctx.fillText('氧 8 克', 0, 0);
+    ctx.fillText('氧 8 克', x2, yTop);
     ctx.restore();
 
     // Carbon node (C)
     ctx.save();
-    const sC = nodesScale['C'] || 1.0;
-    ctx.translate(x2, yBottom);
-    ctx.scale(sC, sC);
-    drawWobblyRect(ctx, -45, -18, 90, 36, cC, true, '#ffffff', 1.5, 917, aC);
+    drawWobblyRect(ctx, x2 - 45, yBottom - 18, 90, 36, cC, true, '#ffffff', 1.5, 917, aC);
     ctx.globalAlpha = aC;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textC;
-    ctx.fillText(quizPage === 2 ? '碳 3 克' : '碳 Y 克', 0, 0);
+    ctx.fillText(quizPage === 2 ? '碳 3 克' : '碳 Y 克', x2, yBottom);
     ctx.restore();
 
     // Nitrogen node (N)
     ctx.save();
-    const sN = nodesScale['N'] || 1.0;
-    ctx.translate(x3, yTop);
-    ctx.scale(sN, sN);
-    drawWobblyRect(ctx, -45, -18, 90, 36, cN, true, '#ffffff', 1.5, 918, aN);
+    drawWobblyRect(ctx, x3 - 45, yTop - 18, 90, 36, cN, true, '#ffffff', 1.5, 918, aN);
     ctx.globalAlpha = aN;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textN;
-    ctx.fillText(quizPage === 2 ? '氮 4.67 克' : '氮 X 克', 0, 0);
+    ctx.fillText(quizPage === 2 ? '氮 4.67 克' : '氮 X 克', x3, yTop);
     ctx.restore();
 
     // Hydrogen node (H)
     ctx.save();
-    const sH = nodesScale['H'] || 1.0;
-    ctx.translate(x3, yBottom);
-    ctx.scale(sH, sH);
-    drawWobblyRect(ctx, -45, -18, 90, 36, cH, true, '#ffffff', 1.5, 919, aH);
+    drawWobblyRect(ctx, x3 - 45, yBottom - 18, 90, 36, cH, true, '#ffffff', 1.5, 919, aH);
     ctx.globalAlpha = aH;
     ctx.font = 'bold 1.0rem sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textH;
-    ctx.fillText('氫 1 克', 0, 0);
+    ctx.fillText('氫 1 克', x3, yBottom);
     ctx.restore();
 
     // Circle SiC
     ctx.save();
-    const sSiC = nodesScale['SiC'] || 1.0;
-    ctx.translate(w * 0.22, yMid + 50);
-    ctx.scale(sSiC, sSiC);
     ctx.globalAlpha = 1.0;
-    drawWobblyCircle(ctx, 0, 0, 24, '#f3f4f6', true, 1.2, 920);
+    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, '#f3f4f6', true, 1.2, 920);
     ctx.globalAlpha = aSiC;
-    drawWobblyCircle(ctx, 0, 0, 24, circSiC, false, 1.2, 920);
-    drawColoredFormula(ctx, 'SiC', 0, 0, activeHints[3]);
+    drawWobblyCircle(ctx, w * 0.22, yMid + 50, 24, circSiC, false, 1.2, 920);
+    drawColoredFormula(ctx, 'SiC', w * 0.22, yMid + 50, activeHints[3]);
     ctx.restore();
 
     // Circle CO2
     ctx.save();
-    const sCO2 = nodesScale['CO2'] || 1.0;
-    ctx.translate(x2, yMid);
-    ctx.scale(sCO2, sCO2);
     ctx.globalAlpha = 1.0;
-    drawWobblyCircle(ctx, 0, 0, 24, '#f3f4f6', true, 1.2, 921);
+    drawWobblyCircle(ctx, x2, yMid, 24, '#f3f4f6', true, 1.2, 921);
     ctx.globalAlpha = aCO2;
-    drawWobblyCircle(ctx, 0, 0, 24, circCO2, false, 1.2, 921);
-    drawColoredFormula(ctx, 'CO₂', 0, 0, activeHints[2]);
+    drawWobblyCircle(ctx, x2, yMid, 24, circCO2, false, 1.2, 921);
+    drawColoredFormula(ctx, 'CO₂', x2, yMid, activeHints[2]);
     ctx.restore();
 
     // Circle NH3
     ctx.save();
-    const sNH3 = nodesScale['NH3'] || 1.0;
-    ctx.translate(x3, yMid);
-    ctx.scale(sNH3, sNH3);
     ctx.globalAlpha = 1.0;
-    drawWobblyCircle(ctx, 0, 0, 24, '#f3f4f6', true, 1.2, 922);
+    drawWobblyCircle(ctx, x3, yMid, 24, '#f3f4f6', true, 1.2, 922);
     ctx.globalAlpha = aNH3;
-    drawWobblyCircle(ctx, 0, 0, 24, circNH3, false, 1.2, 922);
-    drawColoredFormula(ctx, 'NH₃', 0, 0, activeHints[1]);
+    drawWobblyCircle(ctx, x3, yMid, 24, circNH3, false, 1.2, 922);
+    drawColoredFormula(ctx, 'NH₃', x3, yMid, activeHints[1]);
     ctx.restore();
 
     // Diamond D
     ctx.save();
-    const sD = nodesScale['D'] || 1.0;
-    ctx.translate(w * 0.22, yMid - 50);
-    ctx.scale(sD, sD);
-    drawDiamond(ctx, 0, 0, 18, '#ffffff', '#2b2b2b', aD);
+    drawDiamond(ctx, w * 0.22, yMid - 50, 18, '#ffffff', '#2b2b2b', aD);
     ctx.globalAlpha = aD;
     ctx.font = 'bold 1.05rem sans-serif';
     ctx.fillStyle = '#1f1f1f';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('D', 0, 0);
+    ctx.fillText('D', w * 0.22, yMid - 50);
     ctx.restore();
 
     // Diamond A
     ctx.save();
-    const sA = nodesScale['A'] || 1.0;
-    ctx.translate(w * 0.65, yMid);
-    ctx.scale(sA, sA);
-    drawDiamond(ctx, 0, 0, 18, '#ffffff', '#2b2b2b', aA);
+    drawDiamond(ctx, w * 0.65, yMid, 18, '#ffffff', '#2b2b2b', aA);
     ctx.globalAlpha = aA;
     ctx.font = 'bold 1.05rem sans-serif';
     ctx.fillStyle = '#1f1f1f';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('A', 0, 0);
+    ctx.fillText('A', w * 0.65, yMid);
     ctx.restore();
 
     // Diamond B
     ctx.save();
-    const sB = nodesScale['B'] || 1.0;
-    ctx.translate(w * 0.65, yTop);
-    ctx.scale(sB, sB);
-    drawDiamond(ctx, 0, 0, 18, '#ffffff', '#2b2b2b', aB);
+    drawDiamond(ctx, w * 0.65, yTop, 18, '#ffffff', '#2b2b2b', aB);
     ctx.globalAlpha = aB;
     ctx.font = 'bold 1.05rem sans-serif';
     ctx.fillStyle = '#1f1f1f';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('B', 0, 0);
+    ctx.fillText('B', w * 0.65, yTop);
     ctx.restore();
 
     // Diamond C
     ctx.save();
-    const sC_diam = nodesScale['C_diam'] || 1.0;
-    ctx.translate(w * 0.65, yBottom);
-    ctx.scale(sC_diam, sC_diam);
-    drawDiamond(ctx, 0, 0, 18, '#ffffff', '#2b2b2b', aC_diam);
+    drawDiamond(ctx, w * 0.65, yBottom, 18, '#ffffff', '#2b2b2b', aC_diam);
     ctx.globalAlpha = aC_diam;
     ctx.font = 'bold 1.05rem sans-serif';
     ctx.fillStyle = '#1f1f1f';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('C', 0, 0);
+    ctx.fillText('C', w * 0.65, yBottom);
     ctx.restore();
 
     ctx.restore();
@@ -1294,11 +1122,6 @@ window.onload = () => {
         }
     }
     updateQuizUI();
-
-    if (canvas) {
-        canvas.addEventListener('mousemove', handleCanvasMouseMove);
-        canvas.addEventListener('mouseleave', handleCanvasMouseLeave);
-    }
 };
 
 window.onresize = () => {
