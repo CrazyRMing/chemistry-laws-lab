@@ -300,10 +300,52 @@ canvas {
 /* SOIL Layout Styles */
 .soil-header {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    align-self: flex-start;
-    margin-bottom: 0.5rem;
+    align-items: flex-end; /* 底部對齊以與 tab 咬合 */
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 3px solid var(--border-color);
+    padding-bottom: 0px;
+    margin-bottom: 1.2rem;
+    align-self: stretch;
+}
+
+/* SOIL Tabs & Tab Buttons */
+.soil-tabs {
+    display: flex;
+    gap: 0.4rem;
+    position: relative;
+    bottom: -3px; /* 貼齊底部線 */
+    z-index: 5;
+}
+
+.soil-tab-btn {
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    border: 2px solid var(--border-color);
+    border-bottom: none;
+    background: #f4f0e6;
+    color: var(--text-secondary);
+    border-radius: 8px 8px 0 0;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.soil-tab-btn:hover {
+    background: #ffffff;
+    color: var(--text-primary);
+}
+
+.soil-tab-btn.active {
+    background: #ffffff;
+    color: var(--text-primary);
+    border-width: 3px;
+    border-color: var(--border-color);
+    padding-bottom: calc(0.5rem + 3px); /* 覆蓋下方的邊框線 */
+    z-index: 10;
 }
 
 .soil-page-num {

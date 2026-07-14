@@ -116,14 +116,19 @@
     <div class="app-container">
         <!-- SOIL style page number and course header -->
         <div class="soil-header">
-            <div class="soil-page-num" id="quiz-page-num">09</div>
-            <div class="soil-section-info">
-                <span class="soil-course-label">基礎化學 (定比定律) 例題</span>
-                <span class="soil-orange-line"></span>
+            <div style="display: flex; align-items: center; gap: 0.8rem; padding-bottom: 0.6rem;">
+                <div class="soil-page-num" id="quiz-page-num">09</div>
+                <div class="soil-section-info">
+                    <span class="soil-course-label" style="font-size: 1.05rem; color: #1f1f1f; font-weight: 800;">🔬 化學定律探索實驗室</span>
+                </div>
             </div>
-            <div style="display: flex; gap: 0.8rem; margin-left: auto; align-items: center;">
-                <a href="index.html?step=8" class="nav-page-link">👉 返回主探索頁面</a>
-                <button class="nav-page-link" onclick="showCopyrightModal()" style="cursor: pointer; border-color: #888888; color: #5f5f5f; background: none;">© 版權資訊</button>
+            <div style="display: flex; align-items: flex-end; gap: 1rem;">
+                <div class="soil-tabs">
+                    <a href="index.html" class="soil-tab-btn">定比定律</a>
+                    <a href="multiple_proportions.html" class="soil-tab-btn">倍比定律</a>
+                    <a href="quiz.html?quiz=1&sub=1" class="soil-tab-btn active">例題挑戰</a>
+                </div>
+                <button onclick="showCopyrightModal()" style="cursor: pointer; border: 2px solid #888888; color: #5f5f5f; background: none; padding: 4px 10px; font-size: 0.8rem; border-radius: 6px; margin-bottom: 0.6rem; font-weight: bold; font-family: inherit;">© 版權資訊</button>
             </div>
         </div>
 
