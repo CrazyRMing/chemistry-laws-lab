@@ -427,6 +427,25 @@
 <ul>
 <li>由於 Canvas 無法渲染 HTML 標記，要實現高亮個別字元且包含真正的下標，最好的做法是透過 JS 寫一個片段文字度量與繪製函數（<code>drawHighlightedText</code>）。</li>
 </ul>
+
+<h2>2026-07-14 今日完成事項 (個人開發版權宣告 Modal 嵌入)</h2>
+<p></p>
+<h3>完成</h3>
+<ul>
+<li><input type="checkbox" checked disabled> <strong>個人開發版權聲明模版建置</strong>：將原版權宣告改寫為此專案「化學基本定律虛擬實驗室 (Chemical Laws Virtual Lab)」的專屬版本（超狂阿明 CrazyRM 2026）。</li>
+<li><input type="checkbox" checked disabled> <strong>多頁面按鈕與彈窗整合</strong>：
+  <ul>
+  <li>在 <code>index.html</code>、<code>multiple_proportions.html</code>、<code>multiple_proportions_explain.html</code> 與 <code>quiz.html</code> 四個網頁的頂端 Header 導覽列，新增一個 <code>© 版權資訊</code> 按鈕。</li>
+  <li>在四個網頁的 <code></body></code> 結尾處嵌入版權 Modal。該 Modal 包含 Line 社群、Portaly 支持、Email 聯絡資訊，並支援 <code>z-index: 9999</code> 頂層覆蓋與點擊外圍空白自動關閉。</li>
+  </ul>
+</li>
+<li><input type="checkbox" checked disabled> <strong>毛玻璃與動態彈出設計</strong>：設定全網頁通用 CSS 動畫 <code>@keyframes modalFadeIn</code> 讓 Modal 以淡入微縮放展現，並利用 <code>backdrop-filter: blur(4px)</code> 設定背景磨砂透明遮罩，視覺質感極佳。</li>
+</ul>
+<p></p>
+<h3>踩坑筆記</h3>
+<ul>
+<li>由於多個 HTML 中原本導覽列的排版有些是 Flex 靠右、有些是單純靠右。在加入 <code>© 版權資訊</code> 按鈕時，統一將其與鄰近的 <code>nav-page-link</code> 放入一個帶有 <code>display: flex; gap: 0.8rem; margin-left: auto;</code> 的容器中，可保證在各種解析度下按鈕均完美垂直置中且整齊靠右，避免了按鈕換行重疊的 Bug。</li>
+</ul>
 </article>
 
             <!-- ANTIGRAVITY.md Content -->

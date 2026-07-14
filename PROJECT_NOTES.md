@@ -165,3 +165,16 @@
 
 ### 踩坑筆記
 - 由於 Canvas 無法渲染 HTML 標記，要實現高亮個別字元且包含真正的下標，最好的做法是透過 JS 寫一個片段文字度量與繪製函數（`drawHighlightedText`）。透過切換 `font` 並垂直偏移下沉，能完美模擬 HTML `sub` 效果，且在所有平台都有完美一致的表現。
+
+## 2026-07-14 今日完成事項 (個人開發版權宣告 Modal 嵌入)
+
+### 完成
+- [x] **個人開發版權聲明模版建置**：將原版權宣告改寫為此專案「化學基本定律虛擬實驗室 (Chemical Laws Virtual Lab)」的專屬版本（超狂阿明 CrazyRM 2026）。
+- [x] **多頁面按鈕與彈窗整合**：
+  - 在 [index.html](file:///c:/01D/%E6%95%99%E8%82%B2%E7%9B%B8%E9%97%9C/%E5%9B%A0%E6%9D%90%E7%B6%B2%E8%A3%BD%E4%BD%9C/%E6%95%B8%E6%93%9A%E5%9C%96%E8%A1%A8%E7%B9%AA%E8%A3%BD/index.html)、[multiple_proportions.html](file:///c:/01D/%E6%95%99%E8%82%B2%E7%9B%B8%E9%97%9C/%E5%9B%A0%E6%9D%90%E7%B6%B2%E8%A3%BD%E4%BD%9C/%E6%95%B8%E6%93%9A%E5%9C%96%E8%A1%A8%E7%B9%AA%E8%A3%BD/multiple_proportions.html)、[multiple_proportions_explain.html](file:///c:/01D/%E6%95%99%E8%82%B2%E7%9B%B8%E9%97%9C/%E5%9B%A0%E6%9D%90%E7%B6%B2%E8%A3%BD%E4%BD%9C/%E6%95%B8%E6%93%9A%E5%9C%96%E8%A1%A8%E7%B9%AA%E8%A3%BD/multiple_proportions_explain.html) 與 [quiz.html](file:///c:/01D/%E6%95%99%E8%82%B2%E7%9B%B8%E9%97%9C/%E5%9B%A0%E6%9D%90%E7%B6%B2%E8%A3%BD%E4%BD%9C/%E6%95%B8%E6%93%9A%E5%9C%96%E8%A1%A8%E7%B9%AA%E8%A3%BD/quiz.html) 四個網頁的頂端 Header 導覽列，新增一個 `© 版權資訊` 按鈕。
+  - 在四個網頁的 `</body>` 結尾處嵌入版權 Modal。該 Modal 包含 Line 社群、Portaly 支持、Email 聯絡資訊，並支援 `z-index: 9999` 頂層覆蓋與點擊外圍空白自動關閉。
+- [x] **毛玻璃與動態彈出設計**：設定全網頁通用 CSS 動畫 `@keyframes modalFadeIn` 讓 Modal 以淡入微縮放展現，並利用 `backdrop-filter: blur(4px)` 設定背景磨砂透明遮罩，視覺質感極佳。
+
+### 踩坑筆記
+- 由於多個 HTML 中原本導覽列的排版有些是 Flex 靠右、有些是單純靠右。在加入 `© 版權資訊` 按鈕時，統一將其與鄰近的 `nav-page-link` 放入一個帶有 `display: flex; gap: 0.8rem; margin-left: auto;` 的容器中，可保證在各種解析度下按鈕均完美垂直置中且整齊靠右，避免了按鈕換行重疊的 Bug。
+
