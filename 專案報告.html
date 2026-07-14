@@ -454,10 +454,15 @@
 <h3>完成</h3>
 <ul>
 <li><input type="checkbox" checked disabled> <strong>版權 Modal 更多模擬介紹嵌入</strong>：為遵循最簡化架構，將介紹超狂阿明其他科學互動模擬的說明與平台網址超連結（<code>https://bit.ly/crazyrm</code>，在新分頁中打開）直接寫入四個網頁的版權宣告 Modal 的「關於本工具」下方，取代了獨立的跳轉網頁與 Header 按鈕，架構更輕量化。</li>
-<li><input type="checkbox" checked disabled> <strong>例題圖表藍點幾何座標對齊修正</strong>：修復了定比定律挑戰題（如 $CO_2$）提示圖表中，藍色焦點（點 A，代表 $x=8$ 時 $y=Y=3$ 克）偏離橘色定比斜線的 Bug。將其在 Canvas 上的縱座標比例由 `0.28` 校正為精確符合斜率 the `0.3111`，且將橘線終點 Y 座標比例微調為 `0.826`，使藍色數據點能與橘色斜線及虛線交會處完美重合。</li>
+<li><input type="checkbox" checked disabled> <strong>例題圖表藍點幾何座標對齊修正</strong>：修復了定比定律挑戰題（如 $CO_2$）提示圖表中，藍色焦點（點 A，代表 $x=8$ 時 $y=Y=3$ 克）偏離橘色定比斜線的 Bug。將其在 Canvas 上的縱座標比例由 `0.28` 校正為精確符合斜率的 `0.3111`，且將橘線終點 Y 座標比例微調為 `0.826`，使藍色數據點能與橘色斜線及虛線交會處完美重合。</li>
 <li><input type="checkbox" checked disabled> <strong>Header「挑戰」等頁碼超模修正</strong>：將頁碼方框（`.soil-page-num`）由固定寬度改為自適應寬度 `min-width: 2.25rem; padding: 0 0.5rem; white-space: nowrap`，徹底解決了當方框內裝入「挑戰」等全形中文時產生的字元超模溢出 Bug。</li>
 <li><input type="checkbox" checked disabled> <strong>全站網頁 RWD 視窗大小自適應強化</strong>：增設手機與平板媒體查詢，在窄屏下自動將 Header 改為垂直排列且按鈕自動換行折行，並縮減整體內邊距以適應移動端，同時 Canvas 內部繪圖皆有 Resize 監聽，能在重繪時自適應視窗解析度而不拉伸變形。</li>
-<li><input type="checkbox" checked disabled> <strong>倍比定律解析頁移除預設選取引導</strong>：移除了代數與幾何引導第一步中原本將「固定 X 元素」預設設為 active（黑底白字）的視覺暗示。現在兩顆按鈕皆預設為白底，並各自擁有高亮色的邊框（X 元素為藍色，Y 元素為紫色），對稱且無任何選取暗示，直到學生自行點擊。</li>
+<li><input type="checkbox" checked disabled> <strong>倍比定律解析頁移除預設選取與按鈕啟用控制</strong>：
+  <ul>
+    <li><strong>第一步移除預設選取</strong>：移成了第一步（請選擇欲固定的元素）中原本將「固定 X 元素」預設設為 active（黑底白字）的視覺暗示。現在兩顆按鈕皆預設為白底，並各自擁有高亮色的邊框（X 元素為藍色，Y 元素為紫色）。</li>
+    <li><strong>第二步移除預設選取與按鈕啟用控制</strong>：移除了第二步中對質量的預設值推薦，預設所有質量按鈕皆不選取；且在點選任何質量前，下方的確認按鈕呈現 `disabled`（灰色停用），點選質量後才動態解鎖，Canvas 亦在點選後才開始繪製輔助虛線，達成完全無預設誘導的探究式教學流程。</li>
+  </ul>
+</li>
 </ul>
 </article>
 

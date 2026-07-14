@@ -700,7 +700,7 @@ function updateXMaxState() {
 
 function selectFixedElement(el) {
     fixedElement = el;
-    tempMass = (el === 'X') ? 9.34 : 6.00; // default recommended values
+    tempMass = null; // 移除預設選取質量，避免誘導
     selectedMass = null;
     renderAlgebraicWizard();
 }
@@ -817,7 +817,10 @@ function renderAlgebraicWizard() {
                 </div>
                 <div style="margin-top: 0.8rem; display: flex; justify-content: space-between;">
                     <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">返回步驟 1</button>
-                    <button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行計算 &rArr;</button>
+                    ${tempMass === null 
+                        ? `<button class="wizard-btn" style="background: #e0e0e0; color: #a0a0a0; border-color: #d3d3d3; cursor: not-allowed; margin: 0;" disabled>確認進行計算 &rArr;</button>`
+                        : `<button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行計算 &rArr;</button>`
+                    }
                 </div>
             </div>
         `;
@@ -969,7 +972,10 @@ function renderGeometricWizard() {
                 </div>
                 <div style="margin-top: 0.8rem; display: flex; justify-content: space-between;">
                     <button class="wizard-btn" onclick="resetWizard()" style="border-color: #ef4444; color: #ef4444; margin: 0;">返回步驟 1</button>
-                    <button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行推導 &rArr;</button>
+                    ${tempMass === null 
+                        ? `<button class="wizard-btn" style="background: #e0e0e0; color: #a0a0a0; border-color: #d3d3d3; cursor: not-allowed; margin: 0;" disabled>確認進行推導 &rArr;</button>`
+                        : `<button class="wizard-btn active" onclick="confirmCalculation()" style="background: var(--border-color); color: #ffffff; margin: 0;">確認進行推導 &rArr;</button>`
+                    }
                 </div>
             </div>
         `;
