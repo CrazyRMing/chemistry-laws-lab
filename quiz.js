@@ -1129,6 +1129,16 @@ function navigateQuizBack() {
 
 // Initialization
 window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramQuiz = parseInt(urlParams.get('quiz'), 10);
+    const paramSub = parseInt(urlParams.get('sub'), 10);
+
+    if (paramQuiz === 1 || paramQuiz === 2) {
+        quizPage = paramQuiz;
+        if (paramQuiz === 1 && paramSub >= 1 && paramSub <= 3) {
+            subPage = paramSub;
+        }
+    }
     updateQuizUI();
 };
 
