@@ -275,14 +275,16 @@ canvas {
     background-color: var(--border-color);
     color: #ffffff;
     font-family: var(--font-heading);
-    font-size: 1.25rem;
+    font-size: 1.05rem; /* 微調字型大小，讓中文不擁擠 */
     font-weight: 800;
-    width: 2.25rem;
+    min-width: 2.25rem; /* 改為 min-width 自適應 */
     height: 2.25rem;
+    padding: 0 0.5rem; /* 加 padding，兩字中文時向兩邊拉伸 */
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
+    white-space: nowrap; /* 防止折行 */
 }
 
 .soil-section-info {
@@ -351,4 +353,52 @@ canvas {
     background: var(--bg-color);
     transform: translate(-1px, -1px);
     box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+}
+
+/* 全站 RWD 響應式佈局強化 */
+@media (max-width: 768px) {
+    /* 頁面 Header RWD 自動調整，避免與右側按鈕擠壓 */
+    .soil-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+        width: 100%;
+    }
+    
+    .soil-header > div:last-child {
+        margin-left: 0 !important;
+        width: 100%;
+        flex-wrap: wrap; /* 窄螢幕下自動換行 */
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+
+    .nav-page-link, .soil-header button {
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem; /* 減少 body padding，擴展可用空間 */
+    }
+    
+    .app-container {
+        padding: 1rem; /* 減小容器 padding，防止手機超模 */
+        border-radius: 12px;
+        gap: 1rem;
+    }
+
+    .info-card h1 {
+        font-size: 1.5rem; /* 手機端標題微調小 */
+    }
+    
+    .info-card p {
+        font-size: 1.05rem;
+    }
+    
+    .nav-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
 }
