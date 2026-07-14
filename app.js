@@ -831,16 +831,7 @@ function renderGraphPanel() {
         const py = getPy(wO1);
         drawPlotPoint(px, py, 7 * t, COLOR_BLUE);
 
-        // Draw Coordinate Label
-        if (textAlpha > 0) {
-            ctxG.save();
-            ctxG.globalAlpha = textAlpha;
-            ctxG.fillStyle = COLOR_WHITE;
-            ctxG.font = 'bold 0.85rem sans-serif';
-            ctxG.textAlign = 'left';
-            ctxG.fillText(`(${wH1}, ${wO1})`, px + 10, py - 10);
-            ctxG.restore();
-        }
+        // Draw Coordinate Label removed per user request
     }
 
     // Step 3: Plot Point 2 or Flying Droplet (second half)
@@ -870,16 +861,7 @@ function renderGraphPanel() {
         const py = getPy(wO2);
         drawPlotPoint(px, py, 7 * t, COLOR_GREEN);
 
-        // Draw Coordinate Label
-        if (textAlpha > 0) {
-            ctxG.save();
-            ctxG.globalAlpha = textAlpha;
-            ctxG.fillStyle = COLOR_WHITE;
-            ctxG.font = 'bold 0.85rem sans-serif';
-            ctxG.textAlign = 'left';
-            ctxG.fillText(`(${wH2}, ${wO2})`, px + 10, py - 10);
-            ctxG.restore();
-        }
+        // Draw Coordinate Label removed per user request
     }
 
     // Step 4: Plot Point 3 or Flying Droplet (second half)
@@ -909,16 +891,7 @@ function renderGraphPanel() {
         const py = getPy(wO3);
         drawPlotPoint(px, py, 7 * t, COLOR_YELLOW);
 
-        // Draw Coordinate Label
-        if (textAlpha > 0) {
-            ctxG.save();
-            ctxG.globalAlpha = textAlpha;
-            ctxG.fillStyle = COLOR_WHITE;
-            ctxG.font = 'bold 0.85rem sans-serif';
-            ctxG.textAlign = 'left';
-            ctxG.fillText(`(${wH3}, ${wO3})`, px + 10, py - 10);
-            ctxG.restore();
-        }
+        // Draw Coordinate Label removed per user request
     }
 
     // Step 6 & 7: Draw Slope Triangle (Chalk Draw-in)
