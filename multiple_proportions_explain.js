@@ -1009,6 +1009,33 @@ function renderGeometricWizard() {
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramTab = urlParams.get('tab');       // 'algebraic' or 'geometric'
+    const paramFixed = urlParams.get('fixed');   // 'X' or 'Y'
+    const paramMass = parseFloat(urlParams.get('mass')); // 數字
+
+    // 1. 切換顯示 Tab
+    if (paramTab === 'algebraic') {
+        toggleAlgebraic();
+    } else if (paramTab === 'geometric') {
+        toggleGeometric();
+    }
+
+    // 2. 初始化固定元素與目標質量
+    if (paramFixed === 'X' || paramFixed === 'Y') {
+        fixedElement = paramFixed;
+        if (!isNaN(paramMass)) {
+            tempMass = paramMass;
+            selectedMass = paramMass; // 設為已確認狀態，直接渲染最終推導步驟
+        }
+    }
+
+    // 3. 觸發初始渲染
     renderAlgebraicWizard();
+    if (geometricActive) {
+        renderGeometricWizard();
+        initCanvas();
+        draw(1.0);
+    }
 });
 

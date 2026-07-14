@@ -225,57 +225,53 @@
         </div>
     </header>
 
-    <main class="dashboard-grid" id="dashboard">
-        <!-- Page 1: 定比定律首頁 -->
-        <div class="preview-card" id="card-index">
-            <div class="card-header">
-                <div class="card-title">🧪 定比定律首頁 (index.html)</div>
-                <div class="card-actions">
-                    <a href="index.html" target="_blank" class="card-link">在新分頁開啟 ↗</a>
-                </div>
-            </div>
-            <div class="iframe-container">
-                <iframe src="index.html" title="定比定律首頁"></iframe>
-            </div>
+    <main class="dashboard-grid" id="dashboard" style="grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));">
+        <!-- ==================== 定比定律 7 個步驟 ==================== -->
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 1 (引言)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=1" title="定比步驟 1"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 2 (滴定反應)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=2" title="定比步驟 2"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 3 (燃燒反應)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=3" title="定比步驟 3"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 4 (分解反應)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=4" title="定比步驟 4"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 5 (微觀碰撞)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=5" title="定比步驟 5"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 6 (座標繪製)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=6" title="定比步驟 6"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">🧪 定比步驟 7 (定比總結)</div></div>
+            <div class="iframe-container"><iframe src="index.html?step=7" title="定比步驟 7"></iframe></div>
         </div>
 
-        <!-- Page 2: 倍比定律動態頁 -->
-        <div class="preview-card" id="card-multiple">
-            <div class="card-header">
-                <div class="card-title">📐 倍比定律動態頁 (multiple_proportions.html)</div>
-                <div class="card-actions">
-                    <a href="multiple_proportions.html" target="_blank" class="card-link">在新分頁開啟 ↗</a>
-                </div>
-            </div>
-            <div class="iframe-container">
-                <iframe src="multiple_proportions.html" title="倍比定律動態頁"></iframe>
-            </div>
+        <!-- ==================== 倍比定律 4 個分支 ==================== -->
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">📐 倍比代數 固定X (9.34g)</div></div>
+            <div class="iframe-container"><iframe src="multiple_proportions_explain.html?tab=algebraic&fixed=X&mass=9.34" title="倍比代數 固定X"></iframe></div>
         </div>
-
-        <!-- Page 3: 倍比定律詳解頁 -->
-        <div class="preview-card" id="card-explain">
-            <div class="card-header">
-                <div class="card-title">📖 倍比定律解析 (multiple_proportions_explain.html)</div>
-                <div class="card-actions">
-                    <a href="multiple_proportions_explain.html" target="_blank" class="card-link">在新分頁開啟 ↗</a>
-                </div>
-            </div>
-            <div class="iframe-container">
-                <iframe src="multiple_proportions_explain.html" title="倍比定律解析"></iframe>
-            </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">📐 倍比代數 固定Y (3.00g)</div></div>
+            <div class="iframe-container"><iframe src="multiple_proportions_explain.html?tab=algebraic&fixed=Y&mass=3.00" title="倍比代數 固定Y"></iframe></div>
         </div>
-
-        <!-- Page 4: 挑戰測驗頁 -->
-        <div class="preview-card" id="card-quiz">
-            <div class="card-header">
-                <div class="card-title">✍️ 定比定律挑戰 (quiz.html)</div>
-                <div class="card-actions">
-                    <a href="quiz.html" target="_blank" class="card-link">在新分頁開啟 ↗</a>
-                </div>
-            </div>
-            <div class="iframe-container">
-                <iframe src="quiz.html" title="定比定律挑戰"></iframe>
-            </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">📐 倍比幾何 固定X (4.67g)</div></div>
+            <div class="iframe-container"><iframe src="multiple_proportions_explain.html?tab=geometric&fixed=X&mass=4.67" title="倍比幾何 固定X"></iframe></div>
+        </div>
+        <div class="preview-card">
+            <div class="card-header"><div class="card-title">📐 倍比幾何 固定Y (6.00g)</div></div>
+            <div class="iframe-container"><iframe src="multiple_proportions_explain.html?tab=geometric&fixed=Y&mass=6.00" title="倍比幾何 固定Y"></iframe></div>
         </div>
     </main>
 
