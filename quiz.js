@@ -687,10 +687,8 @@ function handleCanvasMouseMove(e) {
         }
         if (foundId) {
             nodesScaleTarget[foundId] = 1.06; // Hover spring animation scale 1.06
-            canvas.style.cursor = 'pointer';
-        } else {
-            canvas.style.cursor = 'default';
         }
+        canvas.style.cursor = 'default';
         hoveredNodeId = foundId;
         
         if (!quizAnimId) {
