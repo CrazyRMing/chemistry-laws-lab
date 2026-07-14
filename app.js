@@ -281,12 +281,20 @@ function updateUI() {
 
 function resizeCanvases() {
     const wrapperL = flaskCanvas.parentElement;
-    flaskCanvas.width = wrapperL.clientWidth;
-    flaskCanvas.height = wrapperL.clientHeight;
-
     const wrapperR = graphCanvas.parentElement;
-    graphCanvas.width = wrapperR.clientWidth;
-    graphCanvas.height = wrapperR.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+
+    flaskCanvas.width = wrapperL.clientWidth * dpr;
+    flaskCanvas.height = wrapperL.clientHeight * dpr;
+    flaskCanvas.style.width = wrapperL.clientWidth + 'px';
+    flaskCanvas.style.height = wrapperL.clientHeight + 'px';
+    ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    graphCanvas.width = wrapperR.clientWidth * dpr;
+    graphCanvas.height = wrapperR.clientHeight * dpr;
+    graphCanvas.style.width = wrapperR.clientWidth + 'px';
+    graphCanvas.style.height = wrapperR.clientHeight + 'px';
+    ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 // Unified Animation Loop (Runs constantly at 60 FPS)

@@ -214,12 +214,20 @@ const stepTexts = [
 // Resize and draw loop
 function resizeCanvases() {
     const pF = flaskCanvas.parentElement;
-    flaskCanvas.width = pF.clientWidth;
-    flaskCanvas.height = pF.clientHeight;
-    
     const pG = graphCanvas.parentElement;
-    graphCanvas.width = pG.clientWidth;
-    graphCanvas.height = pG.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    
+    flaskCanvas.width = pF.clientWidth * dpr;
+    flaskCanvas.height = pF.clientHeight * dpr;
+    flaskCanvas.style.width = pF.clientWidth + 'px';
+    flaskCanvas.style.height = pF.clientHeight + 'px';
+    ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
+    graphCanvas.width = pG.clientWidth * dpr;
+    graphCanvas.height = pG.clientHeight * dpr;
+    graphCanvas.style.width = pG.clientWidth + 'px';
+    graphCanvas.style.height = pG.clientHeight + 'px';
+    ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 window.onload = () => {

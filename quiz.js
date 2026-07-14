@@ -241,9 +241,13 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
     
     // Resize dynamically to fit wrapping panel wrapper
     const parentW = canvas.parentElement.clientWidth;
-    if (canvas.width !== parentW || canvas.height !== 250) {
-        canvas.width = parentW;
-        canvas.height = 250;
+    const dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== parentW * dpr || canvas.height !== 250 * dpr) {
+        canvas.width = parentW * dpr;
+        canvas.height = 250 * dpr;
+        canvas.style.width = parentW + 'px';
+        canvas.style.height = 250 + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     
     const w = canvas.width;
@@ -617,8 +621,16 @@ const ctx = canvas.getContext('2d');
 
 function resizeCanvas() {
     const wrapper = canvas.parentElement;
-    canvas.width = wrapper.clientWidth;
-    canvas.height = canvas.width * (13 / 16); // Lock height strictly to 16:13 aspect ratio
+    const dpr = window.devicePixelRatio || 1;
+    const clientW = wrapper.clientWidth;
+    const clientH = clientW * (13 / 16);
+    
+    canvas.width = clientW * dpr;
+    canvas.height = clientH * dpr;
+    canvas.style.width = clientW + 'px';
+    canvas.style.height = clientH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    
     drawQuizDiagram();
 }
 
