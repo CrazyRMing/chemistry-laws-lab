@@ -180,9 +180,7 @@
 ### 踩坑筆記
 - 由於多個 HTML 中原本導覽列的排版有些是 Flex 靠右、有些是單純靠右。在加入 `© 版權資訊` 按鈕時，統一將其與鄰近 of `nav-page-link` 放入一個帶有 `display: flex; gap: 0.8rem; margin-left: auto;` 的容器中，可保證在各種解析度下按鈕均完美垂直置中且整齊靠右，避免了按鈕換行重疊的 Bug。
 
-## 2026-07-14 更多模擬網頁與全站導覽按鈕建置
+## 2026-07-14 更多模擬版權頁超連結嵌入 (簡化架構，免增 HTML)
 
 ### 完成
-- [x] **新建「更多模擬」引導網頁**：新建了 [more_simulations.html](file:///c:/01D/%E6%95%99%E8%82%B2%E7%9B%B8%E9%97%9C/%E5%9B%A0%E6%9D%90%E7%B6%B2%E8%A3%BD%E4%BD%9C/%E6%95%B8%E6%93%9A%E5%9C%96%E8%A1%A8%E7%B9%AA%E8%A3%BD/more_simulations.html)，介紹超狂阿明的模擬專案，並點擊橘色大按鈕以 `target="_blank"` 導向您的專屬平台網址 (`bit.ly/crazyrm`)。
-- [x] **全站 Header 導覽串接**：在四個現有網頁（`index.html`、`multiple_proportions.html`、`multiple_proportions_explain.html`、`quiz.html`）的頂部 Header 導覽列，新增綠色的 `👉 更多互動模擬` 按鈕，並統一使用 Flex 容器包裹，維持全站一致的排版穩定度。
-
+- [x] **版權 Modal 更多模擬介紹嵌入**：為遵循最簡化架構，將介紹超狂阿明其他科學互動模擬的說明與平台網址超連結（<code>https://bit.ly/crazyrm</code>，在新分頁中打開）直接寫入四個網頁的版權宣告 Modal 的「關於本工具」下方，取代了獨立的跳轉網頁與 Header 按鈕，架構更輕量化。
