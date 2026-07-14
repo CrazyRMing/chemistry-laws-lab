@@ -293,7 +293,7 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
     const dy = oy - maxY;
     
     const pxA = ox + dx * 0.32;
-    const pyA = oy - dy * 0.28;
+    const pyA = oy - dy * 0.3111;
     
     const pxB = ox + dx * 0.72;
     const pyB = oy - dy * 0.70;
@@ -346,7 +346,7 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
         
         // Orange Trendline growing from top-right to origin
         const endX = ox + dx * 0.85;
-        const endY = oy - dy * 0.82;
+        const endY = oy - dy * 0.826;
         
         const t_line = Math.min(1.0, progress / 0.7);
         const curEndX = endX - (endX - ox) * t_line;
