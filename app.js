@@ -1127,6 +1127,17 @@ function drawWaterMolecule(ctx, cx, cy, rO = 22, rH = 13, angleDeg = 104.5, rotA
 // -------------------------------------------------------------
 // Initialization
 // -------------------------------------------------------------
+let resizeFrameId = 0;
+
+function scheduleCanvasResize() {
+    cancelAnimationFrame(resizeFrameId);
+    resizeFrameId = requestAnimationFrame(resizeCanvases);
+}
+
+const canvasResizeObserver = 'ResizeObserver' in window
+    ? new ResizeObserver(scheduleCanvasResize)
+    : null;
+
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const stepParam = urlParams.get('step');
@@ -1138,10 +1149,9 @@ window.onload = () => {
     }
     generateRandomValues();
     resizeCanvases();
+    canvasResizeObserver?.observe(document.querySelector('.animation-container'));
     updateUI();
     drawLoop(); // Run frame animation rendering constantly
 };
 
-window.onresize = () => {
-    resizeCanvases();
-};
+window.onresize = scheduleCanvasResize;
