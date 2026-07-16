@@ -484,6 +484,29 @@
 <li>Safari WebKit 渲染引擎在 DOM 未完全穩定前讀取寬高是不安全且不可靠的，對於像 Canvas wrapper 這種比例固定的容器，直接在 JS 中使用 CSS 的比例公式（<code>width * 0.75</code>）進行高度計算是防止非同步 Layout 高度塌陷與繪圖裁切的最穩固方案。</li>
 <li>在處理 Grid item 溢出時，<code>min-width: 0</code> 能有效覆蓋 WebKit 對取代元素（canvas/img）的內在尺寸計算偏好，避免其被撐爆。</li>
 </ul>
+
+<h2>2026-07-16 今日最終收工事項 (專案清理、Quiz Canvas DPR 修正與實機驗證)</h2>
+<h3>完成</h3>
+<ul>
+<li><input type="checkbox" checked disabled> <strong>第一輪專案清理</strong>：移除 <code>PROJECT_NOTES.md</code> 的 176 行重複內容與未被正式導覽引用的 <code>index_3b1b.html</code>、<code>app_3b1b.js</code>；統一四頁 <code>style.css?v=20260716_03</code>，將實驗圖片改為固定快取版本 <code>?v=20260716_01</code>，並重寫 <code>README.md</code> 以符合目前白底手繪、逐步引導的四頁教學網站。</li>
+<li><input type="checkbox" checked disabled> <strong>修正 Quiz 頁 Retina DPR 裁切</strong>：確認 Canvas backing store 已乘上 <code>devicePixelRatio</code> 後，繪圖又使用 <code>canvas.width</code>、<code>canvas.height</code> 作為邏輯座標，導致 iPad Retina 畫面被二次放大。主關係圖與三張提示圖已統一改用 <code>logicalWidth</code>、<code>logicalHeight</code>，由 CSS 控制顯示尺寸、JavaScript 管理 DPR backing store，並加入 <code>ResizeObserver</code> 與旋轉重繪。</li>
+<li><input type="checkbox" checked disabled> <strong>測試與部署</strong>：新增 <code>tests/project-hygiene.test.mjs</code> 與 <code>tests/quiz-canvas-dpr.test.mjs</code>；全部 14 項 Node 測試與四支正式 JavaScript 語法檢查通過。GitHub Pages 已部署提交 <code>14b031e</code>，公開頁面回應 HTTP 200 並載入 <code>quiz.js?v=20260716_02</code>；使用者已在真實 iPad 確認 Quiz 左側主關係圖正常顯示。</li>
+</ul>
+<h3>踩坑筆記</h3>
+<ul>
+<li>Canvas 的 <code>width</code>、<code>height</code> 是 backing-store 實體像素；執行 <code>ctx.setTransform(dpr, 0, 0, dpr, 0, 0)</code> 後，繪圖座標必須使用 CSS 邏輯像素。</li>
+<li>iPad Safari Canvas 的穩定原則是「CSS 管顯示尺寸、JavaScript 管 backing store」，並監看真正改變寬度的 Canvas wrapper。</li>
+<li>GitHub CLI 的 OAuth 權杖與 Git Credential Manager 分開；<code>gh auth status</code> 顯示失效時需重新執行 <code>gh auth login -h github.com</code>。</li>
+</ul>
+<h3>目前狀態</h3>
+<ul>
+<li>本次已知問題均完成程式修正、自動化驗證、GitHub Pages 部署與 iPad 實機確認。</li>
+<li><code>main</code> 已與 <code>origin/main</code> 同步，沒有已知未完成項目。</li>
+</ul>
+<h3>下次開工建議</h3>
+<ul>
+<li>若後續調整任何 Canvas 版面，先執行三組 Node 測試，再以 iPad 橫向與直向實機確認 DPR、裁切與旋轉後重繪。</li>
+</ul>
 </article>
 
             <!-- ANTIGRAVITY.md Content -->

@@ -220,3 +220,33 @@
 - Safari WebKit 渲染引擎在 DOM 未完全穩定前讀取寬高是不安全且不可靠的，對於像 Canvas wrapper 這種比例固定的容器，直接在 JS 中使用 CSS 的比例公式（`width * 0.75`）進行高度計算是防止非同步 Layout 高度塌陷與繪圖裁切的最穩固方案。
 - 在處理 Grid item 溢出時，`min-width: 0` 能有效覆蓋 WebKit 對取代元素（canvas/img）的內在尺寸計算偏好，避免其被撐爆。
 
+## 2026-07-16 今日最終收工事項 (專案清理、Quiz Canvas DPR 修正與實機驗證)
+
+### 完成
+- [x] **第一輪專案清理**：
+  - 移除 `PROJECT_NOTES.md` 的 176 行重複內容。
+  - 移除未被正式導覽引用的舊版 `index_3b1b.html` 與 `app_3b1b.js`，歷史版本由 Git 保留。
+  - 統一四個正式頁面的 `style.css?v=20260716_03`，並將三張實驗圖片改為固定版本 `?v=20260716_01`，恢復瀏覽器快取。
+  - 重寫 `README.md`，使說明與目前白底手繪、逐步引導、四頁式教學網站一致。
+- [x] **修正 Quiz 頁 Retina DPR 裁切**：
+  - 確認根因為 Canvas backing store 已乘上 `devicePixelRatio`，繪圖時卻再次使用 `canvas.width`、`canvas.height` 作為邏輯座標，造成 iPad Retina 畫面被二次放大並裁切右側與下方內容。
+  - 主關係圖與三張提示圖改為共用一致的 Canvas 尺寸流程：CSS 控制顯示尺寸，JavaScript 只設定 DPR backing store，繪圖統一使用 `logicalWidth`、`logicalHeight`。
+  - 移除 JavaScript 對 Canvas inline `style.width`、`style.height` 的寫入，並加入 `ResizeObserver` 與旋轉／視窗變更重繪。
+- [x] **測試與部署**：
+  - 新增 `tests/project-hygiene.test.mjs` 與 `tests/quiz-canvas-dpr.test.mjs`。
+  - 全部 14 項 Node 測試通過，四支正式 JavaScript 語法檢查通過。
+  - GitHub Pages 已部署提交 `14b031e`，公開頁面回應 HTTP 200 並載入 `quiz.js?v=20260716_02`。
+  - 使用者已在真實 iPad 確認 Quiz 左側主關係圖正常顯示。
+
+### 踩坑筆記
+- Canvas 的 `width`、`height` 是 backing-store 實體像素；執行 `ctx.setTransform(dpr, 0, 0, dpr, 0, 0)` 後，繪圖座標必須使用 CSS 邏輯像素，不能再用已乘 DPR 的 `canvas.width`、`canvas.height`。
+- iPad Safari Canvas 的穩定原則是「CSS 管顯示尺寸、JavaScript 管 backing store」，並監看真正改變寬度的 Canvas wrapper。
+- GitHub CLI (`gh`) 的 OAuth 權杖與 Git Credential Manager 分開；`gh auth status` 顯示失效時需重新執行 `gh auth login -h github.com`，單純由其他工具使用 GitHub 通常不會互相登出。
+
+### 目前狀態
+- 本次已知問題均完成程式修正、自動化驗證、GitHub Pages 部署與 iPad 實機確認。
+- `main` 已與 `origin/main` 同步，沒有已知未完成項目。
+
+### 下次開工建議
+- 若後續調整任何 Canvas 版面，先執行三組 Node 測試，再以 iPad 橫向與直向實機確認 DPR、裁切與旋轉後重繪。
+
