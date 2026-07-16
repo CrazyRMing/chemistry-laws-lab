@@ -467,6 +467,23 @@
 <li><input type="checkbox" checked disabled> <strong>GitHub Pages 公開部署配置</strong>：成功將倉庫修改為公開（Public），並呼叫 GitHub API 將 `main` 分支根目錄開啟為靜態 Pages 服務，發布網址為 `https://crazyrming.github.io/chemistry-laws-lab/`。</li>
 <li><input type="checkbox" checked disabled> <strong>實作 AI & Developer 真實尺寸巡航診斷看板</strong>：建立並重構 `preview_dashboard.html` 為單一 iframe 真實尺寸（Desktop 大螢幕解析度）巡航診斷器，支援自動化 19 個狀態輪播（定比 7 步 + 倍比主頁 4 步 + 解析 4 狀態 + 題目 4 狀態），防止寬度壓縮觸發行動版樣式或 CSS scale 縮放失真，實現全站核心狀態的 100% 真實渲染與秒級直達 AI 除錯定位。</li>
 </ul>
+<p></p>
+
+<h2>2026-07-16 今日收工事項 (iPad Mini 與 Safari 佈局/高度/快取防制終極優化)</h2>
+<p></p>
+<h3>完成</h3>
+<ul>
+<li><input type="checkbox" checked disabled> <strong>解決 Safari WebKit Grid Panel 重疊跑版 Bug</strong>：由於 CSS Grid 項目的預設最小寬度是 <code>min-width: auto</code>，在高解析度 Retina 螢幕上 Canvas 乘上 DPR 後的物理像素尺寸會將面板撐破軌道寬度並與相鄰面板重疊。我們在 <code>style.css</code> 與所有網頁的行內 <code>.panel-box</code> 加上 <code>min-width: 0 !important; min-height: 0 !important;</code>，並在 <code>canvas</code> 樣式加上 <code>max-width: 100% !important; max-height: 100% !important;</code>，將其強制約束在欄位內，徹底根治重疊。</li>
+<li><input type="checkbox" checked disabled> <strong>解除 Panel 垂直擠壓高度限制</strong>：將所有 HTML 中的行內 <code>.panel-box</code> 高度由 <code>height: 100% !important;</code> 修改為 <code>height: auto !important;</code>。這會解除 iPad 在可用高度受限時對面板的垂直壓扁行為，使面板能配合 Canvas 的 4:3 比例在垂直方向上自然延伸。</li>
+<li><input type="checkbox" checked disabled> <strong>JS 4:3 高度比例數學鎖定</strong>：由於 Safari 的非同步佈局在載入初期讀取到的 <code>clientHeight</code> 可能是 <code>0</code> 或不正確的極小值，導致 Canvas 實體像素高度偏低，隨後超出實體畫布尺寸的繪圖內容（如 X 軸 0 刻度與標題）皆會被裁切。我們在 <code>app.js</code>、<code>multiple_proportions.js</code> 與 <code>multiple_proportions_explain.js</code> 的 resize 函數中，<strong>完全放棄讀取 clientHeight，改為直接使用 <code>h = w * 0.75</code> 數學鎖定高度</strong>。這保證了 Canvas 實體畫布像素與 CSS 渲染外框在任何時候都精確吻合，徹底排除內容裁切。</li>
+<li><input type="checkbox" checked disabled> <strong>引入版本號更新 (強迫 Cache Busting)</strong>：iPad Mini Safari 快取機制極為激進，舊 CSS/JS 會持續被加載。我們將所有 HTML 檔案引入 of <code>style.css</code> 與 JS 檔案查詢參數版本號同步更新為最新的 <code>?v=20260715_02</code>，強迫 iPad Mini Safari 清除快取重新下載最新檔案。</li>
+</ul>
+<p></p>
+<h3>踩坑筆記</h3>
+<ul>
+<li>Safari WebKit 渲染引擎在 DOM 未完全穩定前讀取寬高是不安全且不可靠的，對於像 Canvas wrapper 這種比例固定的容器，直接在 JS 中使用 CSS 的比例公式（<code>width * 0.75</code>）進行高度計算是防止非同步 Layout 高度塌陷與繪圖裁切的最穩固方案。</li>
+<li>在處理 Grid item 溢出時，<code>min-width: 0</code> 能有效覆蓋 WebKit 對取代元素（canvas/img）的內在尺寸計算偏好，避免其被撐爆。</li>
+</ul>
 </article>
 
             <!-- ANTIGRAVITY.md Content -->

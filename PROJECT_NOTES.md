@@ -374,4 +374,25 @@
   - 清理本地無效 token 環境變數干擾，成功將當前所有代碼提交與 RWD、傳統詳解卡片成果推送到遠端 `CrazyRMing/chemistry-laws-lab` 主分支。
   - 使用 GitHub CLI 將專案倉庫的 Visibility 屬性更改為公開（Public）。
   - 呼叫 GitHub Pages 服務創建 API，將專案的 `main` 分支根目錄（`/`）設為 Pages 部署源。部署網址為：`https://crazyrming.github.io/chemistry-laws-lab/`。
-- [x] **新增 AI 渲染檢視預覽畫布 (preview_dashboard.html)**：為了方便 AI 代理及開發者快速檢視全站各網頁的動態排版、RWD 適應性與渲染成果，新建了預覽看板。整合 `index.html`、`multiple_proportions.html`、`multiple_proportions_explain.html` 與 `quiz.html` 的 iframe，並支援極速切換 RWD 模式（全部並排、手機📱、平板📟、原始💻），極速提高 AI 迴圈修正與成果檢視效率。
+- [x] **新增 AI 渲染檢視預覽畫布 (preview_dashboard.html)**：為了方便 AI 代理及開發者快速檢視全站各網頁的動態排版、RWD 適應性與渲染成果，新建了預覽看板。整合 `index.html` 、`multiple_proportions.html`、`multiple_proportions_explain.html` 與 `quiz.html` 的 iframe，並支援極速切換 RWD 模式（全部並排、手機📱、平板📟、原始💻），極速提高 AI 迴圈修正與成果檢視效率。
+
+## 2026-07-16 今日收工事項 (iPad Mini 與 Safari 佈局/高度/快取防制終極優化)
+
+### 完成
+- [x] **解決 Safari WebKit Grid Panel 重疊跑版 Bug**：
+  - 由於 CSS Grid 項目的預設最小寬度是 `min-width: auto`，在高解析度 Retina 螢幕上 Canvas 乘上 DPR 後的物理像素尺寸會將面板撐破軌道寬度並與相鄰面板重疊。
+  - 我們在 `style.css` 與所有網頁的行內 `.panel-box` 加上 `min-width: 0 !important; min-height: 0 !important;`，並在 `canvas` 樣式加上 `max-width: 100% !important; max-height: 100% !important;`，將其強制約束在欄位內，徹底根治重疊。
+- [x] **解除 Panel 垂直擠壓高度限制**：
+  - 將所有 HTML 中的行內 `.panel-box` 高度由 `height: 100% !important;` 修改為 `height: auto !important;`。
+  - 這會解除 iPad 在可用高度受限時對面板的垂直壓扁行為，使面板能配合 Canvas 的 4:3 比例在垂直方向上自然延伸。
+- [x] **JS 4:3 高度比例數學鎖定**：
+  - 由於 Safari 的非同步佈局在載入初期讀取到的 `clientHeight` 可能是 `0` 或不正確的極小值，導致 Canvas 實體像素高度偏低，隨後超出實體畫布尺寸的繪圖內容（如 X 軸 0 刻度與標題）皆會被裁切。
+  - 我們在 `app.js`、`multiple_proportions.js` 與 `multiple_proportions_explain.js` 的 resize 函數中，**完全放棄讀取 clientHeight，改為直接使用 `h = w * 0.75` 數學鎖定高度**。這保證了 Canvas 實體畫布像素與 CSS 渲染外框在任何時候都精確吻合，徹底排除內容裁切。
+- [x] **引入版本號更新 (強迫 Cache Busting)**：
+  - iPad Mini Safari 快取機制極為激進，舊 CSS/JS 會持續被加載。
+  - 我們將所有 HTML 檔案引入的 `style.css` 與 JS 檔案查詢參數版本號同步更新為最新的 `?v=20260715_02`，強迫 iPad Mini Safari 清除快取重新下載最新檔案。
+
+### 踩坑筆記
+- Safari WebKit 渲染引擎在 DOM 未完全穩定前讀取寬高是不安全且不可靠的，對於像 Canvas wrapper 這種比例固定的容器，直接在 JS 中使用 CSS 的比例公式（`width * 0.75`）進行高度計算是防止非同步 Layout 高度塌陷與繪圖裁切的最穩固方案。
+- 在處理 Grid item 溢出時，`min-width: 0` 能有效覆蓋 WebKit 對取代元素（canvas/img）的內在尺寸計算偏好，避免其被撐爆。
+

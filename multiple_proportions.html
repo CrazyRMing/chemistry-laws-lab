@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260714_04">
+    <link rel="stylesheet" href="style.css?v=20260715_02">
     <style>
         /* Force body to prevent horizontal scrollbars and ensure centering */
         body {
@@ -33,7 +33,7 @@
             gap: 2rem !important;
             align-items: stretch !important;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .animation-container {
                 grid-template-columns: 1fr !important;
                 gap: 1.5rem !important;
@@ -44,7 +44,9 @@
             display: grid !important;
             grid-template-rows: auto 1fr auto !important;
             gap: 0.75rem !important;
-            height: 100% !important;
+            height: auto !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
         }
         /* Prevent sub/sup tags from stretching the line-height of the panel labels */
         sub, sup {
@@ -67,11 +69,13 @@
         /* Ensure the canvas wrappers stretch exactly to their allocated grid heights */
         .canvas-wrapper {
             border-radius: 8px !important;
-            height: 100% !important;
+            height: auto !important;
+            aspect-ratio: 4 / 3 !important;
             box-sizing: border-box !important;
         }
         .graph-legend-html {
-            height: 112px !important;
+            min-height: 112px !important;
+            height: auto !important;
             box-sizing: border-box !important;
             align-content: center !important;
             border-radius: 8px !important;
@@ -172,7 +176,7 @@
         </div>
     </div>
 
-    <script src="multiple_proportions.js?v=20260713_01"></script>
+    <script src="multiple_proportions.js?v=20260715_02"></script>
 
     <!-- 版權 Modal -->
     <div id="copyrightModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">

@@ -152,13 +152,15 @@ function initCanvas() {
     
     const resize = () => {
         const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
+        const h = w * 0.75;
         const dpr = window.devicePixelRatio || 1;
         if (w > 0 && h > 0 && (canvas.width !== w * dpr || canvas.height !== h * dpr)) {
             canvas.width = w * dpr;
             canvas.height = h * dpr;
             canvas.style.width = w + 'px';
             canvas.style.height = h + 'px';
+            canvas.logicalWidth = w;
+            canvas.logicalHeight = h;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             if (!animationId) {
                 draw(1.0);
@@ -257,8 +259,8 @@ function drawHighlightedText(ctx, x, y, parts, align = 'right') {
 }
 
 function draw(p) {
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = canvas.logicalWidth || canvas.clientWidth;
+    const h = canvas.logicalHeight || canvas.clientHeight;
     ctx.clearRect(0, 0, w, h);
     
     // Determine step and mass parameters

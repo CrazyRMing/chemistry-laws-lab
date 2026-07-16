@@ -235,10 +235,8 @@ function updateUI() {
 
     if (currentStep === totalSteps) {
         document.getElementById('btn-next').textContent = "挑戰例題";
-        document.getElementById('btn-next').classList.add('highlight-btn');
     } else {
         document.getElementById('btn-next').textContent = "下一步";
-        document.getElementById('btn-next').classList.remove('highlight-btn');
     }
 
     document.getElementById('step-indicator').textContent = `步驟 ${currentStep} / ${totalSteps}`;
@@ -283,28 +281,12 @@ function updateUI() {
 
 function resizeCanvases() {
     const wrapperL = flaskCanvas.parentElement;
+    flaskCanvas.width = wrapperL.clientWidth;
+    flaskCanvas.height = wrapperL.clientHeight;
+
     const wrapperR = graphCanvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
-
-    const wL = wrapperL.clientWidth;
-    const hL = wL * 0.75;
-    flaskCanvas.width = wL * dpr;
-    flaskCanvas.height = hL * dpr;
-    flaskCanvas.style.width = wL + 'px';
-    flaskCanvas.style.height = hL + 'px';
-    flaskCanvas.logicalWidth = wL;
-    flaskCanvas.logicalHeight = hL;
-    ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    const wR = wrapperR.clientWidth;
-    const hR = wR * 0.75;
-    graphCanvas.width = wR * dpr;
-    graphCanvas.height = hR * dpr;
-    graphCanvas.style.width = wR + 'px';
-    graphCanvas.style.height = hR + 'px';
-    graphCanvas.logicalWidth = wR;
-    graphCanvas.logicalHeight = hR;
-    ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
+    graphCanvas.width = wrapperR.clientWidth;
+    graphCanvas.height = wrapperR.clientHeight;
 }
 
 // Unified Animation Loop (Runs constantly at 60 FPS)
@@ -323,8 +305,8 @@ function drawLoop() {
 // LEFT PANEL: Light Theme Render
 // -------------------------------------------------------------
 function renderFlaskPanel() {
-    const w = flaskCanvas.logicalWidth || flaskCanvas.clientWidth;
-    const h = flaskCanvas.logicalHeight || flaskCanvas.clientHeight;
+    const w = flaskCanvas.width;
+    const h = flaskCanvas.height;
     ctxF.clearRect(0, 0, w, h);
 
     // Light Theme background fill
@@ -372,7 +354,7 @@ function renderFlaskPanel() {
                 const startX = imgX + imgSize * 0.48;
                 const startY = imgY + imgSize * 0.72;
                 const endX = w;
-                const endY = mapY(wO1, graphCanvas.logicalHeight || graphCanvas.clientHeight);
+                const endY = mapY(wO1, graphCanvas.height);
 
                 const dropX = startX + (endX - startX) * easeDrop;
                 const dropY = startY + (endY - startY) * easeDrop - Math.sin(easeDrop * Math.PI) * 40;
@@ -404,7 +386,7 @@ function renderFlaskPanel() {
                 const startX = imgX + imgSize * 0.50;
                 const startY = imgY + imgSize * 0.38;
                 const endX = w;
-                const endY = mapY(wO2, graphCanvas.logicalHeight || graphCanvas.clientHeight);
+                const endY = mapY(wO2, graphCanvas.height);
 
                 const dropX = startX + (endX - startX) * easeDrop;
                 const dropY = startY + (endY - startY) * easeDrop - Math.sin(easeDrop * Math.PI) * 50;
@@ -436,7 +418,7 @@ function renderFlaskPanel() {
                 const startX = imgX + imgSize * 0.68;
                 const startY = imgY + imgSize * 0.48;
                 const endX = w;
-                const endY = mapY(wO3, graphCanvas.logicalHeight || graphCanvas.clientHeight);
+                const endY = mapY(wO3, graphCanvas.height);
 
                 const dropX = startX + (endX - startX) * easeDrop;
                 const dropY = startY + (endY - startY) * easeDrop - Math.sin(easeDrop * Math.PI) * 30;
@@ -611,7 +593,7 @@ function renderFlaskPanel() {
             const whiteAlpha = Math.min(1.0, (p - 0.8) / 0.1); // Fast fade in for white text
             const orangeAlpha = p < 0.88 ? 0 : Math.min(1.0, (p - 0.88) / 0.12); // Delayed fade in for orange formulas
 
-            // 1. Draw white values (Total mass, O mass, H mass)
+            // Draw Coordinate Label removed per user request
             ctxF.save();
             ctxF.globalAlpha = whiteAlpha;
             ctxF.fillStyle = COLOR_WHITE;
@@ -771,8 +753,8 @@ function renderFlaskPanel() {
 // RIGHT PANEL: Light Theme Chalk Graph
 // -------------------------------------------------------------
 function renderGraphPanel() {
-    const w = graphCanvas.logicalWidth || graphCanvas.clientWidth;
-    const h = graphCanvas.logicalHeight || graphCanvas.clientHeight;
+    const w = graphCanvas.width;
+    const h = graphCanvas.height;
     ctxG.clearRect(0, 0, w, h);
 
     // Light background
@@ -830,16 +812,12 @@ function renderGraphPanel() {
     }
     if (currentStep >= 2) {
         let t = 1;
-        let textAlpha = 1;
         if (currentStep === 2) {
             t = p < 0.7 ? 0 : easeOutElastic((p - 0.7) / 0.3);
-            textAlpha = p < 0.7 ? 0 : Math.min(1.0, (p - 0.7) / 0.3);
         }
         const px = mapX(wH1, w);
         const py = getPy(wO1);
         drawPlotPoint(px, py, 7 * t, COLOR_BLUE);
-
-        // Draw Coordinate Label removed per user request
     }
 
     // Step 3: Plot Point 2 or Flying Droplet (second half)
@@ -860,16 +838,12 @@ function renderGraphPanel() {
     }
     if (currentStep >= 3) {
         let t = 1;
-        let textAlpha = 1;
         if (currentStep === 3) {
             t = p < 0.7 ? 0 : easeOutElastic((p - 0.7) / 0.3);
-            textAlpha = p < 0.7 ? 0 : Math.min(1.0, (p - 0.7) / 0.3);
         }
         const px = mapX(wH2, w);
         const py = getPy(wO2);
         drawPlotPoint(px, py, 7 * t, COLOR_GREEN);
-
-        // Draw Coordinate Label removed per user request
     }
 
     // Step 4: Plot Point 3 or Flying Droplet (second half)
@@ -890,16 +864,12 @@ function renderGraphPanel() {
     }
     if (currentStep >= 4) {
         let t = 1;
-        let textAlpha = 1;
         if (currentStep === 4) {
             t = p < 0.7 ? 0 : easeOutElastic((p - 0.7) / 0.3);
-            textAlpha = p < 0.7 ? 0 : Math.min(1.0, (p - 0.7) / 0.3);
         }
         const px = mapX(wH3, w);
         const py = getPy(wO3);
         drawPlotPoint(px, py, 7 * t, COLOR_YELLOW);
-
-        // Draw Coordinate Label removed per user request
     }
 
     // Step 6 & 7: Draw Slope Triangle (Chalk Draw-in)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>定比定律探索學習</title>
+    <title>定比定律探索學習 [3B1B 動態體驗版]</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,20 +99,14 @@
     <div class="app-container">
         <!-- SOIL style page number and course header -->
         <div class="soil-header">
-            <div style="display: flex; align-items: center; gap: 0.8rem; padding-bottom: 0.6rem;">
-                <div class="soil-page-num" id="soil-page-num">01</div>
-                <div class="soil-section-info">
-                    <span class="soil-course-label" style="font-size: 1.05rem; color: #1f1f1f; font-weight: 800;">🔬 化學定律探索實驗室</span>
-                </div>
+            <div class="soil-page-num" id="soil-page-num">01</div>
+            <div class="soil-section-info">
+                <span class="soil-course-label">基礎化學 (定比定律) 🧪 <span style="color: #83c167; font-weight: bold;">[3B1B 動態體驗版]</span></span>
+                <span class="soil-orange-line"></span>
             </div>
-            <div style="display: flex; align-items: flex-end; gap: 1rem;">
-                <div class="soil-tabs">
-                    <a href="index.html" class="soil-tab-btn active">定比定律</a>
-                    <a href="quiz.html?quiz=1&sub=1" class="soil-tab-btn">定比例題</a>
-                    <a href="multiple_proportions.html" class="soil-tab-btn">倍比定律</a>
-                    <a href="multiple_proportions_explain.html?from=tab" class="soil-tab-btn">倍比例題</a>
-                </div>
-                <button onclick="showCopyrightModal()" style="cursor: pointer; border: 2px solid #888888; color: #5f5f5f; background: none; padding: 4px 10px; font-size: 0.8rem; border-radius: 6px; margin-bottom: 0.6rem; font-weight: bold; font-family: inherit;">© 版權資訊</button>
+            <div style="display: flex; gap: 0.8rem; margin-left: auto; align-items: center;">
+                <a href="quiz.html?v=20260711_02" class="nav-page-link" style="color: #ff7a00; border-color: #ff7a00; font-weight: bold;">👉 挑戰定比練習題</a>
+                <a href="index.html" class="nav-page-link">👉 返回常規版本</a>
             </div>
         </div>
 
@@ -190,69 +184,8 @@
             <div class="step-indicator" id="step-indicator">步驟 1 / 8</div>
             <button class="nav-btn btn-primary" id="btn-next" onclick="nextStep()">下一步 ➡</button>
         </div>
-
-        <!-- Jump to quiz button -->
-        <div style="display: flex; justify-content: center; margin-top: 1rem; width: 100%;">
-            <a href="quiz.html?quiz=1&sub=1" class="nav-btn" style="text-decoration: none; border-color: #ff7a00; color: #ff7a00; font-weight: bold; width: auto; font-size: 0.95rem; padding: 0.6rem 1.5rem; background: #ffffff;">💡 直接挑戰例題 ➡</a>
-        </div>
     </div>
 
-    <script src="app.js?v=20260715_02"></script>
-
-    <!-- 版權 Modal -->
-    <div id="copyrightModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">
-        <div style="background: #ffffff; border: 3px solid #2b2b2b; border-radius: 16px; max-width: 550px; width: 100%; box-shadow: 6px 8px 0px rgba(43, 43, 43, 0.15); display: flex; flex-direction: column; overflow: hidden; font-family: 'Outfit', 'Noto Sans TC', sans-serif; animation: modalFadeIn 0.3s ease;">
-            <!-- Modal Header -->
-            <div style="background: #f9fafb; border-bottom: 2.5px solid #2b2b2b; padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-                <strong style="font-size: 1.2rem; color: #1f1f1f; font-weight: bold;">版權與使用限制</strong>
-                <button onclick="closeCopyrightModal()" style="background: none; border: none; font-size: 1.5rem; font-weight: bold; cursor: pointer; color: #5f5f5f; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#5f5f5f'">&times;</button>
-            </div>
-            <!-- Modal Body -->
-            <div style="padding: 1.5rem; max-height: 70vh; overflow-y: auto; line-height: 1.6; color: #374151; font-size: 0.95rem; text-align: left;">
-                <h4 style="margin-top: 0; margin-bottom: 0.5rem; color: #1f1f1f; font-weight: bold;">關於本工具</h4>
-                <p style="margin-bottom: 0.8rem; color: #5f5f5f;"><strong>化學基本定律虛擬實驗室 (Chemical Laws Virtual Lab)</strong> 由 <strong>超狂阿明 <img src="assets/logo.png" alt="logo" style="height: 20px; vertical-align: middle; margin-left: 3px; margin-right: 3px;">(CrazyRM)</strong> 開發與維護。</p>
-                <p style="margin-bottom: 1.2rem; color: #5f5f5f;">🚀 <strong>更多互動模擬</strong>：歡迎探索超狂阿明開發的其他化學、理科科學互動模擬實驗室與專案。直通網址：<a href="https://bit.ly/crazyrm" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">bit.ly/crazyrm</a></p>
-                
-                <h4 style="margin-bottom: 0.5rem; color: #1f1f1f; font-weight: bold;">版權與使用限制</h4>
-                <p style="margin-bottom: 1rem; color: #5f5f5f;">© 2026 超狂阿明 <img src="assets/logo.png" alt="logo" style="height: 16px; vertical-align: middle; margin-left: 2px; margin-right: 2px;"> (CrazyRM)。本應用程式、介面設計、程式邏輯、教學內容與產出格式，除另有明確標示外，均保留所有權利。</p>
-                <p style="margin-bottom: 1.2rem; color: #5f5f5f;">本工具提供教學、展示、研究與個人學習用途。未經作者書面同意，請勿重製、散布、改作、反向工程、移除作者資訊，或將本工具及其衍生內容用於商業服務、收費課程、出版品、機構部署或其他營利用途。</p>
-                <p style="margin-bottom: 1.2rem; color: #5f5f5f;">若需商業授權、客製化開發、校園或機構導入，請先聯絡作者取得授權。</p>
-                
-                <h4 style="margin-bottom: 0.5rem; color: #1f1f1f; font-weight: bold;">聯絡與支持</h4>
-                <ul style="list-style: none; padding-left: 0; margin-bottom: 0; color: #5f5f5f;">
-                    <li style="margin-bottom: 0.4rem;">💬 <strong>Line 社群</strong>：<a href="https://bit.ly/crazyrmline" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">https://bit.ly/crazyrmline</a></li>
-                    <li style="margin-bottom: 0.4rem;">☕ <strong>Portaly 支持作者</strong>：<a href="https://portaly.cc/CrazyRM/support" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">https://portaly.cc/CrazyRM/support</a></li>
-                    <li style="margin-bottom: 0.4rem;">✉️ <strong>Email</strong>：<a href="mailto:crazyrm01@gmail.com" style="color: #0284c7; text-decoration: none; font-weight: 500;">crazyrm01@gmail.com</a></li>
-                </ul>
-            </div>
-            <!-- Modal Footer -->
-            <div style="background: #f9fafb; border-top: 1.5px dashed rgba(43,43,43,0.15); padding: 1rem 1.5rem; display: flex; justify-content: flex-end;">
-                <button onclick="closeCopyrightModal()" style="background: #ffffff; border: 2px solid #2b2b2b; border-radius: 8px; padding: 0.5rem 1.2rem; font-family: inherit; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 2px 2px 0px #2b2b2b;" onmouseover="this.style.transform='translate(-1px, -1px)'; this.style.boxShadow='3px 3px 0px #2b2b2b'" onmouseout="this.style.transform='none'; this.style.boxShadow='2px 2px 0px #2b2b2b'">關閉</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
-    @keyframes modalFadeIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-    }
-    </style>
-
-    <script>
-    function showCopyrightModal() {
-        document.getElementById('copyrightModal').style.display = 'flex';
-    }
-    function closeCopyrightModal() {
-        document.getElementById('copyrightModal').style.display = 'none';
-    }
-    // 點擊背景可關閉
-    window.addEventListener('click', function(e) {
-        const modal = document.getElementById('copyrightModal');
-        if (modal && e.target === modal) {
-            closeCopyrightModal();
-        }
-    });
-    </script>
+    <script src="app_3b1b.js?v=20260715_02"></script>
 </body>
 </html>

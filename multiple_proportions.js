@@ -217,16 +217,24 @@ function resizeCanvases() {
     const pG = graphCanvas.parentElement;
     const dpr = window.devicePixelRatio || 1;
     
-    flaskCanvas.width = pF.clientWidth * dpr;
-    flaskCanvas.height = pF.clientHeight * dpr;
-    flaskCanvas.style.width = pF.clientWidth + 'px';
-    flaskCanvas.style.height = pF.clientHeight + 'px';
+    const wF = pF.clientWidth;
+    const hF = wF * 0.75;
+    flaskCanvas.width = wF * dpr;
+    flaskCanvas.height = hF * dpr;
+    flaskCanvas.style.width = wF + 'px';
+    flaskCanvas.style.height = hF + 'px';
+    flaskCanvas.logicalWidth = wF;
+    flaskCanvas.logicalHeight = hF;
     ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
     
-    graphCanvas.width = pG.clientWidth * dpr;
-    graphCanvas.height = pG.clientHeight * dpr;
-    graphCanvas.style.width = pG.clientWidth + 'px';
-    graphCanvas.style.height = pG.clientHeight + 'px';
+    const wG = pG.clientWidth;
+    const hG = wG * 0.75;
+    graphCanvas.width = wG * dpr;
+    graphCanvas.height = hG * dpr;
+    graphCanvas.style.width = wG + 'px';
+    graphCanvas.style.height = hG + 'px';
+    graphCanvas.logicalWidth = wG;
+    graphCanvas.logicalHeight = hG;
     ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
@@ -330,8 +338,8 @@ function drawLoop() {
 
 // DRAW LEFT PANEL (SCHEMATICS)
 function drawLeftPanel() {
-    const w = flaskCanvas.width;
-    const h = flaskCanvas.height;
+    const w = flaskCanvas.logicalWidth || flaskCanvas.clientWidth;
+    const h = flaskCanvas.logicalHeight || flaskCanvas.clientHeight;
     ctxF.clearRect(0, 0, w, h);
     
     // Global styling config
@@ -1131,8 +1139,8 @@ function drawLeftPanel() {
 
 // DRAW RIGHT PANEL (COORDINATE GRAPH)
 function drawRightPanel() {
-    const w = graphCanvas.width;
-    const h = graphCanvas.height;
+    const w = graphCanvas.logicalWidth || graphCanvas.clientWidth;
+    const h = graphCanvas.logicalHeight || graphCanvas.clientHeight;
     ctxG.clearRect(0, 0, w, h);
     
     // 1. Draw Grid lines
