@@ -35,3 +35,11 @@ test('experiment images use a fixed cache version', () => {
     assert.match(app, new RegExp(`assets/${image}\\.png\\?v=20260716_01`));
   }
 });
+
+test('README describes the current four-page guided site', () => {
+  const readme = readFileSync(new URL('README.md', root), 'utf8');
+  for (const expected of ['白底手繪', '逐步引導', '定比例題', '倍比例題']) {
+    assert.match(readme, new RegExp(expected));
+  }
+  assert.doesNotMatch(readme, /深色模式|Glassmorphism|拖曳滑桿|物理碰撞模擬/);
+});
