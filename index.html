@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260716_01">
+    <link rel="stylesheet" href="style.css?v=20260716_02">
     <style>
         /* Force body to prevent horizontal scrollbars and ensure centering */
         body {
@@ -46,6 +46,12 @@
                 margin-right: auto !important;
             }
         }
+        @media (min-width: 821px) and (max-width: 1180px) {
+            .graph-legend-html {
+                grid-template-columns: 1fr !important;
+                justify-items: start !important;
+            }
+        }
         /* Align content columns vertically with pixel-perfect bottom alignment */
         .panel-box {
             display: grid !important;
@@ -80,6 +86,10 @@
             aspect-ratio: auto !important;
             box-sizing: border-box !important;
         }
+        .canvas-wrapper canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
         .graph-legend-html {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
@@ -99,6 +109,8 @@
             box-sizing: border-box;
             justify-content: flex-start;  /* Align perfectly by indicators (dots & lines) */
             padding-left: 18px;           /* Indent indicators neatly */
+            min-width: 0;
+            white-space: normal !important;
         }
     </style>
 </head>
@@ -204,7 +216,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260716_01"></script>
+    <script src="app.js?v=20260716_02"></script>
 
     <!-- 版權 Modal -->
     <div id="copyrightModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">

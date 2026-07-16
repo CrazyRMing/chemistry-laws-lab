@@ -288,20 +288,16 @@ function resizeCanvases() {
 
     const wL = wrapperL.clientWidth;
     const hL = wL * 0.75;
-    flaskCanvas.width = wL * dpr;
-    flaskCanvas.height = hL * dpr;
-    flaskCanvas.style.width = wL + 'px';
-    flaskCanvas.style.height = hL + 'px';
+    flaskCanvas.width = Math.round(wL * dpr);
+    flaskCanvas.height = Math.round(hL * dpr);
     flaskCanvas.logicalWidth = wL;
     flaskCanvas.logicalHeight = hL;
     ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const wR = wrapperR.clientWidth;
     const hR = wR * 0.75;
-    graphCanvas.width = wR * dpr;
-    graphCanvas.height = hR * dpr;
-    graphCanvas.style.width = wR + 'px';
-    graphCanvas.style.height = hR + 'px';
+    graphCanvas.width = Math.round(wR * dpr);
+    graphCanvas.height = Math.round(hR * dpr);
     graphCanvas.logicalWidth = wR;
     graphCanvas.logicalHeight = hR;
     ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1149,7 +1145,8 @@ window.onload = () => {
     }
     generateRandomValues();
     resizeCanvases();
-    canvasResizeObserver?.observe(document.querySelector('.animation-container'));
+    canvasResizeObserver?.observe(flaskCanvas.parentElement);
+    canvasResizeObserver?.observe(graphCanvas.parentElement);
     updateUI();
     drawLoop(); // Run frame animation rendering constantly
 };
