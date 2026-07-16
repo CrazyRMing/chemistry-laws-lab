@@ -209,19 +209,13 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     
-    // Resize dynamically to fit wrapping panel wrapper
+    // Resize backing store while drawing in CSS logical pixels
     const parentW = canvas.parentElement.clientWidth;
-    const dpr = window.devicePixelRatio || 1;
-    if (canvas.width !== parentW * dpr || canvas.height !== 250 * dpr) {
-        canvas.width = parentW * dpr;
-        canvas.height = 250 * dpr;
-        canvas.style.width = parentW + 'px';
-        canvas.style.height = 250 + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    
-    const w = canvas.width;
-    const h = canvas.height;
+    if (parentW <= 0) return;
+
+    const w = parentW;
+    const h = 250;
+    configureCanvas(canvas, ctx, w, h);
     
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#ffffff';
@@ -589,25 +583,46 @@ function drawDiamond(ctx, cx, cy, r, color, border, borderAlpha = 1.0) {
 const canvas = document.getElementById('quizCanvas');
 const ctx = canvas.getContext('2d');
 
+function configureCanvas(targetCanvas, targetContext, logicalWidth, logicalHeight) {
+    const dpr = window.devicePixelRatio || 1;
+    const backingWidth = Math.round(logicalWidth * dpr);
+    const backingHeight = Math.round(logicalHeight * dpr);
+
+    if (targetCanvas.width !== backingWidth || targetCanvas.height !== backingHeight) {
+        targetCanvas.width = Math.round(logicalWidth * dpr);
+        targetCanvas.height = Math.round(logicalHeight * dpr);
+    }
+
+    targetCanvas.logicalWidth = logicalWidth;
+    targetCanvas.logicalHeight = logicalHeight;
+    targetContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+let quizCanvasResizeFrameId = 0;
+
+function scheduleQuizCanvasResize() {
+    cancelAnimationFrame(quizCanvasResizeFrameId);
+    quizCanvasResizeFrameId = requestAnimationFrame(resizeCanvas);
+}
+
+const quizCanvasResizeObserver = 'ResizeObserver' in window
+    ? new ResizeObserver(scheduleQuizCanvasResize)
+    : null;
+
 function resizeCanvas() {
     const wrapper = canvas.parentElement;
-    const dpr = window.devicePixelRatio || 1;
     const clientW = wrapper.clientWidth;
+    if (clientW <= 0) return;
+
     const clientH = clientW * (13 / 16);
-    
-    canvas.width = clientW * dpr;
-    canvas.height = clientH * dpr;
-    canvas.style.width = clientW + 'px';
-    canvas.style.height = clientH + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    
+    configureCanvas(canvas, ctx, clientW, clientH);
     drawQuizDiagram();
 }
 
 // Render network diagram with dynamic color overrides on Hint toggled
 function drawQuizDiagram() {
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = canvas.logicalWidth || canvas.clientWidth;
+    const h = canvas.logicalHeight || w * (13 / 16);
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
@@ -1122,8 +1137,7 @@ window.onload = () => {
         }
     }
     updateQuizUI();
+    quizCanvasResizeObserver?.observe(canvas.parentElement);
 };
 
-window.onresize = () => {
-    updateQuizUI();
-};
+window.onresize = scheduleQuizCanvasResize;
