@@ -12,13 +12,13 @@ const FONT_MATH = 'bold italic 1.15rem sans-serif';
 
 // Preload generated sketchy asset images
 const imgTitration = new Image();
-imgTitration.src = 'assets/titration.png?v=' + Date.now();
+imgTitration.src = 'assets/titration.png?v=20260716_01';
 
 const imgCombustion = new Image();
-imgCombustion.src = 'assets/combustion.png?v=' + Date.now();
+imgCombustion.src = 'assets/combustion.png?v=20260716_01';
 
 const imgHeating = new Image();
-imgHeating.src = 'assets/heating.png?v=' + Date.now();
+imgHeating.src = 'assets/heating.png?v=20260716_01';
 
 // State Variables
 let currentStep = 1;
