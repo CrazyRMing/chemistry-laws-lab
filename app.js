@@ -167,12 +167,18 @@ function drawWobblyCircle(ctx, cx, cy, r, color = COLOR_WHITE, fill = false, wid
 
 // Coordinate Helpers for Graph Canvas (x: 0 ~ 4.0, y: 0 ~ 32.0)
 const margin = 60;
+function graphMargin(width) {
+    return CanvasResponsive.marginFor(width, margin, 40);
+}
 function mapX(xVal, width) {
-    return margin + (xVal / 4.0) * (width - 2 * margin);
+    const plotMargin = graphMargin(width);
+    return plotMargin + (xVal / 4.0) * (width - 2 * plotMargin);
 }
 function mapY(yVal, height) {
+    const width = graphCanvas.logicalWidth || graphCanvas.clientWidth;
+    const plotMargin = graphMargin(width);
     const maxVal = (currentStep === 8) ? 2.0 : 32.0;
-    return height - margin - (yVal / maxVal) * (height - 2 * margin);
+    return height - plotMargin - (yVal / maxVal) * (height - 2 * plotMargin);
 }
 
 // Step descriptions
@@ -287,7 +293,7 @@ function resizeCanvases() {
     const dpr = window.devicePixelRatio || 1;
 
     const wL = wrapperL.clientWidth;
-    const hL = wL * 0.75;
+    const hL = CanvasResponsive.heightFor(wL, 0.75, 1);
     flaskCanvas.width = Math.round(wL * dpr);
     flaskCanvas.height = Math.round(hL * dpr);
     flaskCanvas.logicalWidth = wL;
@@ -295,7 +301,7 @@ function resizeCanvases() {
     ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const wR = wrapperR.clientWidth;
-    const hR = wR * 0.75;
+    const hR = CanvasResponsive.heightFor(wR, 0.75, 1);
     graphCanvas.width = Math.round(wR * dpr);
     graphCanvas.height = Math.round(hR * dpr);
     graphCanvas.logicalWidth = wR;
@@ -315,12 +321,160 @@ function drawLoop() {
     requestAnimationFrame(drawLoop);
 }
 
+function drawCenteredWrappedText(ctx, text, x, startY, maxWidth, lineHeight) {
+    const lines = CanvasResponsive.wrapLines(ctx, text, maxWidth);
+    lines.forEach((line, index) => ctx.fillText(line, x, startY + index * lineHeight));
+    return lines.length;
+}
+
+function drawMiddleStepsCompact(ctx, w, h, step) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    if (step === 5) {
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText('比較三種來源的水', w / 2, 38);
+
+        const sources = [
+            { x: w * 0.18, color: COLOR_BLUE, label: '酸鹼中和水' },
+            { x: w * 0.5, color: COLOR_GREEN, label: '酒精燃燒水' },
+            { x: w * 0.82, color: COLOR_YELLOW, label: '小蘇打分解水' },
+        ];
+        sources.forEach(({ x, color, label }, index) => {
+            drawWaterDrop(ctx, x, 82, 10, color);
+            const left = x - 24;
+            drawWobblyLine(ctx, left, 108, left, 160, COLOR_WHITE, 2, 810 + index * 4);
+            drawWobblyLine(ctx, left, 160, left + 48, 160, COLOR_WHITE, 2, 811 + index * 4);
+            drawWobblyLine(ctx, left + 48, 160, left + 48, 108, COLOR_WHITE, 2, 812 + index * 4);
+            ctx.fillStyle = `${color}24`;
+            ctx.fillRect(left + 3, 137, 42, 20);
+            ctx.fillStyle = COLOR_WHITE;
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(label, x, 184);
+        });
+
+        ctx.fillStyle = COLOR_GREY;
+        ctx.font = 'bold 14px sans-serif';
+        drawCenteredWrappedText(
+            ctx,
+            '三種水的來源與質量不同，但氧與氫的質量比完全相同。',
+            w / 2,
+            235,
+            w - 42,
+            22,
+        );
+        ctx.fillStyle = COLOR_ORANGE;
+        ctx.fillText('共同質量比：wO : wH = 8 : 1', w / 2, h - 34);
+    } else if (step === 6) {
+        drawWobblyRect(ctx, 16, 16, w - 32, h - 32, COLOR_WHITE, true, COLOR_BLACK, 2, 850);
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillText('實驗數據：氧與氫的質量比', w / 2, 43);
+
+        const left = 25;
+        const right = w - 25;
+        const top = 66;
+        const bottom = 270;
+        const sourceRight = left + (right - left) * 0.38;
+        const colWidth = (right - sourceRight) / 3;
+        const xs = [left, sourceRight, sourceRight + colWidth, sourceRight + colWidth * 2, right];
+        const ys = [top, 105, 155, 205, bottom];
+        xs.forEach((x, index) => drawWobblyLine(ctx, x, top, x, bottom, index === 0 || index === xs.length - 1 ? COLOR_WHITE : COLOR_GREY, 1.5, 860 + index));
+        ys.forEach((y, index) => drawWobblyLine(ctx, left, y, right, y, index === 0 || index === ys.length - 1 ? COLOR_WHITE : COLOR_GREY, 1.5, 870 + index));
+
+        const centers = xs.slice(0, -1).map((x, index) => (x + xs[index + 1]) / 2);
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = 'bold 11px sans-serif';
+        ['來源', 'wO', 'wH', 'wO÷wH'].forEach((label, index) => ctx.fillText(label, centers[index], 91));
+        const rows = [
+            ['酸鹼中和', wO1, wH1, '8.0'],
+            ['酒精燃燒', wO2, wH2, '8.0'],
+            ['小蘇打分解', wO3, wH3, '8.0'],
+        ];
+        const rowCenters = [130, 180, 237];
+        rows.forEach((row, rowIndex) => {
+            row.forEach((value, colIndex) => {
+                ctx.fillStyle = colIndex === 3 ? COLOR_ORANGE : COLOR_WHITE;
+                ctx.fillText(value, centers[colIndex], rowCenters[rowIndex]);
+            });
+        });
+        ctx.fillStyle = COLOR_ORANGE;
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('三組比值皆為 8.0', w / 2, h - 34);
+    } else if (step === 7) {
+        drawWobblyRect(ctx, 18, 18, w - 36, h - 36, COLOR_WHITE, true, COLOR_BLACK, 2, 900);
+        ctx.fillStyle = COLOR_ORANGE;
+        ctx.font = 'bold 19px sans-serif';
+        ctx.fillText('定比定律', w / 2, 55);
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.font = 'bold 15px sans-serif';
+        drawCenteredWrappedText(
+            ctx,
+            '同一種化合物，不論來源或製備方法為何，各組成元素間的質量比恆為定值。',
+            w / 2,
+            105,
+            w - 70,
+            28,
+        );
+        ctx.fillStyle = COLOR_ORANGE;
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText('水的 wO : wH 恆為 8 : 1', w / 2, 260);
+        ctx.fillStyle = COLOR_GREY;
+        ctx.font = '13px sans-serif';
+        ctx.fillText('── 普魯斯特，1799', w / 2, h - 38);
+    }
+
+    ctx.restore();
+}
+
+function drawStepEightCompact(ctx, w, h, t) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillStyle = COLOR_WHITE;
+    ctx.fillText('微觀原理', w / 2, 30);
+    ctx.fillStyle = '#7b1fa2';
+    ctx.fillText('化合物的原子以固定比例結合', w / 2, 54);
+
+    const drawGrowMolecule = (mx, my, rot) => {
+        ctx.save();
+        ctx.translate(mx, my);
+        ctx.scale(t, t);
+        drawWaterMolecule(ctx, 0, 0, 18, 11, 104.5, rot);
+        ctx.restore();
+    };
+
+    drawGrowMolecule(w * 0.28, h * 0.34, -Math.PI / 6);
+    drawGrowMolecule(w * 0.72, h * 0.34, Math.PI / 4);
+    drawGrowMolecule(w * 0.5, h * 0.56, Math.PI + Math.PI / 8);
+
+    ctx.fillStyle = COLOR_GREY;
+    ctx.font = 'bold 14px sans-serif';
+    drawCenteredWrappedText(
+        ctx,
+        '每個水分子 (H₂O) 恆由 2 個 H 與 1 個 O 原子結合',
+        w / 2,
+        h - 88,
+        w - 32,
+        19,
+    );
+
+    ctx.fillStyle = COLOR_ORANGE;
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText('原子質量比', w / 2, h - 43);
+    ctx.fillText('氧 (16) : 氫 (1) × 2 = 8 : 1', w / 2, h - 19);
+    ctx.restore();
+}
+
 // -------------------------------------------------------------
 // LEFT PANEL: Light Theme Render
 // -------------------------------------------------------------
 function renderFlaskPanel() {
     const w = flaskCanvas.logicalWidth || flaskCanvas.clientWidth;
     const h = flaskCanvas.logicalHeight || flaskCanvas.clientHeight;
+    const compact = CanvasResponsive.isCompact(w);
     ctxF.clearRect(0, 0, w, h);
 
     // Light Theme background fill
@@ -331,6 +485,12 @@ function renderFlaskPanel() {
 
     const p = animProgress;
     const t = easeInOutCubic(p);
+
+    if (compact && currentStep >= 5 && currentStep <= 7) {
+        drawMiddleStepsCompact(ctxF, w, h, currentStep);
+        ctxF.restore();
+        return;
+    }
 
     if (currentStep === 1) {
         // Step 1: Blank slate introducing Definite Proportions
@@ -721,6 +881,11 @@ function renderFlaskPanel() {
         ctxF.restore();
     }
     else if (currentStep === 8) {
+        if (compact) {
+            drawStepEightCompact(ctxF, w, h, t);
+            ctxF.restore();
+            return;
+        }
         // Step 8: Microscopic water molecules Grow-In (with purple highlight)
         ctxF.font = FONT_TITLE;
         const part1 = '微觀原理：';
@@ -769,6 +934,8 @@ function renderFlaskPanel() {
 function renderGraphPanel() {
     const w = graphCanvas.logicalWidth || graphCanvas.clientWidth;
     const h = graphCanvas.logicalHeight || graphCanvas.clientHeight;
+    const compact = CanvasResponsive.isCompact(w);
+    const plotMargin = graphMargin(w);
     ctxG.clearRect(0, 0, w, h);
 
     // Light background
@@ -922,10 +1089,16 @@ function renderGraphPanel() {
         ctxG.fillText('ΔwH', (cx + rx) / 2, cy + 18);
         ctxG.fillText('ΔwO', rx + 22, (cy + ry) / 2);
 
-        ctxG.font = FONT_UI;
+        ctxG.font = compact ? 'bold 13px sans-serif' : FONT_UI;
         ctxG.fillStyle = COLOR_ORANGE;
-        ctxG.textAlign = 'left';
-        ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', margin + 20, margin + 35);
+        if (compact) {
+            ctxG.textAlign = 'center';
+            ctxG.fillText('斜率 (質量比)', w / 2, 18);
+            ctxG.fillText('= ΔwO / ΔwH = 8.0', w / 2, 35);
+        } else {
+            ctxG.textAlign = 'left';
+            ctxG.fillText('斜率 (質量比) = ΔwO / ΔwH = 8.0', plotMargin + 20, plotMargin + 35);
+        }
 
         ctxG.restore();
     }
@@ -933,10 +1106,16 @@ function renderGraphPanel() {
     // Step 8: Draw Molar Slope Text
     if (currentStep === 8) {
         ctxG.save();
-        ctxG.font = FONT_UI;
+        ctxG.font = compact ? 'bold 13px sans-serif' : FONT_UI;
         ctxG.fillStyle = '#7c3aed'; // Purple
-        ctxG.textAlign = 'left';
-        ctxG.fillText('斜率 (莫耳數比) = nO / nH = 1/2', margin + 20, margin + 35);
+        if (compact) {
+            ctxG.textAlign = 'center';
+            ctxG.fillText('斜率 (莫耳數比)', w / 2, 18);
+            ctxG.fillText('= nO / nH = 1/2', w / 2, 35);
+        } else {
+            ctxG.textAlign = 'left';
+            ctxG.fillText('斜率 (莫耳數比) = nO / nH = 1/2', plotMargin + 20, plotMargin + 35);
+        }
         ctxG.restore();
     }
 }
@@ -945,6 +1124,7 @@ function renderGraphPanel() {
 
 // Draw Graph Grid and Coordinates
 function drawGraphAxes(w, h) {
+    const compact = CanvasResponsive.isCompact(w);
     ctxG.strokeStyle = 'rgba(0, 0, 0, 0.05)';
     ctxG.lineWidth = 1;
     const maxValY = (currentStep === 8) ? 2.0 : 32.0;
@@ -1009,16 +1189,16 @@ function drawGraphAxes(w, h) {
         }
     }
 
-    ctxG.font = FONT_UI;
+    ctxG.font = compact ? 'bold 13px sans-serif' : FONT_UI;
     ctxG.fillStyle = COLOR_WHITE;
 
-    ctxG.textAlign = 'center';
+    ctxG.textAlign = compact ? 'right' : 'center';
     const xLabel = (currentStep === 8) ? '氫的莫耳數 nH (mol)' : '氫的質量 wH (g)';
-    ctxG.fillText(xLabel, w - 100, originY + 40);
+    ctxG.fillText(xLabel, compact ? w - 8 : w - 100, originY + (compact ? 30 : 40));
 
     ctxG.textAlign = 'left';
     const yLabel = (currentStep === 8) ? '氧的莫耳數 nO (mol)' : '氧的質量 wO (g)';
-    ctxG.fillText(yLabel, 10, 30);
+    ctxG.fillText(yLabel, compact ? 8 : 10, compact ? 19 : 30);
 
     ctxG.textAlign = 'right';
     ctxG.fillText('0', originX - 10, originY + 15);

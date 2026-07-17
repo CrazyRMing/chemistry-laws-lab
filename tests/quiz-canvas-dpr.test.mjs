@@ -41,5 +41,5 @@ test('CSS owns main display size and wrapper changes trigger redraw', () => {
   assert.match(html, /#quizCanvas\s*\{[\s\S]*?width:\s*100%\s*!important;[\s\S]*?height:\s*auto\s*!important/);
   assert.match(js, /new ResizeObserver\(scheduleQuizCanvasResize\)/);
   assert.match(js, /quizCanvasResizeObserver\?\.observe\(canvas\.parentElement\)/);
-  assert.match(html, /quiz\.js\?v=20260716_02/);
+  assert.match(html, /quiz\.js\?v=20260717_01/);
 });

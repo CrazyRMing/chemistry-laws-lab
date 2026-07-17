@@ -215,6 +215,7 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
 
     const w = parentW;
     const h = 250;
+    const compact = CanvasResponsive.isCompact(w);
     configureCanvas(canvas, ctx, w, h);
     
     ctx.clearRect(0, 0, w, h);
@@ -234,7 +235,7 @@ function drawWeightRatioDiagram(canvasId, questionId, step = 0, progress = 0.0) 
     drawWobblyLine(ctx, ox, oy, ox, maxY, '#2b2b2b', 1.5, 2002);
     
     // Axis labels
-    ctx.font = 'bold 0.8rem sans-serif';
+    ctx.font = compact ? 'bold 12px sans-serif' : 'bold 0.8rem sans-serif';
     ctx.fillStyle = '#5f5f5f';
     ctx.textBaseline = 'middle';
     
@@ -614,15 +615,21 @@ function resizeCanvas() {
     const clientW = wrapper.clientWidth;
     if (clientW <= 0) return;
 
-    const clientH = clientW * (13 / 16);
+    const clientH = CanvasResponsive.heightFor(clientW, 13 / 16, 0.95);
     configureCanvas(canvas, ctx, clientW, clientH);
     drawQuizDiagram();
+}
+
+function quizNodeFont(context, label, width) {
+    if (!CanvasResponsive.isCompact(width)) return 'bold 1rem sans-serif';
+    return CanvasResponsive.fontFor(context, label, 72, 14, 10, 'bold');
 }
 
 // Render network diagram with dynamic color overrides on Hint toggled
 function drawQuizDiagram() {
     const w = canvas.logicalWidth || canvas.clientWidth;
     const h = canvas.logicalHeight || w * (13 / 16);
+    const compact = CanvasResponsive.isCompact(w);
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
@@ -808,55 +815,60 @@ function drawQuizDiagram() {
     ctx.save();
     drawWobblyRect(ctx, x1 - 45, yMid - 18, 90, 36, cSi, true, '#ffffff', 1.5, 915, aSi);
     ctx.globalAlpha = aSi;
-    ctx.font = 'bold 1.0rem sans-serif';
+    const siliconLabel = quizPage === 2 ? '矽 7 克' : '矽 Z 克';
+    ctx.font = quizNodeFont(ctx, siliconLabel, w);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textSi;
-    ctx.fillText(quizPage === 2 ? '矽 7 克' : '矽 Z 克', x1, yMid);
+    ctx.fillText(siliconLabel, x1, yMid);
     ctx.restore();
 
     // Oxygen node (O)
     ctx.save();
     drawWobblyRect(ctx, x2 - 45, yTop - 18, 90, 36, cO, true, '#ffffff', 1.5, 916, aO);
     ctx.globalAlpha = aO;
-    ctx.font = 'bold 1.0rem sans-serif';
+    const oxygenLabel = '氧 8 克';
+    ctx.font = quizNodeFont(ctx, oxygenLabel, w);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textO;
-    ctx.fillText('氧 8 克', x2, yTop);
+    ctx.fillText(oxygenLabel, x2, yTop);
     ctx.restore();
 
     // Carbon node (C)
     ctx.save();
     drawWobblyRect(ctx, x2 - 45, yBottom - 18, 90, 36, cC, true, '#ffffff', 1.5, 917, aC);
     ctx.globalAlpha = aC;
-    ctx.font = 'bold 1.0rem sans-serif';
+    const carbonLabel = quizPage === 2 ? '碳 3 克' : '碳 Y 克';
+    ctx.font = quizNodeFont(ctx, carbonLabel, w);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textC;
-    ctx.fillText(quizPage === 2 ? '碳 3 克' : '碳 Y 克', x2, yBottom);
+    ctx.fillText(carbonLabel, x2, yBottom);
     ctx.restore();
 
     // Nitrogen node (N)
     ctx.save();
     drawWobblyRect(ctx, x3 - 45, yTop - 18, 90, 36, cN, true, '#ffffff', 1.5, 918, aN);
     ctx.globalAlpha = aN;
-    ctx.font = 'bold 1.0rem sans-serif';
+    const nitrogenLabel = quizPage === 2 ? '氮 4.67 克' : '氮 X 克';
+    ctx.font = quizNodeFont(ctx, nitrogenLabel, w);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textN;
-    ctx.fillText(quizPage === 2 ? '氮 4.67 克' : '氮 X 克', x3, yTop);
+    ctx.fillText(nitrogenLabel, x3, yTop);
     ctx.restore();
 
     // Hydrogen node (H)
     ctx.save();
     drawWobblyRect(ctx, x3 - 45, yBottom - 18, 90, 36, cH, true, '#ffffff', 1.5, 919, aH);
     ctx.globalAlpha = aH;
-    ctx.font = 'bold 1.0rem sans-serif';
+    const hydrogenLabel = '氫 1 克';
+    ctx.font = quizNodeFont(ctx, hydrogenLabel, w);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = textH;
-    ctx.fillText('氫 1 克', x3, yBottom);
+    ctx.fillText(hydrogenLabel, x3, yBottom);
     ctx.restore();
 
     // Circle SiC

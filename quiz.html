@@ -81,6 +81,15 @@
             width: 100% !important;
             height: auto !important;
         }
+        @media (max-width: 480px) {
+            .left-panel .canvas-wrapper {
+                aspect-ratio: auto !important;
+            }
+            #quizCanvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+        }
         
         /* Unified math formula coloring: Numerator in Red, Denominator in Green */
         .color-numerator {
@@ -406,7 +415,8 @@
         </div>
     </div>
 
-    <script src="quiz.js?v=20260716_02"></script>
+    <script src="canvas-responsive.js?v=20260717_01"></script>
+    <script src="quiz.js?v=20260717_01"></script>
 
     <!-- 版權 Modal -->
     <div id="copyrightModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">

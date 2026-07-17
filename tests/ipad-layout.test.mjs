@@ -16,8 +16,8 @@ test('iPad portrait stacks panels without full-width oversized canvases', () => 
 });
 
 test('canvas sizing has one 4:3 source and follows container changes', () => {
-  assert.match(js, /const hL = wL \* 0\.75/);
-  assert.match(js, /const hR = wR \* 0\.75/);
+  assert.match(js, /const hL = CanvasResponsive\.heightFor\(wL,\s*0\.75,\s*1\)/);
+  assert.match(js, /const hR = CanvasResponsive\.heightFor\(wR,\s*0\.75,\s*1\)/);
   assert.match(js, /new ResizeObserver\(scheduleCanvasResize\)/);
 });
 

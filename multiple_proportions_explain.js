@@ -134,6 +134,10 @@ function drawWobblyLine(ctx, x1, y1, x2, y2, color = '#2b2b2b', width = 2, seed 
 // Coordinate mapping parameters
 const margin = 50;
 
+function explainMargin(width) {
+    return CanvasResponsive.marginFor(width, margin, 38);
+}
+
 function mapX(xVal, w) {
     return margin + (xVal / 12.0) * (w - 2 * margin);
 }
@@ -152,13 +156,11 @@ function initCanvas() {
     
     const resize = () => {
         const w = canvas.clientWidth;
-        const h = w * 0.75;
+        const h = CanvasResponsive.heightFor(w, 0.75, 0.9);
         const dpr = window.devicePixelRatio || 1;
         if (w > 0 && h > 0 && (canvas.width !== w * dpr || canvas.height !== h * dpr)) {
             canvas.width = w * dpr;
             canvas.height = h * dpr;
-            canvas.style.width = w + 'px';
-            canvas.style.height = h + 'px';
             canvas.logicalWidth = w;
             canvas.logicalHeight = h;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -197,13 +199,13 @@ function renderLoop(now) {
     
     // Ensure buffer size matches layout size dynamically during transition
     const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
+    const h = CanvasResponsive.heightFor(w, 0.75, 0.9);
     const dpr = window.devicePixelRatio || 1;
     if (w > 0 && h > 0 && (canvas.width !== w * dpr || canvas.height !== h * dpr)) {
         canvas.width = w * dpr;
         canvas.height = h * dpr;
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
+        canvas.logicalWidth = w;
+        canvas.logicalHeight = h;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     
@@ -258,6 +260,19 @@ function drawHighlightedText(ctx, x, y, parts, align = 'right') {
     ctx.restore();
 }
 
+function drawCompactPointLabel(ctx, text, x, y, width) {
+    const compact = CanvasResponsive.isCompact(width);
+    ctx.font = compact ? 'bold 10px sans-serif' : 'bold 11px sans-serif';
+    ctx.textBaseline = 'top';
+    if (compact && x > width * 0.62) {
+        ctx.textAlign = 'right';
+        ctx.fillText(text, x - 6, y + 6);
+    } else {
+        ctx.textAlign = 'left';
+        ctx.fillText(text, x + 6, y + 6);
+    }
+}
+
 function draw(p) {
     const w = canvas.logicalWidth || canvas.clientWidth;
     const h = canvas.logicalHeight || canvas.clientHeight;
@@ -274,8 +289,9 @@ function draw(p) {
     const yStep = 2;
 
     // Coordinate mapping
-    const mX = (xVal) => margin + (xVal / animatedXMax) * (w - 2 * margin);
-    const mY = (yVal) => h - margin - (yVal / yMax) * (h - 2 * margin);
+    const plotMargin = explainMargin(w);
+    const mX = (xVal) => plotMargin + (xVal / animatedXMax) * (w - 2 * plotMargin);
+    const mY = (yVal) => h - plotMargin - (yVal / yMax) * (h - 2 * plotMargin);
 
     // 1. Draw Grid Lines
     ctx.save();
@@ -518,11 +534,8 @@ function draw(p) {
                 ctx.stroke();
                 
                 if (currentStep === 2) {
-                    ctx.font = 'bold 11px sans-serif';
                     ctx.fillStyle = '#0284c7';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(`(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix1_y) + 6);
+                    drawCompactPointLabel(ctx, `(${activeMass.toFixed(2)}, ${ix1_y.toFixed(2)})`, mX(activeMass), mY(ix1_y), w);
                 }
                 
                 // Intersection II
@@ -536,9 +549,7 @@ function draw(p) {
                 
                 if (currentStep === 2) {
                     ctx.fillStyle = '#0284c7';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(`(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass) + 6, mY(ix2_y) + 6);
+                    drawCompactPointLabel(ctx, `(${activeMass.toFixed(2)}, ${ix2_y.toFixed(2)})`, mX(activeMass), mY(ix2_y), w);
                 }
             } else {
                 const ix1_x = (9.34 / 2.00) * activeMass;
@@ -554,11 +565,8 @@ function draw(p) {
                 ctx.stroke();
                 
                 if (currentStep === 2) {
-                    ctx.font = 'bold 11px sans-serif';
                     ctx.fillStyle = '#0284c7';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(`(${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x) + 6, mY(activeMass) + 6);
+                    drawCompactPointLabel(ctx, `(${ix1_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix1_x), mY(activeMass), w);
                 }
                 
                 // Intersection II
@@ -572,9 +580,7 @@ function draw(p) {
                 
                 if (currentStep === 2) {
                     ctx.fillStyle = '#0284c7';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-                    ctx.fillText(`(${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x) + 6, mY(activeMass) + 6);
+                    drawCompactPointLabel(ctx, `(${ix2_x.toFixed(2)}, ${activeMass.toFixed(2)})`, mX(ix2_x), mY(activeMass), w);
                 }
             }
             ctx.restore();

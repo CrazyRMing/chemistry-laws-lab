@@ -150,11 +150,17 @@ function drawHorizontalBracket(ctx, x1, x2, y, color, alignTop = false) {
 
 // Coordinate Helpers for Graph Canvas (x: 0 ~ 4.0, y: 0 ~ 32.0)
 const margin = 60;
+function multipleGraphMargin(width) {
+    return CanvasResponsive.marginFor(width, margin, 40);
+}
 function mapX(xVal, width) {
-    return margin + (xVal / 4.0) * (width - 2 * margin);
+    const plotMargin = multipleGraphMargin(width);
+    return plotMargin + (xVal / 4.0) * (width - 2 * plotMargin);
 }
 function mapY(yVal, height) {
-    return height - margin - (yVal / 32.0) * (height - 2 * margin);
+    const width = graphCanvas.logicalWidth || graphCanvas.clientWidth;
+    const plotMargin = multipleGraphMargin(width);
+    return height - plotMargin - (yVal / 32.0) * (height - 2 * plotMargin);
 }
 
 // Step descriptions
@@ -218,21 +224,17 @@ function resizeCanvases() {
     const dpr = window.devicePixelRatio || 1;
     
     const wF = pF.clientWidth;
-    const hF = wF * 0.75;
+    const hF = CanvasResponsive.heightFor(wF, 0.75, 1);
     flaskCanvas.width = wF * dpr;
     flaskCanvas.height = hF * dpr;
-    flaskCanvas.style.width = wF + 'px';
-    flaskCanvas.style.height = hF + 'px';
     flaskCanvas.logicalWidth = wF;
     flaskCanvas.logicalHeight = hF;
     ctxF.setTransform(dpr, 0, 0, dpr, 0, 0);
     
     const wG = pG.clientWidth;
-    const hG = wG * 0.75;
+    const hG = CanvasResponsive.heightFor(wG, 0.75, 1);
     graphCanvas.width = wG * dpr;
     graphCanvas.height = hG * dpr;
-    graphCanvas.style.width = wG + 'px';
-    graphCanvas.style.height = hG + 'px';
     graphCanvas.logicalWidth = wG;
     graphCanvas.logicalHeight = hG;
     ctxG.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -336,6 +338,130 @@ function drawLoop() {
     drawRightPanel();
 }
 
+function drawCompactAtom(ctx, x, y, radius, label, fillColor, textColor, seed) {
+    drawWobblyCircle(ctx, x, y, radius, fillColor, true, 2, seed);
+    drawWobblyCircle(ctx, x, y, radius, '#2b2b2b', false, 2, seed);
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${Math.round(radius * 0.9)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y + 1);
+}
+
+function drawCompactBeaker(ctx, centerX, centerY, color, seed) {
+    const width = 44;
+    const height = 52;
+    const left = centerX - width / 2;
+    const top = centerY - height / 2;
+    drawWobblyLine(ctx, left, top, left, top + height, '#2b2b2b', 2, seed);
+    drawWobblyLine(ctx, left, top + height, left + width, top + height, '#2b2b2b', 2, seed + 1);
+    drawWobblyLine(ctx, left + width, top + height, left + width, top, '#2b2b2b', 2, seed + 2);
+    ctx.fillStyle = `${color}24`;
+    ctx.fillRect(left + 3, centerY, width - 6, height / 2 - 3);
+    drawWobblyLine(ctx, left + 2, centerY, left + width - 2, centerY, color, 1.5, seed + 3);
+}
+
+function drawMultipleCompact(ctx, w, h, step, progress) {
+    const alpha = easeInOutCubic(progress);
+    const leftX = w * 0.27;
+    const rightX = w * 0.73;
+    ctx.save();
+    drawWobblyRect(ctx, 18, 18, w - 36, h - 36, '#2b2b2b', true, '#ffffff', 2, 200);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    if (step === 4 || step === 5) {
+        ctx.fillStyle = '#1f1f1f';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText('多種化合物的組成比', w / 2, 48);
+        const drawCompound = (x, color, title, hydrogen, oxygen, seed) => {
+            ctx.fillStyle = color;
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText(title, x, 84);
+            drawCompactBeaker(ctx, x, 145, color, seed);
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(hydrogen, x, 195);
+            ctx.fillText(oxygen, x, 216);
+        };
+        drawCompound(leftX, '#ff7a00', '化合物 I（水）', 'H = 2.5 g', 'O = 20.0 g', 210);
+        ctx.globalAlpha = step === 4 ? alpha : 1;
+        drawCompound(rightX, '#7c3aed', '化合物 II（雙氧水）', 'H = 1.5 g', 'O = 24.0 g', 220);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#5f5f5f';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText(step === 4 ? '比較兩種不同化合物' : '兩者具有不同的定比關係', w / 2, h - 48);
+    } else if (step === 6 || step === 7) {
+        ctx.fillStyle = '#1f1f1f';
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillText('固定氫質量，比較氧的質量', w / 2, 47);
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillStyle = '#ff7a00';
+        ctx.fillText('化合物 I', leftX, 78);
+        ctx.fillStyle = '#7c3aed';
+        ctx.fillText('化合物 II', rightX, 78);
+        drawCompactAtom(ctx, leftX, 120, 15, 'H', '#ffffff', '#2b2b2b', 230);
+        drawCompactAtom(ctx, rightX, 120, 15, 'H', '#ffffff', '#2b2b2b', 231);
+        ctx.fillStyle = '#2563eb';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('H 重量相同', w / 2, 163);
+        ctx.font = '13px sans-serif';
+        ctx.fillText('表示 H 原子數量相同', w / 2, 184);
+        if (step === 7) {
+            ctx.globalAlpha = alpha;
+            drawCompactAtom(ctx, leftX, 232, 18, 'O', '#ef4444', '#ffffff', 232);
+            drawCompactAtom(ctx, rightX - 18, 232, 18, 'O', '#ef4444', '#ffffff', 233);
+            drawCompactAtom(ctx, rightX + 20, 232, 18, 'O', '#ef4444', '#ffffff', 234);
+            ctx.fillStyle = '#1f1f1f';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.fillText('O 質量比 = 1 : 2', w / 2, 284);
+            ctx.font = '13px sans-serif';
+            ctx.fillText('O 原子數量比也是 1 : 2', w / 2, 307);
+        }
+    } else if (step === 8 || step === 9) {
+        ctx.fillStyle = '#1f1f1f';
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillText('固定氧質量，比較氫的質量', w / 2, 47);
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillStyle = '#ff7a00';
+        ctx.fillText('化合物 I', leftX, 78);
+        ctx.fillStyle = '#7c3aed';
+        ctx.fillText('化合物 II', rightX, 78);
+        drawCompactAtom(ctx, leftX, 120, 18, 'O', '#ef4444', '#ffffff', 240);
+        drawCompactAtom(ctx, rightX, 120, 18, 'O', '#ef4444', '#ffffff', 241);
+        ctx.fillStyle = '#2563eb';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('O 重量相同', w / 2, 163);
+        ctx.font = '13px sans-serif';
+        ctx.fillText('表示 O 原子數量相同', w / 2, 184);
+        if (step === 9) {
+            ctx.globalAlpha = alpha;
+            drawCompactAtom(ctx, leftX - 17, 232, 15, 'H', '#ffffff', '#2b2b2b', 242);
+            drawCompactAtom(ctx, leftX + 17, 232, 15, 'H', '#ffffff', '#2b2b2b', 243);
+            drawCompactAtom(ctx, rightX, 232, 15, 'H', '#ffffff', '#2b2b2b', 244);
+            ctx.fillStyle = '#1f1f1f';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.fillText('H 質量比 = 2 : 1', w / 2, 284);
+            ctx.font = '13px sans-serif';
+            ctx.fillText('H 原子數量比也是 2 : 1', w / 2, 307);
+        }
+    } else if (step === 10) {
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#ff7a00';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText('倍比定律', w / 2, 53);
+        ctx.fillStyle = '#1f1f1f';
+        ctx.font = 'bold 15px sans-serif';
+        const statement = '當甲、乙兩元素結合生成兩種以上的化合物時，若固定甲元素的質量，則各化合物中乙元素的質量呈簡單整數比。';
+        const lines = CanvasResponsive.wrapLines(ctx, statement, w - 70);
+        lines.forEach((line, index) => ctx.fillText(line, w / 2, 92 + index * 27));
+        ctx.fillStyle = '#5f5f5f';
+        ctx.font = '13px sans-serif';
+        ctx.fillText('── 道耳頓，1803', w / 2, h - 42);
+    }
+
+    ctx.restore();
+}
+
 // DRAW LEFT PANEL (SCHEMATICS)
 function drawLeftPanel() {
     const w = flaskCanvas.logicalWidth || flaskCanvas.clientWidth;
@@ -345,6 +471,11 @@ function drawLeftPanel() {
     // Global styling config
     ctxF.strokeStyle = '#2b2b2b';
     ctxF.fillStyle = '#1f1f1f';
+
+    if (CanvasResponsive.isCompact(w) && currentStep >= 4) {
+        drawMultipleCompact(ctxF, w, h, currentStep, animProgress);
+        return;
+    }
     
     if (currentStep === 1) {
         // Step 1: Chalkboard banner
@@ -1141,6 +1272,7 @@ function drawLeftPanel() {
 function drawRightPanel() {
     const w = graphCanvas.logicalWidth || graphCanvas.clientWidth;
     const h = graphCanvas.logicalHeight || graphCanvas.clientHeight;
+    const compact = CanvasResponsive.isCompact(w);
     ctxG.clearRect(0, 0, w, h);
     
     // 1. Draw Grid lines
@@ -1164,7 +1296,7 @@ function drawRightPanel() {
     drawWobblyLine(ctxG, mapX(0, w), mapY(0, h), mapX(0, w), mapY(32.0, h), '#2b2b2b', 2.5, 202); // Y Axis
     
     // X Axis ticks & labels
-    ctxG.font = FONT_SMALL;
+    ctxG.font = compact ? '12px sans-serif' : FONT_SMALL;
     ctxG.textAlign = 'center';
     for (let xVal = 1.0; xVal <= 4.0; xVal += 1.0) {
         const tx = mapX(xVal, w);
@@ -1174,7 +1306,7 @@ function drawRightPanel() {
         if ((currentStep === 6 || currentStep === 7) && xVal === 1.0) {
             ctxG.save();
             ctxG.fillStyle = '#2563eb'; // Blue text label
-            ctxG.font = 'bold 1.15rem sans-serif'; // Larger & Bold
+            ctxG.font = compact ? 'bold 13px sans-serif' : 'bold 1.15rem sans-serif'; // Larger & Bold
             ctxG.fillText(xVal.toFixed(1), tx, ty + 20);
             ctxG.restore();
         } else {
@@ -1182,12 +1314,13 @@ function drawRightPanel() {
             ctxG.fillText(xVal.toFixed(1), tx, ty + 18);
         }
     }
-    ctxG.font = FONT_UI;
+    ctxG.font = compact ? 'bold 13px sans-serif' : FONT_UI;
     ctxG.fillStyle = '#2b2b2b';
-    ctxG.fillText('氫的質量 wH (g)', w - 100, mapY(0, h) + 40);
+    ctxG.textAlign = compact ? 'right' : 'center';
+    ctxG.fillText('氫的質量 wH (g)', compact ? w - 8 : w - 100, mapY(0, h) + (compact ? 30 : 40));
     
     // Y Axis ticks & labels (prevent text alignment pollution)
-    ctxG.font = FONT_SMALL;
+    ctxG.font = compact ? '12px sans-serif' : FONT_SMALL;
     ctxG.textAlign = 'right';
     for (let yVal = 8; yVal <= 32; yVal += 8) {
         const tx = mapX(0, w);
@@ -1197,7 +1330,7 @@ function drawRightPanel() {
         if ((currentStep === 8 || currentStep === 9) && yVal === 16) {
             ctxG.save();
             ctxG.fillStyle = '#2563eb'; // Blue text label
-            ctxG.font = 'bold 1.15rem sans-serif'; // Larger & Bold
+            ctxG.font = compact ? 'bold 13px sans-serif' : 'bold 1.15rem sans-serif'; // Larger & Bold
             ctxG.fillText(yVal.toString(), tx - 10, ty + 5);
             ctxG.restore();
         } else {
@@ -1207,9 +1340,9 @@ function drawRightPanel() {
     }
     
     // Y-Axis Label with RESET textAlign to avoid clipping
-    ctxG.font = FONT_UI;
+    ctxG.font = compact ? 'bold 13px sans-serif' : FONT_UI;
     ctxG.textAlign = 'left'; // Reset alignment to prevent clipping!
-      ctxG.fillText('氧的質量 wO (g)', 10, 30);
+      ctxG.fillText('氧的質量 wO (g)', compact ? 8 : 10, compact ? 19 : 30);
     ctxG.textAlign = 'right'; // Restore tick alignment
     ctxG.fillText('0', mapX(0, w) - 10, mapY(0, h) + 15);
     
