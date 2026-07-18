@@ -190,9 +190,9 @@
 
     <!-- 版權 Modal -->
     <div id="copyrightModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 1.5rem;">
-        <div style="background: #ffffff; border: 3px solid #2b2b2b; border-radius: 16px; max-width: 550px; width: 100%; box-shadow: 6px 8px 0px rgba(43, 43, 43, 0.15); display: flex; flex-direction: column; overflow: hidden; font-family: 'Outfit', 'Noto Sans TC', sans-serif; animation: modalFadeIn 0.3s ease;">
+        <div style="background: #ffffff; border: 3px solid var(--border-color); border-radius: 16px; max-width: 550px; width: 100%; box-shadow: 6px 8px 0px rgba(43, 43, 43, 0.15); display: flex; flex-direction: column; overflow: hidden; font-family: 'Outfit', 'Noto Sans TC', sans-serif; animation: modalFadeIn 0.3s ease;">
             <!-- Modal Header -->
-            <div style="background: #f9fafb; border-bottom: 2.5px solid #2b2b2b; padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #f9fafb; border-bottom: 2.5px solid var(--border-color); padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
                 <strong style="font-size: 1.2rem; color: #1f1f1f; font-weight: bold;">版權與使用限制</strong>
                 <button onclick="closeCopyrightModal()" style="background: none; border: none; font-size: 1.5rem; font-weight: bold; cursor: pointer; color: #5f5f5f; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#5f5f5f'">&times;</button>
             </div>
@@ -216,7 +216,7 @@
             </div>
             <!-- Modal Footer -->
             <div style="background: #f9fafb; border-top: 1.5px dashed rgba(43,43,43,0.15); padding: 1rem 1.5rem; display: flex; justify-content: flex-end;">
-                <button onclick="closeCopyrightModal()" style="background: #ffffff; border: 2px solid #2b2b2b; border-radius: 8px; padding: 0.5rem 1.2rem; font-family: inherit; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 2px 2px 0px #2b2b2b;" onmouseover="this.style.transform='translate(-1px, -1px)'; this.style.boxShadow='3px 3px 0px #2b2b2b'" onmouseout="this.style.transform='none'; this.style.boxShadow='2px 2px 0px #2b2b2b'">關閉</button>
+                <button onclick="closeCopyrightModal()" style="background: #ffffff; border: 2px solid var(--border-color); border-radius: 8px; padding: 0.5rem 1.2rem; font-family: inherit; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: 2px 2px 0px #2b2b2b;" onmouseover="this.style.transform='translate(-1px, -1px)'; this.style.boxShadow='3px 3px 0px #2b2b2b'" onmouseout="this.style.transform='none'; this.style.boxShadow='2px 2px 0px #2b2b2b'">關閉</button>
             </div>
         </div>
     </div>

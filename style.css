@@ -253,7 +253,7 @@ canvas {
 .nav-btn.highlight-btn {
     background: var(--theme-primary, #003153) !important;
     color: var(--theme-on-primary, #ffffff) !important;
-    border-color: #2b2b2b !important;
+    border-color: var(--border-color) !important;
     box-shadow: 3px 4px 0px #2b2b2b !important;
     animation: buttonWiggle 2.5s infinite ease-in-out;
 }

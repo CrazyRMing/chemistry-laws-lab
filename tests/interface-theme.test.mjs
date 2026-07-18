@@ -80,6 +80,35 @@ test('major question and card wrappers use the interface border token', () => {
   );
 });
 
+test('enabled highlight button uses the interface border token', () => {
+  assert.match(
+    css,
+    /\.nav-btn\.highlight-btn\s*\{[\s\S]*?border-color:\s*var\(--border-color\)\s*!important/,
+  );
+});
+
+test('copyright modal interface borders use the theme token on every production page', () => {
+  for (const [name, page] of Object.entries(pages)) {
+    const modal = page.match(/<div id="copyrightModal"[\s\S]*?<script>/)?.[0] ?? '';
+
+    assert.match(
+      modal,
+      /<div style="background: #ffffff; border: 3px solid var\(--border-color\)/,
+      `${name} copyright modal card must use the interface border token`,
+    );
+    assert.match(
+      modal,
+      /<!-- Modal Header -->\s*<div style="background: #f9fafb; border-bottom: 2\.5px solid var\(--border-color\)/,
+      `${name} copyright modal header must use the interface border token`,
+    );
+    assert.match(
+      modal,
+      /<button onclick="closeCopyrightModal\(\)" style="background: #ffffff; border: 2px solid var\(--border-color\)/,
+      `${name} copyright modal close button must use the interface border token`,
+    );
+  }
+});
+
 test('legend markers and disabled buttons retain neutral charcoal outlines', () => {
   assert.match(css, /--border-neutral:\s*#2b2b2b/);
   assert.match(
