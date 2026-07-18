@@ -39,6 +39,22 @@ test('CSS-owned interface controls use semantic theme colors', () => {
   }
 });
 
+test('legend markers and disabled buttons retain neutral charcoal outlines', () => {
+  assert.match(css, /--border-neutral:\s*#2b2b2b/);
+  assert.match(
+    css,
+    /\.legend-dot\s*\{[\s\S]*?border:\s*2px solid var\(--border-neutral, #2b2b2b\)/,
+  );
+  assert.match(
+    css,
+    /\.legend-line\s*\{[\s\S]*?border:\s*1\.5px solid var\(--border-neutral, #2b2b2b\)/,
+  );
+  assert.match(
+    css,
+    /\.nav-btn:disabled\s*\{[\s\S]*?border-color:\s*var\(--border-neutral, #2b2b2b\)[\s\S]*?box-shadow:\s*2px 2px 0px var\(--border-neutral, #2b2b2b\)/,
+  );
+});
+
 test('representative Canvas and teaching-series colors remain unchanged', () => {
   assert.match(app, /const COLOR_ORANGE = '#ff7a00'/);
   assert.match(quiz, /drawWobblyLine\(ctx, endX, endY, curEndX, curEndY, '#ff7a00'/);
