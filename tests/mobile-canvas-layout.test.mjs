@@ -82,6 +82,16 @@ test('definite-law page has a complete compact Canvas composition', () => {
   assert.match(source, /const compact = CanvasResponsive\.isCompact\(w\)/);
 });
 
+test('definite-law compact steps reserve content above a shared footer', () => {
+  const source = readFileSync(new URL('app.js', root), 'utf8');
+
+  assert.match(source, /function compactFooterLayout\(height\)/);
+  assert.match(source, /const footer = compactFooterLayout\(h\)/);
+  assert.match(source, /const bottom = footer\.contentBottom/);
+  assert.doesNotMatch(source, /const bottom = 270/);
+  assert.doesNotMatch(source, /235,[\s\S]*?h - 34/);
+});
+
 test('multiple-proportions page has compact steps and graph geometry', () => {
   const source = readFileSync(new URL('multiple_proportions.js', root), 'utf8');
   const html = readFileSync(new URL('multiple_proportions.html', root), 'utf8');

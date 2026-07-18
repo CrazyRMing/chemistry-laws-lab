@@ -327,15 +327,24 @@ function drawCenteredWrappedText(ctx, text, x, startY, maxWidth, lineHeight) {
     return lines.length;
 }
 
+function compactFooterLayout(height) {
+    const { upper: conclusionY } = CanvasResponsive.bottomPair(height, 46, 24);
+    return {
+        conclusionY,
+        contentBottom: conclusionY - 26,
+    };
+}
+
 function drawMiddleStepsCompact(ctx, w, h, step) {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
+    const footer = compactFooterLayout(h);
 
     if (step === 5) {
         ctx.fillStyle = COLOR_WHITE;
         ctx.font = 'bold 18px sans-serif';
-        ctx.fillText('比較三種來源的水', w / 2, 38);
+        ctx.fillText('比較三種來源的水', w / 2, 32);
 
         const sources = [
             { x: w * 0.18, color: COLOR_BLUE, label: '酸鹼中和水' },
@@ -343,30 +352,30 @@ function drawMiddleStepsCompact(ctx, w, h, step) {
             { x: w * 0.82, color: COLOR_YELLOW, label: '小蘇打分解水' },
         ];
         sources.forEach(({ x, color, label }, index) => {
-            drawWaterDrop(ctx, x, 82, 10, color);
+            drawWaterDrop(ctx, x, 68, 10, color);
             const left = x - 24;
-            drawWobblyLine(ctx, left, 108, left, 160, COLOR_WHITE, 2, 810 + index * 4);
-            drawWobblyLine(ctx, left, 160, left + 48, 160, COLOR_WHITE, 2, 811 + index * 4);
-            drawWobblyLine(ctx, left + 48, 160, left + 48, 108, COLOR_WHITE, 2, 812 + index * 4);
+            drawWobblyLine(ctx, left, 90, left, 140, COLOR_WHITE, 2, 810 + index * 4);
+            drawWobblyLine(ctx, left, 140, left + 48, 140, COLOR_WHITE, 2, 811 + index * 4);
+            drawWobblyLine(ctx, left + 48, 140, left + 48, 90, COLOR_WHITE, 2, 812 + index * 4);
             ctx.fillStyle = `${color}24`;
-            ctx.fillRect(left + 3, 137, 42, 20);
+            ctx.fillRect(left + 3, 117, 42, 20);
             ctx.fillStyle = COLOR_WHITE;
             ctx.font = 'bold 11px sans-serif';
-            ctx.fillText(label, x, 184);
+            ctx.fillText(label, x, 162);
         });
 
         ctx.fillStyle = COLOR_GREY;
-        ctx.font = 'bold 14px sans-serif';
-        drawCenteredWrappedText(
-            ctx,
-            '三種水的來源與質量不同，但氧與氫的質量比完全相同。',
-            w / 2,
-            235,
-            w - 42,
-            22,
-        );
+        ctx.font = 'bold 13px sans-serif';
+        const explanation = '三種水的來源與質量不同，但氧與氫的質量比完全相同。';
+        const explanationLines = CanvasResponsive.wrapLines(ctx, explanation, w - 42);
+        const explanationLineHeight = 18;
+        const explanationStartY = footer.contentBottom - (explanationLines.length - 1) * explanationLineHeight;
+        explanationLines.forEach((line, index) => {
+            ctx.fillText(line, w / 2, explanationStartY + index * explanationLineHeight);
+        });
         ctx.fillStyle = COLOR_ORANGE;
-        ctx.fillText('共同質量比：wO : wH = 8 : 1', w / 2, h - 34);
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('共同質量比：wO : wH = 8 : 1', w / 2, footer.conclusionY);
     } else if (step === 6) {
         drawWobblyRect(ctx, 16, 16, w - 32, h - 32, COLOR_WHITE, true, COLOR_BLACK, 2, 850);
         ctx.fillStyle = COLOR_WHITE;
@@ -375,34 +384,35 @@ function drawMiddleStepsCompact(ctx, w, h, step) {
 
         const left = 25;
         const right = w - 25;
-        const top = 66;
-        const bottom = 270;
+        const top = 64;
+        const bottom = footer.contentBottom;
+        const rowHeight = (bottom - top) / 4;
         const sourceRight = left + (right - left) * 0.38;
         const colWidth = (right - sourceRight) / 3;
         const xs = [left, sourceRight, sourceRight + colWidth, sourceRight + colWidth * 2, right];
-        const ys = [top, 105, 155, 205, bottom];
+        const ys = Array.from({ length: 5 }, (_, index) => top + rowHeight * index);
         xs.forEach((x, index) => drawWobblyLine(ctx, x, top, x, bottom, index === 0 || index === xs.length - 1 ? COLOR_WHITE : COLOR_GREY, 1.5, 860 + index));
         ys.forEach((y, index) => drawWobblyLine(ctx, left, y, right, y, index === 0 || index === ys.length - 1 ? COLOR_WHITE : COLOR_GREY, 1.5, 870 + index));
 
         const centers = xs.slice(0, -1).map((x, index) => (x + xs[index + 1]) / 2);
+        const rowCenters = Array.from({ length: 4 }, (_, index) => top + rowHeight * (index + 0.5));
         ctx.fillStyle = COLOR_WHITE;
         ctx.font = 'bold 11px sans-serif';
-        ['來源', 'wO', 'wH', 'wO÷wH'].forEach((label, index) => ctx.fillText(label, centers[index], 91));
+        ['來源', 'wO', 'wH', 'wO÷wH'].forEach((label, index) => ctx.fillText(label, centers[index], rowCenters[0]));
         const rows = [
             ['酸鹼中和', wO1, wH1, '8.0'],
             ['酒精燃燒', wO2, wH2, '8.0'],
             ['小蘇打分解', wO3, wH3, '8.0'],
         ];
-        const rowCenters = [130, 180, 237];
         rows.forEach((row, rowIndex) => {
             row.forEach((value, colIndex) => {
                 ctx.fillStyle = colIndex === 3 ? COLOR_ORANGE : COLOR_WHITE;
-                ctx.fillText(value, centers[colIndex], rowCenters[rowIndex]);
+                ctx.fillText(value, centers[colIndex], rowCenters[rowIndex + 1]);
             });
         });
         ctx.fillStyle = COLOR_ORANGE;
         ctx.font = 'bold 14px sans-serif';
-        ctx.fillText('三組比值皆為 8.0', w / 2, h - 34);
+        ctx.fillText('三組比值皆為 8.0', w / 2, footer.conclusionY);
     } else if (step === 7) {
         drawWobblyRect(ctx, 18, 18, w - 36, h - 36, COLOR_WHITE, true, COLOR_BLACK, 2, 900);
         ctx.fillStyle = COLOR_ORANGE;
