@@ -1048,7 +1048,6 @@ function updateQuizUI() {
             btnNext.disabled = !subPage3Passed;
         }
         
-        document.getElementById('quiz-page-num').textContent = '09';
         document.getElementById('quiz-title').textContent = '例題一：定比關係定量推導練習';
         document.getElementById('quiz-desc').textContent = '請根據左側關係圖，由已知的化學式與部分元素質量，依序推導出未知的元素質量，並在右側輸入進行驗證。';
         document.getElementById('right-panel-title').textContent = '定量推導挑戰';
@@ -1083,7 +1082,6 @@ function updateQuizUI() {
             btnNext.textContent = '下一題 ➡';
         }
         
-        document.getElementById('quiz-page-num').textContent = '10';
         document.getElementById('quiz-title').textContent = '例題二：進階化學式推導挑戰';
         document.getElementById('quiz-desc').textContent = '利用先前求得的 X、Y、Z，進一步推導未知化合物 (A)、(B)、(C)、(D) 的最簡化學式，並在右側進行選擇與驗證。';
         document.getElementById('right-panel-title').textContent = '化學式推導挑戰';

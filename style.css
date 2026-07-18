@@ -337,8 +337,8 @@ canvas {
     padding: 0.5rem 1.2rem;
     border: 2px solid var(--theme-primary, #003153);
     border-bottom: none;
-    background: #ffffff;
-    color: var(--theme-primary, #003153);
+    background: var(--theme-primary, #003153);
+    color: var(--theme-on-primary, #ffffff);
     border-radius: 8px 8px 0 0;
     transition: all 0.15s ease;
     cursor: pointer;
@@ -346,14 +346,15 @@ canvas {
 }
 
 .soil-tab-btn:hover {
-    background: var(--theme-primary-soft, #eaf1f5) !important;
-    color: var(--theme-primary, #003153) !important;
+    background: var(--theme-primary-hover, #174a6b) !important;
+    color: var(--theme-on-primary, #ffffff) !important;
     text-decoration: none !important;
 }
 
-.soil-tab-btn.active {
-    background: var(--theme-primary, #003153) !important;
-    color: var(--theme-on-primary, #ffffff) !important;
+.soil-tab-btn.active,
+.soil-tab-btn.active:hover {
+    background: #ffffff !important;
+    color: var(--theme-primary, #003153) !important;
     text-decoration: none !important;
     border-width: 3px;
     border-color: var(--theme-primary, #003153);

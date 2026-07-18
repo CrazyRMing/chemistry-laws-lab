@@ -30,7 +30,6 @@ test('CSS-owned interface controls use semantic theme colors', () => {
     'mass-item\\.active',
     'nav-btn\\.highlight-btn',
     'btn-primary',
-    'soil-tab-btn\\.active',
     'soil-page-num',
     'soil-orange-line',
     'nav-page-link',
@@ -41,6 +40,42 @@ test('CSS-owned interface controls use semantic theme colors', () => {
       `${selector} must use the interface theme`,
     );
   }
+});
+
+test('every production page identifies exactly one active lesson tab', () => {
+  for (const [name, page] of Object.entries(pages)) {
+    const activeTabs = page.match(/class="soil-tab-btn active"/g) ?? [];
+    assert.equal(activeTabs.length, 1, `${name} must have exactly one active lesson tab`);
+  }
+});
+
+test('example pages use a challenge badge instead of lesson step numbers', () => {
+  for (const name of ['quiz.html', 'multiple_proportions_explain.html']) {
+    assert.match(
+      pages[name],
+      /<div class="soil-page-num"(?: id="[^"]+")?>挑戰<\/div>/,
+      `${name} must label its example badge as 挑戰`,
+    );
+  }
+  assert.doesNotMatch(
+    quiz,
+    /getElementById\('quiz-page-num'\)\.textContent\s*=\s*'(?:09|10)'/,
+  );
+});
+
+test('inactive and active lesson tabs use inverse theme states', () => {
+  const inactiveRule = css.match(/\.soil-tab-btn\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+  const inactiveHoverRule = css.match(/\.soil-tab-btn:hover\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+  const activeRule = css.match(
+    /\.soil-tab-btn\.active,\s*\.soil-tab-btn\.active:hover\s*\{([\s\S]*?)\}/,
+  )?.[1] ?? '';
+
+  assert.match(inactiveRule, /background:\s*var\(--theme-primary, #003153\)/);
+  assert.match(inactiveRule, /color:\s*var\(--theme-on-primary, #ffffff\)/);
+  assert.match(inactiveHoverRule, /background:\s*var\(--theme-primary-hover, #174a6b\)\s*!important/);
+  assert.match(inactiveHoverRule, /color:\s*var\(--theme-on-primary, #ffffff\)\s*!important/);
+  assert.match(activeRule, /background:\s*#ffffff\s*!important/);
+  assert.match(activeRule, /color:\s*var\(--theme-primary, #003153\)\s*!important/);
 });
 
 test('purple geometric comparison control overrides the shared primary background', () => {
@@ -147,7 +182,7 @@ test('inline interface links use theme variables while data legends stay orange'
 });
 
 test('pages with themed dynamic DOM styles load refreshed scripts', () => {
-  assert.match(pages['quiz.html'], /quiz\.js\?v=20260718_03/);
+  assert.match(pages['quiz.html'], /quiz\.js\?v=20260718_04/);
   assert.match(
     pages['multiple_proportions_explain.html'],
     /multiple_proportions_explain\.js\?v=20260718_02/,
