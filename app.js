@@ -418,12 +418,13 @@ function drawMiddleStepsCompact(ctx, w, h, step) {
             w - 70,
             28,
         );
+        const bottomRows = CanvasResponsive.bottomPair(h, 50, 28);
         ctx.fillStyle = COLOR_ORANGE;
         ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('水的 wO : wH 恆為 8 : 1', w / 2, 260);
+        ctx.fillText('水的 wO : wH 恆為 8 : 1', w / 2, bottomRows.upper);
         ctx.fillStyle = COLOR_GREY;
         ctx.font = '13px sans-serif';
-        ctx.fillText('── 普魯斯特，1799', w / 2, h - 38);
+        ctx.fillText('── 普魯斯特，1799', w / 2, bottomRows.lower);
     }
 
     ctx.restore();

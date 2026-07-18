@@ -13,6 +13,11 @@
         return isCompact(width) ? compactMargin : desktopMargin;
     }
 
+    function bottomPair(height, gap, bottomInset) {
+        const lower = height - bottomInset;
+        return { upper: lower - gap, lower };
+    }
+
     function fontFor(ctx, text, maxWidth, preferredPx, minimumPx, weight = 'bold') {
         let size = preferredPx;
         while (size > minimumPx) {
@@ -45,6 +50,7 @@
         isCompact,
         heightFor,
         marginFor,
+        bottomPair,
         fontFor,
         wrapLines,
     };

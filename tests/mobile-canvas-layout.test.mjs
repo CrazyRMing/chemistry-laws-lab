@@ -17,7 +17,7 @@ test('all public pages load the shared responsive Canvas helper first', () => {
 
   for (const [htmlPath, pageScript] of pages) {
     const html = readFileSync(new URL(htmlPath, root), 'utf8');
-    const helperPosition = html.indexOf('canvas-responsive.js?v=20260717_01');
+    const helperPosition = html.indexOf('canvas-responsive.js?v=');
     const pagePosition = html.indexOf(pageScript);
     assert.notEqual(helperPosition, -1, `${htmlPath} must load the helper`);
     assert.ok(helperPosition < pagePosition, `${htmlPath} must load the helper first`);
@@ -36,6 +36,11 @@ test('responsive Canvas thresholds preserve desktop layout above 480px', () => {
   assert.equal(responsive.heightFor(600, 0.75, 1), 450);
   assert.equal(responsive.marginFor(360, 60, 40), 40);
   assert.equal(responsive.marginFor(600, 60, 40), 60);
+
+  const bottomRows = responsive.bottomPair(300, 50, 28);
+  assert.equal(bottomRows.upper, 222);
+  assert.equal(bottomRows.lower, 272);
+  assert.equal(bottomRows.lower - bottomRows.upper, 50);
 });
 
 test('responsive Canvas text tools fit and wrap inside the requested width', () => {
@@ -72,6 +77,7 @@ test('definite-law page has a complete compact Canvas composition', () => {
   assert.match(source, /function drawStepEightCompact\(/);
   assert.match(source, /function drawMiddleStepsCompact\(/);
   assert.match(source, /currentStep >= 5 && currentStep <= 7/);
+  assert.match(source, /CanvasResponsive\.bottomPair\(h,\s*50,\s*28\)/);
   assert.match(source, /CanvasResponsive\.wrapLines\(/);
   assert.match(source, /const compact = CanvasResponsive\.isCompact\(w\)/);
 });
@@ -85,6 +91,7 @@ test('multiple-proportions page has compact steps and graph geometry', () => {
   assert.match(source, /function multipleGraphMargin\(width\)/);
   assert.match(source, /function drawMultipleCompact\(/);
   assert.match(source, /currentStep >= 4/);
+  assert.match(source, /CanvasResponsive\.bottomPair\(h,\s*24,\s*28\)/);
   assert.match(source, /CanvasResponsive\.wrapLines\(/);
   assert.doesNotMatch(source, /flaskCanvas\.style\.(?:width|height)\s*=/);
   assert.doesNotMatch(source, /graphCanvas\.style\.(?:width|height)\s*=/);

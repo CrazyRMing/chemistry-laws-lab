@@ -407,15 +407,17 @@ function drawMultipleCompact(ctx, w, h, step, progress) {
         ctx.font = '13px sans-serif';
         ctx.fillText('表示 H 原子數量相同', w / 2, 184);
         if (step === 7) {
+            const bottomRows = CanvasResponsive.bottomPair(h, 24, 28);
+            const atomY = Math.min(220, bottomRows.upper - 48);
             ctx.globalAlpha = alpha;
-            drawCompactAtom(ctx, leftX, 232, 18, 'O', '#ef4444', '#ffffff', 232);
-            drawCompactAtom(ctx, rightX - 18, 232, 18, 'O', '#ef4444', '#ffffff', 233);
-            drawCompactAtom(ctx, rightX + 20, 232, 18, 'O', '#ef4444', '#ffffff', 234);
+            drawCompactAtom(ctx, leftX, atomY, 18, 'O', '#ef4444', '#ffffff', 232);
+            drawCompactAtom(ctx, rightX - 18, atomY, 18, 'O', '#ef4444', '#ffffff', 233);
+            drawCompactAtom(ctx, rightX + 20, atomY, 18, 'O', '#ef4444', '#ffffff', 234);
             ctx.fillStyle = '#1f1f1f';
             ctx.font = 'bold 15px sans-serif';
-            ctx.fillText('O 質量比 = 1 : 2', w / 2, 284);
+            ctx.fillText('O 質量比 = 1 : 2', w / 2, bottomRows.upper);
             ctx.font = '13px sans-serif';
-            ctx.fillText('O 原子數量比也是 1 : 2', w / 2, 307);
+            ctx.fillText('O 原子數量比也是 1 : 2', w / 2, bottomRows.lower);
         }
     } else if (step === 8 || step === 9) {
         ctx.fillStyle = '#1f1f1f';
@@ -434,15 +436,17 @@ function drawMultipleCompact(ctx, w, h, step, progress) {
         ctx.font = '13px sans-serif';
         ctx.fillText('表示 O 原子數量相同', w / 2, 184);
         if (step === 9) {
+            const bottomRows = CanvasResponsive.bottomPair(h, 24, 28);
+            const atomY = Math.min(220, bottomRows.upper - 45);
             ctx.globalAlpha = alpha;
-            drawCompactAtom(ctx, leftX - 17, 232, 15, 'H', '#ffffff', '#2b2b2b', 242);
-            drawCompactAtom(ctx, leftX + 17, 232, 15, 'H', '#ffffff', '#2b2b2b', 243);
-            drawCompactAtom(ctx, rightX, 232, 15, 'H', '#ffffff', '#2b2b2b', 244);
+            drawCompactAtom(ctx, leftX - 17, atomY, 15, 'H', '#ffffff', '#2b2b2b', 242);
+            drawCompactAtom(ctx, leftX + 17, atomY, 15, 'H', '#ffffff', '#2b2b2b', 243);
+            drawCompactAtom(ctx, rightX, atomY, 15, 'H', '#ffffff', '#2b2b2b', 244);
             ctx.fillStyle = '#1f1f1f';
             ctx.font = 'bold 15px sans-serif';
-            ctx.fillText('H 質量比 = 2 : 1', w / 2, 284);
+            ctx.fillText('H 質量比 = 2 : 1', w / 2, bottomRows.upper);
             ctx.font = '13px sans-serif';
-            ctx.fillText('H 原子數量比也是 2 : 1', w / 2, 307);
+            ctx.fillText('H 原子數量比也是 2 : 1', w / 2, bottomRows.lower);
         }
     } else if (step === 10) {
         ctx.globalAlpha = alpha;
