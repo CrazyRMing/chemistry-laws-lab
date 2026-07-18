@@ -24,7 +24,7 @@ test('legacy 3b1b copies are removed from the published root', () => {
 test('production pages share one stylesheet cache version', () => {
   for (const page of productionPages) {
     const html = readFileSync(new URL(page, root), 'utf8');
-    assert.match(html, /style\.css\?v=20260718_02/);
+    assert.match(html, /style\.css\?v=20260718_03/);
   }
 });
 

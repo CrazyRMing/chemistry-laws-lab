@@ -79,3 +79,11 @@ test('inline interface links use theme variables while data legends stay orange'
   assert.match(pages['multiple_proportions.html'], /legend-dot[^>]*background-color:\s*#ff7a00/);
   assert.match(pages['quiz.html'], /NH₃ 中[\s\S]*?color:\s*#ff7a00/);
 });
+
+test('pages with themed dynamic DOM styles load refreshed scripts', () => {
+  assert.match(pages['quiz.html'], /quiz\.js\?v=20260718_03/);
+  assert.match(
+    pages['multiple_proportions_explain.html'],
+    /multiple_proportions_explain\.js\?v=20260718_02/,
+  );
+});
