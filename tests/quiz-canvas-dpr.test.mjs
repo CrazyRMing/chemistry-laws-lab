@@ -29,6 +29,16 @@ test('main diagram draws with logical dimensions', () => {
   assert.doesNotMatch(source, /const [wh] = canvas\.(?:width|height)/);
 });
 
+test('D and SiC attach to the silicon node vertical center anchors', () => {
+  const source = functionSection('drawQuizDiagram', 'verifyCurrentQuiz');
+
+  assert.match(js, /function quizVerticalAnchors\(cx, cy, halfHeight\)/);
+  assert.match(source, /const siliconAnchors = quizVerticalAnchors\(x1, yMid, 18\)/);
+  assert.match(source, /siliconAnchors\.top\.x, siliconAnchors\.top\.y/);
+  assert.match(source, /siliconAnchors\.bottom\.x, siliconAnchors\.bottom\.y/);
+  assert.doesNotMatch(source, /x1 \+ 45, yMid [-+] 5/);
+});
+
 test('hint diagrams draw at container width and 250 logical pixels', () => {
   const source = functionSection('drawWeightRatioDiagram', 'drawColoredFormula');
   assert.match(source, /const w = parentW/);
@@ -41,5 +51,5 @@ test('CSS owns main display size and wrapper changes trigger redraw', () => {
   assert.match(html, /#quizCanvas\s*\{[\s\S]*?width:\s*100%\s*!important;[\s\S]*?height:\s*auto\s*!important/);
   assert.match(js, /new ResizeObserver\(scheduleQuizCanvasResize\)/);
   assert.match(js, /quizCanvasResizeObserver\?\.observe\(canvas\.parentElement\)/);
-  assert.match(html, /quiz\.js\?v=20260717_01/);
+  assert.match(html, /quiz\.js\?v=20260718_02/);
 });

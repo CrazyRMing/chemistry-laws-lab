@@ -625,6 +625,13 @@ function quizNodeFont(context, label, width) {
     return CanvasResponsive.fontFor(context, label, 72, 14, 10, 'bold');
 }
 
+function quizVerticalAnchors(cx, cy, halfHeight) {
+    return {
+        top: { x: cx, y: cy - halfHeight },
+        bottom: { x: cx, y: cy + halfHeight },
+    };
+}
+
 // Render network diagram with dynamic color overrides on Hint toggled
 function drawQuizDiagram() {
     const w = canvas.logicalWidth || canvas.clientWidth;
@@ -643,6 +650,7 @@ function drawQuizDiagram() {
     const yTop = h * 0.23;
     const yBottom = h * 0.77;
     const yMid = h * 0.5;
+    const siliconAnchors = quizVerticalAnchors(x1, yMid, 18);
 
     const lineColor = '#777777';
     const lineWidth = 1.2;
@@ -738,12 +746,12 @@ function drawQuizDiagram() {
     // SiC lines
     ctx.save();
     ctx.globalAlpha = aLineSi_D;
-    drawWobblyLine(ctx, x1 + 45, yMid - 5, w * 0.22, yMid - 50, lineColor, lineWidth, 901);
+    drawWobblyLine(ctx, siliconAnchors.top.x, siliconAnchors.top.y, w * 0.22, yMid - 50, lineColor, lineWidth, 901);
     ctx.restore();
 
     ctx.save();
     ctx.globalAlpha = aLineSi_SiC;
-    drawWobblyLine(ctx, x1 + 45, yMid + 5, w * 0.22, yMid + 50, colLineSi_SiC, wLineSi_SiC, 902);
+    drawWobblyLine(ctx, siliconAnchors.bottom.x, siliconAnchors.bottom.y, w * 0.22, yMid + 50, colLineSi_SiC, wLineSi_SiC, 902);
     ctx.restore();
 
     ctx.save();
