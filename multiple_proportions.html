@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260716_03">
+    <link rel="stylesheet" href="style.css?v=20260718_02">
     <style>
         /* Force body to prevent horizontal scrollbars and ensure centering */
         body {
@@ -29,11 +29,11 @@
         /* Force panels to be mathematically symmetric and equal in width/height */
         .animation-container {
             display: grid !important;
-            grid-template-columns: calc(50% - 1rem) calc(50% - 1rem) !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
             gap: 2rem !important;
             align-items: stretch !important;
         }
-        @media (max-width: 1024px) {
+        @media (max-width: 820px) {
             .animation-container {
                 grid-template-columns: 1fr !important;
                 gap: 1.5rem !important;
@@ -115,8 +115,8 @@
 
         <!-- Explanatory Header Area -->
         <div class="info-card">
-            <h1 id="step-title">倍比定律探討</h1>
-            <p id="step-desc">請點擊下方「下一步」開始探索化學中神奇的比例律。</p>
+            <h1 id="step-title">第一步：建立質量關係座標系</h1>
+            <p id="step-desc">以氫（H）與氧（O）組成的化合物為例。我們繪製一個座標圖，以氧的質量 wO 為 Y 軸，以氫的質量 wH 為 X 軸，用以探討兩種化合物之間的質量比例關係。</p>
         </div>
 
         <!-- Two Canvas panels side by side -->
