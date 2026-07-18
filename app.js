@@ -504,15 +504,16 @@ function renderFlaskPanel() {
     }
 
     if (currentStep === 1) {
-        // Step 1: Blank slate introducing Definite Proportions
+        ctxF.save();
+        drawWobblyRect(ctxF, 30, 40, w - 60, h - 80, COLOR_WHITE, true, COLOR_BLACK, 3, 20);
         ctxF.fillStyle = COLOR_WHITE;
         ctxF.font = FONT_MATH;
         ctxF.textAlign = 'center';
-        ctxF.fillText('定比定律實驗演示 🧪', w / 2, h / 2 - 20);
-
-        ctxF.fillStyle = COLOR_GREY;
+        ctxF.fillText('定比定律實驗演示 🧪', w / 2, h / 2 - 10);
         ctxF.font = FONT_SMALL;
-        ctxF.fillText('收集並定量分析三種不同化學反應產生的水滴', w / 2, h / 2 + 20);
+        ctxF.fillStyle = COLOR_GREY;
+        ctxF.fillText('收集並定量分析三種不同化學反應產生的水滴', w / 2, h / 2 + 25);
+        ctxF.restore();
     }
     else if (currentStep === 2) {
         // Step 2: Acid-base Titration - Fade-in only

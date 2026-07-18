@@ -4,6 +4,8 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 const root = new URL('../', import.meta.url);
+const app = readFileSync(new URL('app.js', root), 'utf8');
+const multiple = readFileSync(new URL('multiple_proportions.js', root), 'utf8');
 
 test('all public pages load the shared responsive Canvas helper first', () => {
   assert.equal(existsSync(new URL('canvas-responsive.js', root)), true);
@@ -129,4 +131,17 @@ test('multiple-proportions explanation uses mobile height and dynamic margins', 
   assert.match(source, /function drawCompactPointLabel\(/);
   assert.doesNotMatch(source, /canvas\.style\.(?:width|height)\s*=/);
   assert.match(html, /#explainCanvas\s*\{[\s\S]*?width:\s*100%\s*!important;[\s\S]*?height:\s*auto\s*!important/);
+});
+
+test('definite and multiple law intros share the hand-drawn frame geometry', () => {
+  assert.match(
+    app,
+    /currentStep === 1[\s\S]*?drawWobblyRect\(ctxF, 30, 40, w - 60, h - 80, COLOR_WHITE, true, COLOR_BLACK, 3, 20\)/,
+  );
+  assert.match(
+    multiple,
+    /currentStep === 1[\s\S]*?drawWobblyRect\(ctxF, 30, 40, w - 60, h - 80, '#2b2b2b', true, '#ffffff', 3, 20\)/,
+  );
+  assert.match(app, /定比定律實驗演示 🧪/);
+  assert.match(app, /收集並定量分析三種不同化學反應產生的水滴/);
 });
