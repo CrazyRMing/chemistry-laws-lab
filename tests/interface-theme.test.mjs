@@ -43,6 +43,43 @@ test('CSS-owned interface controls use semantic theme colors', () => {
   }
 });
 
+test('purple geometric comparison control overrides the shared primary background', () => {
+  const primaryRule = css.match(/\.btn-primary\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+  const primaryHoverRule = css.match(/\.btn-primary:hover\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+
+  assert.match(
+    pages['multiple_proportions_explain.html'],
+    /id="btn-show-geometric"[^>]*style="[^"]*background:\s*#7c3aed/,
+  );
+  assert.doesNotMatch(primaryRule, /background:[^;]*!important/);
+  assert.doesNotMatch(primaryHoverRule, /background:[^;]*!important/);
+});
+
+test('quiz hint buttons allow inline active theme styles to override their base rule', () => {
+  const hintRule = pages['quiz.html'].match(/\.hint-sub-btn\s*\{([\s\S]*?)\}/)?.[1] ?? '';
+
+  assert.doesNotMatch(hintRule, /background:[^;]*!important/);
+  assert.doesNotMatch(hintRule, /border:[^;]*!important/);
+  assert.match(quiz, /btn\.style\.background = 'var\(--theme-primary-soft\)'/);
+  assert.match(quiz, /btn\.style\.borderColor = 'var\(--theme-primary\)'/);
+  assert.match(quiz, /btn\.style\.color = 'var\(--theme-primary\)'/);
+});
+
+test('major question and card wrappers use the interface border token', () => {
+  assert.match(
+    pages['multiple_proportions_explain.html'],
+    /\.question-card\s*\{[\s\S]*?border:\s*3px solid var\(--border-color\)/,
+  );
+  assert.match(
+    pages['quiz.html'],
+    /id="quizContentPage1"[^>]*border:\s*3px solid var\(--border-color\)/,
+  );
+  assert.match(
+    pages['quiz.html'],
+    /id="quizContentPage2"[^>]*border:\s*3px solid var\(--border-color\)/,
+  );
+});
+
 test('legend markers and disabled buttons retain neutral charcoal outlines', () => {
   assert.match(css, /--border-neutral:\s*#2b2b2b/);
   assert.match(

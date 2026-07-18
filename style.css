@@ -284,14 +284,14 @@ canvas {
 }
 
 .btn-primary {
-    background: var(--theme-primary, #003153) !important;
+    background: var(--theme-primary, #003153);
     color: var(--theme-on-primary, #ffffff) !important;
     border-color: var(--border-color);
     box-shadow: 3px 4px 0px var(--border-color);
 }
 
 .btn-primary:hover {
-    background: var(--theme-primary-hover, #174a6b) !important;
+    background: var(--theme-primary-hover, #174a6b);
     box-shadow: 4px 6px 0px var(--border-color);
 }
 
