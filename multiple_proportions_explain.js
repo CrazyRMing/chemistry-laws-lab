@@ -40,8 +40,8 @@ function toggleAlgebraic() {
     if (algebraicActive) {
         panel.classList.add('active');
         btn.innerText = '隱藏代數表徵';
-        btn.style.background = 'var(--color-orange)';
-        btn.style.color = '#ffffff';
+        btn.style.background = 'var(--theme-primary)';
+        btn.style.color = 'var(--theme-on-primary)';
     } else {
         panel.classList.remove('active');
         btn.innerText = '顯示代數表徵';

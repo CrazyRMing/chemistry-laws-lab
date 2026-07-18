@@ -62,20 +62,20 @@ function runHintStep(questionId, stepNum) {
     const btn2 = document.getElementById(`btn-hint-${questionId}-step-2`);
     
     if (stepNum === 2) {
-        // Step 2 Active (Orange highlight)
+        // Step 2 Active (Theme highlight)
         if (btn2) {
-            btn2.style.background = '#ff7a00';
-            btn2.style.color = '#ffffff';
-            btn2.style.borderColor = '#ff7a00';
+            btn2.style.background = 'var(--theme-primary)';
+            btn2.style.color = 'var(--theme-on-primary)';
+            btn2.style.borderColor = 'var(--theme-primary)';
             btn2.disabled = true;
         }
         
         startHintStepAnimation('hintCanvas' + questionId, questionId, 2, () => {
-            // Step 2 Completed (Light orange background)
+            // Step 2 Completed (Soft theme background)
             if (btn2) {
-                btn2.style.background = '#fff5ea';
-                btn2.style.color = '#ff7a00';
-                btn2.style.borderColor = '#ff7a00';
+                btn2.style.background = 'var(--theme-primary-soft)';
+                btn2.style.color = 'var(--theme-primary)';
+                btn2.style.borderColor = 'var(--theme-primary)';
                 btn2.disabled = false;
             }
         });
@@ -94,8 +94,8 @@ function collapseAllHints() {
     document.querySelectorAll('.hint-sub-btn').forEach(btn => {
         btn.innerHTML = '💡 提示';
         btn.style.background = '#ffffff';
-        btn.style.borderColor = '#2b2b2b';
-        btn.style.color = '#2b2b2b';
+        btn.style.borderColor = 'var(--theme-primary)';
+        btn.style.color = 'var(--theme-primary)';
     });
     
     // Reset all step buttons styles and formula text opacities
@@ -144,9 +144,9 @@ function toggleSingleHint(id) {
     
     if (activeHints[id]) {
         btn.innerHTML = '隱藏提示';
-        btn.style.background = '#fff5ea';
-        btn.style.borderColor = '#ff7a00';
-        btn.style.color = '#ff7a00';
+        btn.style.background = 'var(--theme-primary-soft)';
+        btn.style.borderColor = 'var(--theme-primary)';
+        btn.style.color = 'var(--theme-primary)';
         span.style.display = 'inline-flex';
         if (plot) plot.style.display = 'block';
         wrapper.classList.add('hint-active-' + id);
@@ -181,8 +181,8 @@ function toggleSingleHint(id) {
     } else {
         btn.innerHTML = '💡 提示';
         btn.style.background = '#ffffff';
-        btn.style.borderColor = '#2b2b2b';
-        btn.style.color = '#2b2b2b';
+        btn.style.borderColor = 'var(--theme-primary)';
+        btn.style.color = 'var(--theme-primary)';
         span.style.display = 'none';
         if (plot) plot.style.display = 'none';
         wrapper.classList.remove('hint-active-' + id);

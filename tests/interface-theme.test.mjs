@@ -8,6 +8,10 @@ const app = readFileSync(new URL('app.js', root), 'utf8');
 const quiz = readFileSync(new URL('quiz.js', root), 'utf8');
 const multiple = readFileSync(new URL('multiple_proportions.js', root), 'utf8');
 const explain = readFileSync(new URL('multiple_proportions_explain.js', root), 'utf8');
+const pages = Object.fromEntries(
+  ['index.html', 'quiz.html', 'multiple_proportions.html', 'multiple_proportions_explain.html']
+    .map((name) => [name, readFileSync(new URL(name, root), 'utf8')]),
+);
 
 test('Prussian blue interface tokens have one CSS source of truth', () => {
   for (const [name, value] of [
@@ -60,4 +64,18 @@ test('representative Canvas and teaching-series colors remain unchanged', () => 
   assert.match(quiz, /drawWobblyLine\(ctx, endX, endY, curEndX, curEndY, '#ff7a00'/);
   assert.match(multiple, /drawWobblyLine\(ctxG,[\s\S]*?'#ff7a00', 3, 225\)/);
   assert.match(explain, /drawWobblyLine\(ctx, mX\(0\), mY\(0\), endX1, endY1, '#ff7a00'/);
+});
+
+test('dynamic interface controls use theme variables', () => {
+  assert.match(quiz, /btn2\.style\.background = 'var\(--theme-primary\)'/);
+  assert.match(quiz, /btn\.style\.background = 'var\(--theme-primary-soft\)'/);
+  assert.match(explain, /btn\.style\.background = 'var\(--theme-primary\)'/);
+});
+
+test('inline interface links use theme variables while data legends stay orange', () => {
+  assert.match(pages['index.html'], /直接挑戰例題[^<]*<\/a>/);
+  assert.match(pages['index.html'], /border-color:\s*var\(--theme-primary\)/);
+  assert.match(pages['multiple_proportions.html'], /border-color:\s*var\(--theme-primary\)/);
+  assert.match(pages['multiple_proportions.html'], /legend-dot[^>]*background-color:\s*#ff7a00/);
+  assert.match(pages['quiz.html'], /NH₃ 中[\s\S]*?color:\s*#ff7a00/);
 });
